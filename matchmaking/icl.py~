@@ -1,0 +1,80 @@
+#!/usr/bin/python
+
+import Ice 
+Ice.loadSlice("/usr/share/slice/Murmur.ice", ['-I'+ Ice.getSliceDir()])
+import Murmur
+import sys
+import string, random
+
+def generate_id(size=6, chars=string.digits):
+  return ''.join(random.choice(chars) for x in range(size))
+
+def _getChannel(server, name):
+  channel = None
+  channels = server.getChannels()
+  for chid in channels:
+    if channels[chid].name == name:
+      channel = channels[chid]
+      break
+      
+  if channel == None:
+    print "Error: Channel not found."
+    sys.exit(1)
+      
+  return channel
+
+def _getUser(server, name):
+  user = None
+  users = server.getUsers()
+  for usid in users:
+    if users[usid].name == name:
+      user = users[usid]
+      break
+  
+  if user == None:
+    print "Error: User not found."
+    sys.exit(1)
+      
+  return user
+  
+def createNewChannel(server, parentchannelname, channelname):
+  parent = _getChannel(server, parentchannelname)
+  server.addChannel(channelname, parent.id)
+
+def moveUser2Channel(server, username, channelname):
+  channel = _getChannel(server, channelname)
+  user    = _getUser(server, username)
+  
+  user.channel = channel.id
+  server.setState(user)
+
+def deleteChannel(server, channelname):
+  channel = _getChannel(server, channelname)
+  server.removeChannel(channel.id)
+  
+def connect2server():
+  # initialize Ice
+  prop = Ice.createProperties()
+  prop.setProperty("Ice.ImplicitContext", "Shared")
+  idd = Ice.InitializationData()
+  idd.properties = prop
+  ice = Ice.initialize(idd)
+  ice.getImplicitContext().put("secret", "@ED5adbd4f")
+
+  # Let Ice know where to go to connect to mumble
+  proxy = ice.stringToProxy("Meta:tcp -p 6502")
+
+  # Create a dynamic object that allows us to get a programmable interface for Mumble
+  meta = Murmur.MetaPrx.checkedCast(proxy)
+
+  # Get the server instance from the set of servers.
+  server = meta.getServer(1)
+  return server
+
+  
+if __name__ == "__main__":
+  server = connect2server()
+
+  createNewChannel(server, 'Root', 'test')
+  moveUser2Channel(server, 'korzh', 'test')
+  deleteChannel(server, 'test')
