@@ -141,6 +141,7 @@ class ICLMumble():
 class ValveApi():
   def __init__(self):
     self.cache = None
+    self.newcache = {}
     self.AllowNewQueries = True
     
     self.CacheFile = 'valve_api_cache.json'
@@ -151,14 +152,17 @@ class ValveApi():
     self.loadCache()    
     
   def writeCache(self):
+    if len(self.newcache) > 0:
       with open(self.CacheFile, 'w') as output:
-	  print 'Writing cache'
-	  json.dump(self.cache, output)
+	  #print 'Writing cache'
+	  json.dump(self.newcache, output)
+	
 
   def loadCache(self):
+    #print os.path.join(os.getcwd(),self.CacheFile)
     if os.path.exists(os.path.join(os.getcwd(),self.CacheFile)):
       with open(self.CacheFile, 'r') as input:
-	  print 'Loading cache'
+	  #print 'Loading cache'
 	  self.cache = json.load(input)
     else:
       self.cache = {}
@@ -167,23 +171,24 @@ class ValveApi():
     apiurl =  api2query       
     finalurl = apiurl+self.apikey+conditions    
     
-    if '&date_min=' in cachekey:
-      cachekey = cachekey[:-len('date_min=1374442863')]
-          
     cachekey = datetime.date.today().isoformat() + apiurl + conditions
     
-    print "query:", finalurl
+    if '&date_min=' in cachekey:
+      cachekey = cachekey[:-len('date_min=1374442863')]
+    
+    #print cachekey
+    #print "query:", finalurl
     
     # check if we have that query in cache
     if cachekey in self.cache.keys():
-      #print 'Response found in cache',str(playerid),str(skill)
+      #print 'Response found in cache', cachekey
       response = self.cache[cachekey]
     else:  
       response = None
       if self.AllowNewQueries:
-	#print 'Response NOT found in cache',str(playerid),str(skill)
+	#print 'Response NOT found in cache', cachekey
 	response = json.load(urllib2.urlopen(finalurl))
-	self.cache[cachekey] = response
+	self.newcache[cachekey] = response
 	time.sleep(1)	        
     return response
 
@@ -195,7 +200,7 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
-
+# TODO ASYNCHRONOUS CALL OF THIS FUNCTION FROM WEBSITE
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
     amount_of_games[1] = 0
@@ -232,9 +237,12 @@ class ValveApi():
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
     if total_games != 0:
-      playerstats = {'name':self.get_player_name_from_steamid(userid), 'exp':exp,
+      playerstats = {'exp':exp}
+      self.debug = {'name':self.get_player_name_from_steamid(userid),
 		      'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
-		      'total': total_games}  
+		      'total': total_games}
+      print 'Player exp:',self.debug
+      self.writeCache()
       return playerstats
             
 # Stats for 08/18/2013 
@@ -249,9 +257,6 @@ class ValveApi():
 # 263 RockNaR
 # 236 ICR.Axe.Heart
 # 145 ICR.MiniSpy v.2.0
-
-
-
 
 
 # Steam auth interraction here 
