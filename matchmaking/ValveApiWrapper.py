@@ -104,6 +104,7 @@ class ValveApi():
     
     if total_games != 0:
       #self.writeCache()
+      pass
       
     playerstats = {'exp':exp}
     self.debug = {'name':self.get_player_name_from_steamid(userid),
