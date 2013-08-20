@@ -5,7 +5,7 @@ import json, urllib2
 
 class ValveApi():
   def __init__(self):
-    self.cache = None
+    self.cache = {}
     self.newcache = {}
     self.AllowNewQueries = True
     
