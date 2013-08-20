@@ -17,8 +17,8 @@ def landing(request):
 	return redirect('/profile')
 
 def intro(request):
-	server = icl.connect2server()
-	users = server.getUsers()
+	#server = mm.ICLMumble()
+	users = [] #server.users
 	userlist = [users[i] for i in users]
 	usernum = len(userlist)
 		
