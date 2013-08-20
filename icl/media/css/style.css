@@ -1,0 +1,8 @@
+ body {
+	background: #474747 url({{MEDIA_URL}}css/style.css);
+}
+
+h2 {
+	font: 70px Tahoma, Helvetica, Arial, Sans-Serif;
+	text-align: center;
+}
