@@ -14,7 +14,7 @@ class ValveApi():
     self.apiurls = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
-    self.loadCache()    
+    #self.loadCache()    
     
   def writeCache(self):
     if len(self.newcache) > 0:
@@ -103,7 +103,7 @@ class ValveApi():
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
     
     if total_games != 0:
-      self.writeCache()
+      #self.writeCache()
       
     playerstats = {'exp':exp}
     self.debug = {'name':self.get_player_name_from_steamid(userid),
