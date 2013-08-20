@@ -19,7 +19,7 @@ class ICLMumble():
     idd = Ice.InitializationData()
     idd.properties = prop
     ice = Ice.initialize(idd)
-    ice.getImplicitContext().put("secret", "@ED5adbd4f")
+    ice.getImplicitContext().put("secret", "1234567890")
 
     # Let Ice know where to go to connect to mumble
     proxy = ice.stringToProxy("Meta:tcp -p 6502")
