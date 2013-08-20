@@ -30,7 +30,7 @@ import ValveApiWrapper
 def getUserAvatarUrl(request):
   steam_api_key = settings.STEAM_API_KEY
   social_auth = request.user.social_auth.get(provider='steam')
-  return social_auth.extra_data.get('avatarmedium')
+  return social_auth.extra_data.get('avatar')
   
 def updateUserInfo(request):
   social_auth = request.user.social_auth.get(provider='steam')
@@ -43,7 +43,7 @@ def updateUserInfo(request):
     
   player.uid      = steamid
   player.nickname = str(request.user)
-  player.avatar   = social_auth.extra_data.get('avatarmedium')
+  player.avatar   = social_auth.extra_data.get('avatar')
   
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
