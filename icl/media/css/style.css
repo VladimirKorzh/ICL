@@ -1,5 +1,5 @@
 body {
-	background: #474747 url({{MEDIA_URL}}css/style.css);
+	background: #474747 url({{MEDIA_URL}}images/bg.png);
 }
 
 h2 {
@@ -21,5 +21,19 @@ h2 {
 }
 
 .button{
-  
+	background: #222 url({{MEDIA_URL}}images/bg.png) repeat-x;
+	display: inline-block;
+	padding: 5px 10px 6px;
+	color: #fff;
+	text-decoration: none;
+	font-weight: bold;
+	line-height: 1;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	text-shadow: 0 -1px 1px #222;
+	border-bottom: 1px solid #222;
+	position: relative;
+	cursor: pointer;
 }
