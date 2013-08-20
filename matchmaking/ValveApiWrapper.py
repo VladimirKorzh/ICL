@@ -101,12 +101,15 @@ class ValveApi():
       exp += amount_of_games[skill] * Q
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
+    
     if total_games != 0:
-      playerstats = {'exp':exp}
-      self.debug = {'name':self.get_player_name_from_steamid(userid),
-		      'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
-		      'total': total_games}
-      print 'Player exp:',self.debug
       self.writeCache()
-      return playerstats
+      
+    playerstats = {'exp':exp}
+    self.debug = {'name':self.get_player_name_from_steamid(userid),
+		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
+		    'total': total_games}
+    print 'Player exp:',self.debug
+
+    return playerstats
             
