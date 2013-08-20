@@ -30,11 +30,11 @@ def profile(request):
 	
 	data = mm.get_open_lobbys(data)
 	
-	valveapi = ValveApiWrapper.ValveApi()
-	playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
+	#valveapi = ValveApiWrapper.ValveApi()
+	#playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
 	
-	data['exp'] = playerstats['exp']
-	
+	#data['exp'] = playerstats['exp']
+	data['exp'] = 123
 	mm.updateUserInfo(request)
 	return render(request, 'matchmaking/profile.html', data)
 
