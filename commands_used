@@ -22,7 +22,7 @@
   sudo apt-get install zeroc-ice
    
 # install github
-  sudo apt-get install git-core
+  sudo apt-get install git
   
 # install django-social-auth module
   sudo pip install django-social-auth
@@ -31,6 +31,8 @@
 # install sqlite3 for database administration
   sudo apt-get install sqlite3
 
+###########################################################  
+  
 # Steam add user url 
   steam://friends/add/76561198046413714
   
@@ -42,7 +44,7 @@
   http://stackoverflow.com/questions/333664/simple-long-polling-example-code
   http://www.mattconroy.com/entries/example-ice-script-for-mumble-using-python.htm
   https://docs.djangoproject.com/en/dev/topics/db/queries/#backwards-related-objects
-  
+  http://www.git-tower.com/blog/git-cheat-sheet-detail/
   
 
   
