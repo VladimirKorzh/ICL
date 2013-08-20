@@ -50,17 +50,20 @@
 
  
 
- 
-<ul id="nav">
-    <li><a href="#">
-	  <img src="{{avatar}}"/> 
-	  <span> {{ username }}  <div class="exp">{{exp}}</div></span>    
+
+<ul id="nav" class="nav_left">
+    <li>
+<!-- 	  <a href="#"><img src="{{avatar}}"/> -->
+	  <span>{{ username }}<div class="exp">{{exp}}</div></span>    
 	  </a>
     </li>
+</ul>
+<ul class="nav_right" id="nav">
     <li><a href="#">Browse Stacks</a></li>
     <li><a href="#">Find Stack</a></li>
     <li><a href="#">Tournaments</a></li>
     <li><a href="#">Standings</a></li>
+    <li><a href="/logout">Logout</a></li>
 </div>
 </ul>  
 
