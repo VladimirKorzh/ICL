@@ -15,28 +15,31 @@ import ValveApiWrapper
 
 
 def landing(request):
-    if not request.user.is_authenticated():
-	return redirect('/intro')
-    else:
-	return redirect('/profile')
+  if not request.user.is_authenticated():
+      return redirect('/intro')
+  else:
+      return redirect('/stacks')
 
 def intro(request):		
-	return render(request, 'matchmaking/intro.html')  
-	
-	
-@login_required
-def profile(request):
-	steam_api_key = settings.STEAM_API_KEY
-	social_auth = request.user.social_auth.get(provider='steam')
-	
-	data = {'username':request.user,
-		'apikey': steam_api_key,
-		'steamid':social_auth.extra_data.get('steamid'),
-		'avatar':mm.getUserAvatarUrl(request)}
-	
-	mumble = MumbleWrapper.ICLMumble()
-	data['mumblelists'] = mumble.get_info()	
-	
-	mm.updateUserInfo(request)
-	return render(request, 'matchmaking/profile.html', data)
+  return render(request, 'matchmaking/intro.html')  
 
+  
+@login_required
+def stacks(request):
+  steam_api_key = settings.STEAM_API_KEY
+  social_auth = request.user.social_auth.get(provider='steam')
+  
+  data = {'username':request.user,
+	  'apikey': steam_api_key,
+	  'steamid':social_auth.extra_data.get('steamid'),
+	  'avatar':mm.getUserAvatarUrl(request)}
+  
+  mumble = MumbleWrapper.ICLMumble()
+  data['mumblelists'] = mumble.get_info()	
+  
+  mm.updateUserInfo(request)
+  return render(request, 'matchmaking/stacks.html', data)
+
+@login_required 
+def ratings(request):
+  return render(request, 'matchmaking/ratings.html')
