@@ -35,10 +35,8 @@ def profile(request):
 		'avatar':mm.getUserAvatarUrl(request)}
 	
 	mumble = MumbleWrapper.ICLMumble()
-	data['mumbleinfo'] = mumble.get_info()
+	data['mumbleinfo'] = mumble.get_info()	
 	
-
-	data['exp'] = 123
 	mm.updateUserInfo(request)
 	return render(request, 'matchmaking/profile.html', data)
 

@@ -11,5 +11,5 @@ urlpatterns = patterns('',
     
     # Matchmaking APIs
     url(r'^matchmaking/getplayerexp', mm.getplayerexp,  name='getplayerexp'),
-    url(r'^matchmaking/startsearch$', mm.startsearch,   name='getmatch')
+    url(r'^matchmaking/getchannelsinfo$', mm.getchannelsinfo,   name='getchannelsinfo')
 )
