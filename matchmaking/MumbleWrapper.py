@@ -75,7 +75,7 @@ class ICLMumble():
 	for each in result:    
 	  if each['usernum'] < 5:
 	    while len(each['userlist']) < 5:
-	      each['userlist'].append('')
+	      each['userlist'].append('.')
 
 	print result          
 	return result
