@@ -10,6 +10,6 @@ urlpatterns = patterns('',
     url(r'^intro$',        views.intro,      name='intro'),
     
     # Matchmaking APIs
-    url(r'^matchmaking/getmatch$',    mm.getmatch,      name='getmatch'),
+    url(r'^matchmaking/getplayerexp', mm.getplayerexp,  name='getplayerexp'),
     url(r'^matchmaking/startsearch$', mm.startsearch,   name='getmatch')
 )

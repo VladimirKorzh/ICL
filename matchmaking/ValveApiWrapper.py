@@ -106,11 +106,11 @@ class ValveApi():
       #self.writeCache()
       pass
       
-    playerstats = {'exp':exp}
-    self.debug = {'name':self.get_player_name_from_steamid(userid),
+    
+    playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
-    print 'Player exp:',self.debug
+    print playerstats
 
     return playerstats
             

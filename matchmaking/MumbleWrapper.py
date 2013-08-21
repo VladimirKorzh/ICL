@@ -1,3 +1,7 @@
+import Ice 
+Ice.loadSlice("/usr/share/slice/Murmur.ice", ['-I'+ Ice.getSliceDir()])
+import Murmur
+
 class ICLMumble():
   """ Class is used for managing the Mumble server """
   def __init__(self):    
@@ -49,6 +53,36 @@ class ICLMumble():
       print "Error: User not found."
       return None
 
+  def get_info(self):
+	result = []
+		
+	for chid in self.channels:
+	  channelinfo = {}	  
+	  channelinfo['name']     = self.channels[chid].name
+	  channelinfo['userlist'] = []	  
+	  channelinfo['usernum']  = 0
+	  result.append(channelinfo)
+	  
+	for usid in self.users:
+	  user_channel_id   = self.users[usid].channel
+	  user_channel_name = self.getChannelObj(user_channel_id).name
+	  
+	  for each in result:
+	    if each['name'] == user_channel_name:
+	      each['userlist'].append(self.users[usid].name)
+	      each['usernum'] += 1
+
+	print result          
+	return result
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       
