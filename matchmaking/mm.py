@@ -5,8 +5,10 @@ import os, sys, string, random, json
 import urllib2
 import time, datetime, calendar
 
+
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from matchmaking.models import Player, Lobby, Roles, Search
 
@@ -68,6 +70,9 @@ def updateUserInfo(request):
   
   
   
+
+  
+
   
   
 def get_open_lobbys(data): #TODO
@@ -120,6 +125,16 @@ def getmatch(request):#TODO
     json_data = json.dumps(response)
     return HttpResponse(json_data, mimetype="application/json")	  
 
-  
+    
+@login_required
+def getplayerexp(request):
+      valveapi = ValveApiWrapper.ValveApi()
+      social_auth = request.user.social_auth.get(provider='steam')
+      playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
+      
+      response = {}
+      response['exp'] = str(playerstats['exp'])
+      json_data = json.dumps(response)
+      return HttpResponse(json_data, mimetype="application/json")  
     
     

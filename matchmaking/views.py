@@ -5,11 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 from django.conf import settings
-from matchmaking.models import Lobby, Player, Search
+from django.http import HttpResponse
 
+from matchmaking.models import Lobby, Player, Search
 
 import mm
 import ValveApiWrapper
+
 
 def landing(request):
     if not request.user.is_authenticated():
@@ -30,10 +32,7 @@ def profile(request):
 	
 	data = mm.get_open_lobbys(data)
 	
-	#valveapi = ValveApiWrapper.ValveApi()
-	#playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
-	
-	#data['exp'] = playerstats['exp']
+
 	data['exp'] = 123
 	mm.updateUserInfo(request)
 	return render(request, 'matchmaking/profile.html', data)
