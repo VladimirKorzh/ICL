@@ -6,20 +6,20 @@
     
 <script type="text/javascript">
 
-$.ajax({
-    type: "GET",
-    url: "/matchmaking/getplayerexp",
-
-    async: true,  /* If set to non-async, browser shows page as "Loading.." */
-    cache: false,
-    timeout: 30000, /* Timeout in ms */
-    dataType: 'json',
-    
-    success: function(data)
-    {	   
-	document.getElementById("exp").innerHTML = data.exp;
-    }    
-});    
+// $.ajax({
+//     type: "GET",
+//     url: "/matchmaking/getplayerexp",
+// 
+//     async: true,  /* If set to non-async, browser shows page as "Loading.." */
+//     cache: false,
+//     timeout: 30000, /* Timeout in ms */
+//     dataType: 'json',
+//     
+//     success: function(data)
+//     {	   
+// 	document.getElementById("exp").innerHTML = data.exp;
+//     }    
+// });    
 
 function timedRefresh(timeoutPeriod){
       setTimeout("location.reload(true);", timeoutPeriod);
@@ -45,7 +45,7 @@ $(function() {
 		  <li><a class="" href="/stacks">Stacks</a></li>   
 		  <li><a class="" href="/ratings">Ratings</a></li>     
 		  <li><a class="" href="/">Tournament</a></li>
-		  <li><a><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
+		  <li><a><span>{{username}} <span class="exp" id="exp">{{exp}}</span></span></a></li>
 		  <li><a class="" href="/logout">Logout</a></li>
 	      </ul>  
 	</div>

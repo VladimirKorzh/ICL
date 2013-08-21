@@ -6,7 +6,7 @@
     
 <script type="text/javascript">
 
-$.ajax({
+/*$.ajax({
     type: "GET",
     url: "/matchmaking/getplayerexp",
 
@@ -19,7 +19,7 @@ $.ajax({
     {	   
 	document.getElementById("exp").innerHTML = data.exp;
     }    
-});    
+});   */ 
 
 function timedRefresh(timeoutPeriod){
       setTimeout("location.reload(true);", timeoutPeriod);
@@ -38,26 +38,33 @@ $(function() {
 </script>    
 
 <div class="container_12">
-	
+
+<!-- 	HEADER -->
 	<div class="grid_3"><h3>International Crab League</h3></div>
 	<div class="grid_9">
 	      <ul id="vertical-navigation">
 		  <li><a class="" href="/stacks">Stacks</a></li>   
 		  <li><a class="" href="/ratings">Ratings</a></li>      
 		  <li><a class="" href="/">Tournament</a></li>
-		  <li><a><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
+		  <li><a><span>{{ username }} <span class="exp" id="exp">{{exp}}</span></span></a></li>
 		  <li><a class="" href="/logout">Logout</a></li>
 	      </ul>  
 	</div>
 	<div class="clear"></div> 
-		
+<!-- 	END HEADER -->
+
+
 	<div class="grid_6 push_3">
-		  <div id="content">
-		      <table cellspacing="0">
-		      <tr><th>Nickname</th><th>Exp</th><th>Rating</th></tr>
-		      <tr><td>Korzh</td><td>502</td><td>0</td></tr>
-		      </table>
-		  </div>	
+	    
+	    <div id="content">
+		<h3>Statistics for the past month</h3>  
+		<table cellspacing="0">
+		<tr><th>Nickname</th><th>Exp</th><th>Link</th></tr>
+		{% for player in playerslist %}
+		    <tr><td> {{player.nickname}}</td><td>{{player.exp}}</td><td>{{player.uid}}</td></tr>
+		{% endfor %}		
+		</table>
+	    </div>	
 	</div>
 	<div class="clear"></div>
 <!-- end of container_12 -->
