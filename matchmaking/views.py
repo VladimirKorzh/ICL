@@ -42,4 +42,5 @@ def stacks(request):
 
 @login_required 
 def ratings(request):
-  return render(request, 'matchmaking/ratings.html')
+  data = {'username':request.user}
+  return render(request, 'matchmaking/ratings.html', data)
