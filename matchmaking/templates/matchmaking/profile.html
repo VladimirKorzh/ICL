@@ -60,6 +60,7 @@ $(function() {
 	<div class="grid_3"><h3>International Crab League</h3></div>
 	<div class="grid_9">
 	      <ul id="vertical-navigation">
+		  <li><a class="" href="/">Stacks</a></li>   
 		  <li><a class="" href="/">Ratings</a></li>      
 		  <li><a class="" href="/">Tournament</a></li>
 		  <li><a><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
@@ -69,17 +70,24 @@ $(function() {
 	
 	<div class="clear"></div> 
 	
-	<div id="channelsinfo" class="grid_12">	
+	{% for mumbleinfo in mumblelists %}
 	    {% for channelinfo in mumbleinfo %}
+		{% if channelinfo %}
+		<div id="channelsinfo" class="grid_3 push_3">  
 		    <table cellspacing="0" style="float: left;">
 			  <tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a></th></tr>
 			      {% for player in channelinfo.userlist %}
 				<tr><td>{{player}}</tr></td>
 			      {% endfor %} 
 		      </table>  
+		  </div>
+		  {% endif%}
+		  
 	    {% endfor %}
+	    <div class="clear"></div>			    
+	{% endfor %}    
 
-	</div>
+	
 	<div class="clear"></div>
 	
 	<div class="grid_12">
