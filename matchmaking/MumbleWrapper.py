@@ -72,6 +72,11 @@ class ICLMumble():
 	      each['userlist'].append(self.users[usid].name)
 	      each['usernum'] += 1
 
+	for each in result:    
+	  if each['usernum'] < 5:
+	    while len(each['userlist']) < 5:
+	      each['userlist'].append('')
+
 	print result          
 	return result
       
