@@ -13,37 +13,28 @@ from matchmaking.models import Player, Lobby, Roles, Search
 import MumbleWrapper
 import ValveApiWrapper
 
-
-
-@login_required
-def getplayerexp(request):
-      valveapi = ValveApiWrapper.ValveApi()
-      social_auth = request.user.social_auth.get(provider='steam')
-      playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
-      
-      response = {}
-      response['exp'] = str(playerstats['exp'])
-      json_data = json.dumps(response)
-      return HttpResponse(json_data, mimetype="application/json")  
+def getPlayerExp(request):      
+    try:
+      exp = Player.objects.get(nickname=request.user).exp
+    except Player.DoesNotExist:
+      print request.user, 'not found in db'
+      exp = 0
+    return exp
     
-@login_required    
-def getchannelsinfo(request):    
-      mumble = MumbleWrapper.ICLMumble()
-      response = mumble.get_info()
+def getUserAvatarUrl(request):
+  steam_api_key = settings.STEAM_API_KEY
+  social_auth = request.user.social_auth.get(provider='steam')
+  return social_auth.extra_data.get('avatar')    
+    
+    
+    
+#@login_required    
+#def getchannelsinfo(request):    
+      #mumble = MumbleWrapper.ICLMumble()
+      #response = mumble.get_info()
       
-      json_data = json.dumps(response)
-      return HttpResponse(json_data, mimetype="application/json")  
-
-
-
-
-
-
-
-
-
-
-
+      #json_data = json.dumps(response)
+      #return HttpResponse(json_data, mimetype="application/json")  
 
 # Stats for 08/18/2013 
 # 646 taburetka^_^
@@ -58,14 +49,13 @@ def getchannelsinfo(request):
 # 236 ICR.Axe.Heart
 # 145 ICR.MiniSpy v.2.0
 
-def getUserAvatarUrl(request):
-  steam_api_key = settings.STEAM_API_KEY
-  social_auth = request.user.social_auth.get(provider='steam')
-  return social_auth.extra_data.get('avatar')
+
   
 def updateUserInfo(request):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid = social_auth.extra_data.get('steamid')
+  valveapi = ValveApiWrapper.ValveApi()
+  playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
   
   try:
     player = Player.objects.get(uid=steamid)
@@ -75,6 +65,8 @@ def updateUserInfo(request):
   player.uid      = steamid
   player.nickname = str(request.user)
   player.avatar   = social_auth.extra_data.get('avatar')
+  player.exp      = playerstats['exp']
+  
   
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
@@ -85,13 +77,13 @@ def updateUserInfo(request):
   #player.lobby = None
   
   # create roles for user
-  if player.roles == None:
-    roles = Roles()
-    roles.save()
-    player.roles = roles    
+  #if player.roles == None:
+    #roles = Roles()
+    #roles.save()
+    #player.roles = roles    
   
   player.save()
-  print "Player logged in:", player
+  print "Player logged in:", player.nickname, player.exp
 
 
   
