@@ -48,7 +48,7 @@ $.ajax({
 <div class="grid_9">
       {% for channelinfo in mumbleinfo %}
       <div>
-	  <a href="mumble://{{username}}@localhost/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a>
+	  <a href="mumble://{{username}}@icl.dyndns.org/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a>
 	  <ul>
 	      {% for player in channelinfo.userlist %}
 		<li>{{player}}</li>
