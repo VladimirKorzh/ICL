@@ -2,6 +2,16 @@ import Ice
 Ice.loadSlice("/usr/share/slice/Murmur.ice", ['-I'+ Ice.getSliceDir()])
 import Murmur
 
+from itertools import izip_longest
+      
+def grouper(iterable, n, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
+    args = [iter(iterable)] * n
+    return izip_longest(fillvalue=fillvalue, *args)
+      
+      
+      
 class ICLMumble():
   """ Class is used for managing the Mumble server """
   def __init__(self):    
@@ -55,13 +65,14 @@ class ICLMumble():
 
   def get_info(self):
 	result = []
-		
+
 	for chid in self.channels:
-	  channelinfo = {}	  
-	  channelinfo['name']     = self.channels[chid].name
+	  channelinfo = {}	
+	  channelinfo['name']     = self.channels[chid].name	    
 	  channelinfo['userlist'] = []	  
 	  channelinfo['usernum']  = 0
-	  result.append(channelinfo)
+	  if self.channels[chid].name != 'Root':
+	    result.append(channelinfo)
 	  
 	for usid in self.users:
 	  user_channel_id   = self.users[usid].channel
@@ -76,20 +87,14 @@ class ICLMumble():
 	  if each['usernum'] < 5:
 	    while len(each['userlist']) < 5:
 	      each['userlist'].append('.')
-
-	print result          
-	return result
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+	      
+	# split by 4 in a row
+	response = []
+	for each in grouper(result, 3):
+	  response.append(each)
+	  
+	print 'Response',response
+	return response
       
   def createNewChannel(self, parentchannelname, channelname):
     parent = self.getChannelIdFromName(parentchannelname)
