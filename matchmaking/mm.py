@@ -75,19 +75,7 @@ def updateUserInfo(request):
 
   
   
-def get_open_lobbys(data): #TODO
-      # get all lobbys that are not full
-      alllobbies = Lobby.objects.all()
-      data['openlobbys'] = []
-      for lobby_obj in alllobbies:
-	if Player.objects.filter(lobby=lobby_obj).count() < 5:
-	  if lobby_obj.name == "Root": continue
-	  lobbyinfo = {'name':         lobby_obj.name,
-		      'players_count': Player.objects.filter(lobby=lobby_obj).count(),
-		      'players_list':  Player.objects.filter(lobby=lobby_obj).values('nickname')}
-	  data['openlobbys'].append(lobbyinfo)
-	  
-      return data     
+ 
 
       
 def _generate_id(size=6, chars=string.digits):#TODO  

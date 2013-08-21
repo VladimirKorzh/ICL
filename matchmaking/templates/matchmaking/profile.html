@@ -23,52 +23,31 @@ $.ajax({
 </script>    
  
 
-<div id="toppanel">
-    <ul id="nav" class="nav_left">
-	<li><a href="#">    
-<!-- 	      <img src="{{avatar}}"/> -->
-	      <span>{{ username }} <span class="exp" id="exp">?</span></span>    
-	      </a>
-	</li>  
-    </ul>
+<div id="navpanel">
     <h3> International Crab League </h3>    
-    <ul class="nav_right" id="nav">
+    <ul id="navlist">
+	<li><a href="#"><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
 	<li><a href="#">Browse Stacks</a></li>
-	<li><a href="#">Find Stack</a></li>
 	<li><a href="#">Tournaments</a></li>
-	<li><a href="#">Standings</a></li>
+	<li><a href="#">Tables</a></li>
 	<li><a href="/logout">Logout</a></li>
     </div>
     </ul>  
 </div>
 
- 
- 
- 
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-<!--
-<ul>
+
 {% for lobby in openlobbys %}
-    <li><a href="mumble://{{username}}@localhost/{{lobby.name}}?version=1.2.0"> {{ lobby.name }}</a>  [{{ lobby.players_count }}/5]</li>
+<div>
+    <a href="mumble://{{username}}@localhost/{{lobby.name}}?version=1.2.0">{{lobby.name}}</a>[{{lobby.players_count }}/5]
     <ul>
-    {% for player in lobby.players_list %}
-      <li>{{ player.nickname }}</li>
-    {% endfor %} 
+	{% for player in lobby.players_list %}
+	  <li>{{ player.nickname }}</li>
+	{% endfor %} 
     </ul>
+</div>
 {% endfor %}
-</ul>-->
+
 
 
 

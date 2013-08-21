@@ -28,7 +28,10 @@ def profile(request):
 	steam_api_key = settings.STEAM_API_KEY
 	social_auth = request.user.social_auth.get(provider='steam')
 	
-	data = {'username':request.user, 'apikey': steam_api_key, 'steamid':social_auth.extra_data.get('steamid'), 'avatar':mm.getUserAvatarUrl(request)}
+	data = {'username':request.user,
+		'apikey': steam_api_key,
+		'steamid':social_auth.extra_data.get('steamid'),
+		'avatar':mm.getUserAvatarUrl(request)}
 	
 	data = mm.get_open_lobbys(data)
 	
