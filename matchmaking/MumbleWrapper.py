@@ -54,20 +54,26 @@ class ICLMumble():
       return None
 
   def get_info(self):
-	result = {}
-	
-	# fill the structure with lobbies
+	result = []
+		
 	for chid in self.channels:
-	  result[  self.channels[chid].name  ] = []
+	  channelinfo = {}	  
+	  channelinfo['name']     = self.channels[chid].name
+	  channelinfo['userlist'] = []	  
+	  channelinfo['usernum']  = 0
+	  result.append(channelinfo)
 	  
 	for usid in self.users:
 	  user_channel_id   = self.users[usid].channel
 	  user_channel_name = self.getChannelObj(user_channel_id).name
 	  
-	  result[user_channel_name].append(self.users[usid].name)
-		
+	  for each in result:
+	    if each['name'] == user_channel_name:
+	      each['userlist'].append(self.users[usid].name)
+	      each['usernum'] += 1
+
 	print result          
-	
+	return result
       
       
       

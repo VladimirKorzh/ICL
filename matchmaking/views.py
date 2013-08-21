@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from matchmaking.models import Lobby, Player, Search
 
 import mm
+import MumbleWrapper
 import ValveApiWrapper
 
 
@@ -33,7 +34,8 @@ def profile(request):
 		'steamid':social_auth.extra_data.get('steamid'),
 		'avatar':mm.getUserAvatarUrl(request)}
 	
-	data = mm.get_open_lobbys(data)
+	mumble = MumbleWrapper.ICLMumble()
+	data['mumbleinfo'] = mumble.get_info()
 	
 
 	data['exp'] = 123

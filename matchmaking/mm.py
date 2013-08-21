@@ -1,6 +1,4 @@
-import Ice 
-Ice.loadSlice("/usr/share/slice/Murmur.ice", ['-I'+ Ice.getSliceDir()])
-import Murmur
+
 import os, sys, string, random, json
 import urllib2
 import time, datetime, calendar

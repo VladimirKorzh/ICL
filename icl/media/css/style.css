@@ -1,5 +1,6 @@
 body {
-	background: #474747 url('http://icl.dyndns.org/media/images/background1.jpg');
+	background: #474747; 
+/* 	url('http://icl.dyndns.org/media/images/background1.jpg') */
 	background-size: 100%;
 	overflow: visible;
 }
