@@ -13,18 +13,18 @@ h2 {
 }
 
 h3 {
-/* 	display:inline-block;  */
 	padding-top:4px;
 	padding-bottom:4px;
 	padding-left:15px;
 	padding-right:15px;
 	margin:auto;
-/*	width:50%;*/
 	
-	font: 20px Tahoma, Helvetica, Arial, Sans-Serif;
+	
+/* 	font: 12px Tahoma, Helvetica, Arial, Sans-Serif; */
+	font-size: 1.0em;
 	text-align: center;
 	color: #aaa;
-/* 	text-shadow: 0px 2px 3px #555;	 */
+/* 	text-shadow: 0px 1px 2px #555;	 */
 }
 
 img {
@@ -217,3 +217,4 @@ tr:last-child td.last {
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px; /* Saf3-4 */
 }
+
