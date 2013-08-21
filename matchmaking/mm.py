@@ -14,6 +14,37 @@ import MumbleWrapper
 import ValveApiWrapper
 
 
+
+@login_required
+def getplayerexp(request):
+      valveapi = ValveApiWrapper.ValveApi()
+      social_auth = request.user.social_auth.get(provider='steam')
+      playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
+      
+      response = {}
+      response['exp'] = str(playerstats['exp'])
+      json_data = json.dumps(response)
+      return HttpResponse(json_data, mimetype="application/json")  
+    
+@login_required    
+def getchannelsinfo(request):    
+      mumble = MumbleWrapper.ICLMumble()
+      response = mumble.get_info()
+      
+      json_data = json.dumps(response)
+      return HttpResponse(json_data, mimetype="application/json")  
+
+
+
+
+
+
+
+
+
+
+
+
 # Stats for 08/18/2013 
 # 646 taburetka^_^
 # 574 ICR.HoSi
@@ -112,15 +143,5 @@ def getmatch(request):#TODO
     return HttpResponse(json_data, mimetype="application/json")	  
 
     
-@login_required
-def getplayerexp(request):
-      valveapi = ValveApiWrapper.ValveApi()
-      social_auth = request.user.social_auth.get(provider='steam')
-      playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
-      
-      response = {}
-      response['exp'] = str(playerstats['exp'])
-      json_data = json.dumps(response)
-      return HttpResponse(json_data, mimetype="application/json")  
-    
+
     
