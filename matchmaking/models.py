@@ -20,12 +20,17 @@ class Roles(models.Model):
 	  return string
 	  
 class Player(models.Model):
-	uid = models.CharField(max_length=40)
-	nickname = models.CharField(max_length=80)
-	avatar = models.CharField(max_length=120)
-	roles = models.ForeignKey(Roles, null = True, related_name='playerroles')
+	uid      = models.CharField(max_length=40)
+	nickname = models.CharField(max_length=80)	
+	avatar   = models.CharField(max_length=120)
+	
+	exp      = models.PositiveSmallIntegerField(default=0)
+	
+	
+	
 		
 	# TODO lobby = AFK at start
+	roles = models.ForeignKey(Roles, null = True, related_name='playerroles')
 	lobby = models.ForeignKey(Lobby, null = True, related_name='playerlobby')
 	
 	def __unicode__(self):
