@@ -13,20 +13,20 @@ from matchmaking.models import Player, Lobby, Roles, Search
 import MumbleWrapper
 import ValveApiWrapper
 
-@login_required
-def getplayerexp(request):      
-      try:
-	player = Player.objects.get(nickname=request.user)
-      except Player.DoesNotExist:
-	print request.user, 'not found in db'
-	player = None
-	
-      response = {}      
-      if player != None:
-	response['exp'] = player.exp
-	
-      json_data = json.dumps(response)
-      return HttpResponse(json_data, mimetype="application/json")  
+def getPlayerExp(request):      
+    try:
+      exp = Player.objects.get(nickname=request.user).exp
+    except Player.DoesNotExist:
+      print request.user, 'not found in db'
+      exp = 0
+    return exp
+    
+def getUserAvatarUrl(request):
+  steam_api_key = settings.STEAM_API_KEY
+  social_auth = request.user.social_auth.get(provider='steam')
+  return social_auth.extra_data.get('avatar')    
+    
+    
     
 #@login_required    
 #def getchannelsinfo(request):    
@@ -49,10 +49,7 @@ def getplayerexp(request):
 # 236 ICR.Axe.Heart
 # 145 ICR.MiniSpy v.2.0
 
-def getUserAvatarUrl(request):
-  steam_api_key = settings.STEAM_API_KEY
-  social_auth = request.user.social_auth.get(provider='steam')
-  return social_auth.extra_data.get('avatar')
+
   
 def updateUserInfo(request):
   social_auth = request.user.social_auth.get(provider='steam')

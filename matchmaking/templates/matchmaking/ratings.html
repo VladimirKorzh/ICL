@@ -6,7 +6,7 @@
     
 <script type="text/javascript">
 
-$.ajax({
+/*$.ajax({
     type: "GET",
     url: "/matchmaking/getplayerexp",
 
@@ -19,7 +19,7 @@ $.ajax({
     {	   
 	document.getElementById("exp").innerHTML = data.exp;
     }    
-});    
+});   */ 
 
 function timedRefresh(timeoutPeriod){
       setTimeout("location.reload(true);", timeoutPeriod);
@@ -46,7 +46,7 @@ $(function() {
 		  <li><a class="" href="/stacks">Stacks</a></li>   
 		  <li><a class="" href="/ratings">Ratings</a></li>      
 		  <li><a class="" href="/">Tournament</a></li>
-		  <li><a><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
+		  <li><a><span>{{ username }} <span class="exp" id="exp">{{exp}}</span></span></a></li>
 		  <li><a class="" href="/logout">Logout</a></li>
 	      </ul>  
 	</div>

@@ -34,6 +34,7 @@ def stacks(request):
   social_auth = request.user.social_auth.get(provider='steam')
   
   data = {'username':request.user,
+	  'exp':    mm.getPlayerExp(request),
 	  'apikey': steam_api_key,
 	  'steamid':social_auth.extra_data.get('steamid'),
 	  'avatar':mm.getUserAvatarUrl(request)}
@@ -45,7 +46,7 @@ def stacks(request):
 
 @login_required 
 def ratings(request):
-  data = {'username':request.user}
+  data = {'username':request.user,'exp': mm.getPlayerExp(request)}
   
   players = Player.objects.all()
   

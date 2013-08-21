@@ -13,6 +13,6 @@ urlpatterns = patterns('',
     url(r'^ratings$',      views.ratings,    name='ratings'),
     
     # Matchmaking APIs
-    url(r'^matchmaking/getplayerexp',     mm.getplayerexp,  name='getplayerexp'),
+    #url(r'^matchmaking/getplayerexp',     mm.getplayerexp,  name='getplayerexp'),
     #url(r'^matchmaking/getchannelsinfo$', mm.getchannelsinfo,   name='getchannelsinfo')
 )
