@@ -40,14 +40,18 @@ $.ajax({
 //     }    
 // });    
 
+function timedRefresh(timeoutPeriod){
+      setTimeout("location.reload(true);", timeoutPeriod);
+}
 
+  
 $(function() {
-		/* For zebra striping */
-		$("table tr:nth-child(odd)").addClass("odd-row");
-		/* For cell text alignment */
-		$("table td:first-child, table th:first-child").addClass("first");
-		/* For removing the last border */
-		$("table td:last-child, table th:last-child").addClass("last");
+      /* For zebra striping */
+      $("table tr:nth-child(odd)").addClass("odd-row");
+      /* For cell text alignment */
+      $("table td:first-child, table th:first-child").addClass("first");
+      /* For removing the last border */
+      $("table td:last-child, table th:last-child").addClass("last");
 });
 
 </script>    
@@ -68,7 +72,7 @@ $(function() {
 	<div id="channelsinfo" class="grid_12">	
 	    {% for channelinfo in mumbleinfo %}
 		    <table cellspacing="0" style="float: left;">
-			  <tr><th><a onclick="document.location.reload(true);" href="mumble://{{username}}@icl.dyndns.org/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a></th></tr>
+			  <tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a></th></tr>
 			      {% for player in channelinfo.userlist %}
 				<tr><td>{{player}}</tr></td>
 			      {% endfor %} 
