@@ -1,12 +1,12 @@
-import Ice 
-Ice.loadSlice("/usr/share/slice/Murmur.ice", ['-I'+ Ice.getSliceDir()])
-import Murmur
+
 import os, sys, string, random, json
 import urllib2
 import time, datetime, calendar
 
+
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from matchmaking.models import Player, Lobby, Roles, Search
 
@@ -68,21 +68,12 @@ def updateUserInfo(request):
   
   
   
+
+  
+
   
   
-def get_open_lobbys(data): #TODO
-      # get all lobbys that are not full
-      alllobbies = Lobby.objects.all()
-      data['openlobbys'] = []
-      for lobby_obj in alllobbies:
-	if Player.objects.filter(lobby=lobby_obj).count() < 5:
-	  if lobby_obj.name == "Root": continue
-	  lobbyinfo = {'name':         lobby_obj.name,
-		      'players_count': Player.objects.filter(lobby=lobby_obj).count(),
-		      'players_list':  Player.objects.filter(lobby=lobby_obj).values('nickname')}
-	  data['openlobbys'].append(lobbyinfo)
-	  
-      return data     
+ 
 
       
 def _generate_id(size=6, chars=string.digits):#TODO  
@@ -120,6 +111,16 @@ def getmatch(request):#TODO
     json_data = json.dumps(response)
     return HttpResponse(json_data, mimetype="application/json")	  
 
-  
+    
+@login_required
+def getplayerexp(request):
+      valveapi = ValveApiWrapper.ValveApi()
+      social_auth = request.user.social_auth.get(provider='steam')
+      playerstats = valveapi.get_player_exp_from_steamid(social_auth.extra_data.get('steamid'))
+      
+      response = {}
+      response['exp'] = str(playerstats['exp'])
+      json_data = json.dumps(response)
+      return HttpResponse(json_data, mimetype="application/json")  
     
     
