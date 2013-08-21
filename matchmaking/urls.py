@@ -6,8 +6,10 @@ import mm
 
 urlpatterns = patterns('',
     url(r'^$',             views.landing,    name='landing'),
-    url(r'^profile$',      views.profile,    name='logged-in'),
-    url(r'^intro$',        views.intro,      name='intro'),
+    
+    url(r'^intro$',        views.intro,      name='intro'),    
+    url(r'^stacks$',       views.stacks,     name='stacks'),
+    url(r'^ratings$',      views.ratings,    name='ratings'),
     
     # Matchmaking APIs
     url(r'^matchmaking/getplayerexp', mm.getplayerexp,  name='getplayerexp'),

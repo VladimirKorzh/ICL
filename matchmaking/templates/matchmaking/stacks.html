@@ -21,25 +21,6 @@ $.ajax({
     }    
 });    
 
-// $.ajax({
-//     type: "GET",
-//     url: "/matchmaking/getchannelsinfo",
-// 
-//     async: true,  /* If set to non-async, browser shows page as "Loading.." */
-//     cache: false,
-//     timeout: 30000, /* Timeout in ms */
-//     dataType: 'json',
-//     
-//     success: function(data)
-//     {	   
-// 	  for (var i=0;i<data.length;i++)
-// 	  { 
-// 		var div = document.createElement('div');
-// 		document.getElementById("channelsinfo").innerHTML = "";
-// 	  }
-//     }    
-// });    
-
 function timedRefresh(timeoutPeriod){
       setTimeout("location.reload(true);", timeoutPeriod);
 }
@@ -57,20 +38,22 @@ $(function() {
 </script>    
 
 <div class="container_12">
+	
 	<div class="grid_3"><h3>International Crab League</h3></div>
 	<div class="grid_9">
 	      <ul id="vertical-navigation">
-		  <li><a class="" href="/">Stacks</a></li>   
-		  <li><a class="" href="/">Ratings</a></li>      
+		  <li><a class="" href="/stacks">Stacks</a></li>   
+		  <li><a class="" href="/ratings">Ratings</a></li>     
 		  <li><a class="" href="/">Tournament</a></li>
 		  <li><a><span>{{ username }} <span class="exp" id="exp">?</span></span></a></li>
 		  <li><a class="" href="/logout">Logout</a></li>
 	      </ul>  
 	</div>
-	
 	<div class="clear"></div> 
-	
+		
 	{% for mumbleinfo in mumblelists %}
+	    <div id="channelsinfo" class="grid_12"><p>&nbsp;</p></div>	        
+	    <div class="clear"></div> 
 	    {% for channelinfo in mumbleinfo %}
 		{% if channelinfo %}
 		<div id="channelsinfo" class="grid_3 push_3">  
@@ -86,23 +69,6 @@ $(function() {
 	    {% endfor %}
 	    <div class="clear"></div>			    
 	{% endfor %}    
-
-	
-	<div class="clear"></div>
-	
-	<div class="grid_12">
-	
-		  <div id="content">
-
-		      <table cellspacing="0">
-		      <tr><th>Nickname</th><th>Exp</th><th>Rating</th></tr>
-		      <tr><td>Korzh</td><td>502</td><td>0</td></tr>
-		      </table>
-
-		  </div>	
-	
-	</div>
-	
 	<div class="clear"></div>
 <!-- end of container_12 -->
 </div> 
@@ -137,4 +103,25 @@ $(function() {
 
         setTimeout(getmatch, 5000)        
     };
+
+    
+// $.ajax({
+//     type: "GET",
+//     url: "/matchmaking/getchannelsinfo",
+// 
+//     async: true,  /* If set to non-async, browser shows page as "Loading.." */
+//     cache: false,
+//     timeout: 30000, /* Timeout in ms */
+//     dataType: 'json',
+//     
+//     success: function(data)
+//     {	   
+// 	  for (var i=0;i<data.length;i++)
+// 	  { 
+// 		var div = document.createElement('div');
+// 		document.getElementById("channelsinfo").innerHTML = "";
+// 	  }
+//     }    
+// });    
+    
 </script>  -->  
