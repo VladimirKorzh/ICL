@@ -60,7 +60,6 @@ def updateUserInfo(request):
     player.avatar   = social_auth.extra_data.get('avatar')
     player.exp      = playerstats['exp']
   
-  
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
   #except Lobby.DoesNotExist:

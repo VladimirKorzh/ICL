@@ -1,52 +1,50 @@
 
 {% include 'header.html' %}
 
-
 <div id="container" class="container_12">
 
-      <div class="grid_3">  
-	    <p>ICL</p>
-      </div>
-
-      <div class="grid_9">
-	    <p>Website Pages List</p>
-      </div>  
-
-      <div class="grid_12">  
-	    <p>Custom Status Message</p>
-      </div>      
-            
-      <div class="grid_9">
+      {% include 'navigation.html' %}
       
-	    <div class="grid_3 alpha">  
-		  <p>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br></p>
-	    </div>	    
-	    <div class="grid_3">  
-		  <p>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br></p>
-	    </div>	
-	    <div class="grid_3 omega">  
-		  <p>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br>Stack<br></p>
-	    </div>		    
+      <div class="grid_9">            
+      {% for mumbleinfo in mumblelists %}               
+      
+	    {% if mumbleinfo.0 %}
+	      <div class="grid_3 alpha">  
+		  <table cellspacing="0">
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.0.name}}?version=1.2.0">{{mumbleinfo.0.name}}: {{mumbleinfo.0.usernum}}</a></th></tr>
+			    {% for player in mumbleinfo.0.userlist %}
+				  <tr><td>{{player}}</tr></td>
+			    {% endfor %} 
+		  </table>
+	      </div>
+	    {% endif %}
 	    
-      </div>
-      
-      <div class="grid_3">  
-	    <p>Actions Menu</p>
-      </div>      
+	    {% if mumbleinfo.1 %}
+	      <div class="grid_3">  
+		  <table cellspacing="0">
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.1.name}}?version=1.2.0">{{mumbleinfo.1.name}}: {{mumbleinfo.1.usernum}}</a></th></tr>
+			    {% for player in mumbleinfo.1.userlist %}
+			      <tr><td>{{player}}</tr></td>
+			    {% endfor %} 
+		  </table>
+	      </div>	
+	    {% endif %}
+	    
+	    {% if mumbleinfo.2 %}
+	      <div class="grid_3 omega">  
+		  <table cellspacing="0">
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.2.name}}?version=1.2.0">{{mumbleinfo.2.name}}: {{mumbleinfo.1.usernum}}</a></th></tr>
+			    {% for player in mumbleinfo.2.userlist %}
+			      <tr><td>{{player}}</tr></td>
+			    {% endfor %} 
+		  </table>
+	      </div>		    
+	    {% endif %}	    
+	    <div class="clear"></div>
+	    <div class="grid_9">&nbsp;</div>
+	    <div class="clear"></div>
+      {% endfor %}
+
 </div> <!-- end of container_12 -->
 
 
-
-<!--
-			{% for mumbleinfo in mumblelists %}
-				  {% for channelinfo in mumbleinfo %}
-					    {% if channelinfo %}
-<table cellspacing="0" style="float: left;">
-      <tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{channelinfo.name}}?version=1.2.0">{{channelinfo.name}} {{channelinfo.usernum}}/5</a></th></tr>
-	  {% for player in channelinfo.userlist %}
-	    <tr><td>{{player}}</tr></td>
-	  {% endfor %} 
-					    {% endif %}  
-				  {% endfor %}
-			{% endfor %}	  
-</table>  -->
