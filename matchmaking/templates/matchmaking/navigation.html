@@ -6,9 +6,11 @@
 		  <li><a class="" href="/stacks">Stacks</a></li>   
 		  <li><a class="" href="/ratings">Ratings</a></li>      
 		  <li><a class="" href="/">Tournament</a></li>
-		  <li><a><span>{{username}} <span class="exp" id="exp">{{exp}}</span></span></a></li>
+		  <li><a onclick="JavaScript:recalculateexp(); return false;" href="">{{username}}<span class="exp" id="exp">{{exp}}</span></a></li>
 		  <li><a class="" href="/logout">Logout</a></li>
 	      </ul>  
 	</div>
+    <div class="clear"></div> 
+    <div id="loading" class="grid_6 push_3" style="display: none;"><p>Please wait while we recalculate your experience.</p></div>
     <div class="clear"></div> 
 <!-- END OF HEADER NAVIGATION PANEL -->

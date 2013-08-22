@@ -26,11 +26,20 @@ def getPlayerExp(request):
 def recalculateexp(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid    = social_auth.extra_data.get('steamid')    
-    valveapi = ValveApiWrapper.ValveApi()    
+    valveapi = ValveApiWrapper.ValveApi()        
+    playerstats = valveapi.get_player_exp_from_steamid(steamid)
     
-    response = valveapi.get_player_exp_from_steamid(steamid)['exp']
-  
+    response = {'exp':playerstats['exp']}
     json_data = json.dumps(response)
+    
+    try:
+      player_obj = Player.objects.get(nickname=request.user)
+    except Player.DoesNotExist: 
+      print 'recalculateexp player does not exist'
+    
+    player_obj.exp = response['exp']
+    player_obj.save()
+    
     return HttpResponse(json_data, mimetype="application/json") 
 
 @login_required    
