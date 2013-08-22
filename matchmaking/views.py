@@ -50,10 +50,16 @@ def ratings(request):
   players = Player.objects.all()  
   data['playerslist'] = []
   for each_player in players:
-    data['playerslist'].append({ 'nickname': each_player.nickname,
-				 'uid':      each_player.uid,
-				 'exp':     each_player.exp,
+    data['playerslist'].append({'nickname': each_player.nickname,
+				 'uid':       each_player.uid,
+				 'exp':       each_player.exp,
 				 'last_seen': each_player.last_seen
 				})
-  
+		    
+  data['playerslist'] = sorted(data['playerslist'], key=lambda pl:pl['exp'], reverse=True)
+  n = 1
+  for each in data['playerslist']:
+    each['position'] = n
+    n+=1
+    
   return render(request, 'matchmaking/ratings.html', data)
