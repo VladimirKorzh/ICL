@@ -70,7 +70,6 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
-# TODO ASYNCHRONOUS CALL OF THIS FUNCTION FROM WEBSITE
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
     amount_of_games[1] = 0
@@ -115,7 +114,6 @@ class ValveApi():
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
-    print playerstats
-
+    print 'get_player_exp_from_steamid', playerstats
     return playerstats
             
