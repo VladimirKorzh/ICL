@@ -17,8 +17,9 @@ def getPlayerExp(request):
     try:
       exp = Player.objects.get(nickname=request.user).exp
     except Player.DoesNotExist:
-      print request.user, 'not found in db'
-      exp = 0
+      print request.user, 'not found in db'      
+      updateUserInfo(request)
+      return getPlayerExp(request)
     return exp
 
 @login_required
