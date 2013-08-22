@@ -11,7 +11,7 @@
 	    {% if mumbleinfo.0 %}
 	      <div class="grid_3 alpha">  
 		  <table cellspacing="0">
-			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.0.name}}?version=1.2.0">{{mumbleinfo.0.name}}: {{mumbleinfo.0.usernum}}</a></th></tr>
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.0.name}}?version=1.2.0">{{mumbleinfo.0.name}} {{mumbleinfo.0.usernum}}</a></th></tr>
 			    {% for player in mumbleinfo.0.userlist %}
 				  <tr><td>{{player}}</tr></td>
 			    {% endfor %} 
@@ -22,7 +22,7 @@
 	    {% if mumbleinfo.1 %}
 	      <div class="grid_3">  
 		  <table cellspacing="0">
-			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.1.name}}?version=1.2.0">{{mumbleinfo.1.name}}: {{mumbleinfo.1.usernum}}</a></th></tr>
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.1.name}}?version=1.2.0">{{mumbleinfo.1.name}} {{mumbleinfo.1.usernum}}</a></th></tr>
 			    {% for player in mumbleinfo.1.userlist %}
 			      <tr><td>{{player}}</tr></td>
 			    {% endfor %} 
@@ -33,7 +33,7 @@
 	    {% if mumbleinfo.2 %}
 	      <div class="grid_3 omega">  
 		  <table cellspacing="0">
-			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.2.name}}?version=1.2.0">{{mumbleinfo.2.name}}: {{mumbleinfo.1.usernum}}</a></th></tr>
+			<tr><th><a onclick="timedRefresh(1000); return true;" href="mumble://{{username}}@icl.dyndns.org/{{mumbleinfo.2.name}}?version=1.2.0">{{mumbleinfo.2.name}} {{mumbleinfo.1.usernum}}</a></th></tr>
 			    {% for player in mumbleinfo.2.userlist %}
 			      <tr><td>{{player}}</tr></td>
 			    {% endfor %} 

@@ -25,9 +25,9 @@ class Lobby(models.Model):
 	
 	def __unicode__(self):
 	    return u"%s" % (self.name)
-
-		
-class ValveApiCounts(models.Models):
+	    
+	    
+class ValveApiCounts(models.Model):
 	date    = models.DateField()
 	amount  = models.PositiveIntegerField()
 			

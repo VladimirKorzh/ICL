@@ -69,7 +69,6 @@ class ICLMumble():
 	  channelinfo = {}	
 	  channelinfo['name']     = self.channels[chid].name	    
 	  channelinfo['userlist'] = []	  
-	  channelinfo['usernum']  = 0
 	  if self.channels[chid].name != 'Root':
 	    result.append(channelinfo)
 	  
@@ -80,10 +79,8 @@ class ICLMumble():
 	  for each in result:
 	    if each['name'] == user_channel_name:
 	      each['userlist'].append(self.users[usid].name)
-	      each['usernum'] += 1
 
 	for each in result:    
-	  if each['usernum'] < 5:
 	    while len(each['userlist']) < 5:
 	      each['userlist'].append('.')
 	      
