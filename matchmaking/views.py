@@ -20,12 +20,12 @@ def landing(request):
   else:
       return redirect('/stacks')
 
-def intro(request):		
+def intro(request):
   return render(request, 'matchmaking/intro.html')  
-
-@login_required
+  
+@login_required  
 def login(request):
-  mm.updateUserInfo(request)
+  mm.updateUserInfo(request) 
   return redirect('/stacks')
   
 @login_required
@@ -41,6 +41,8 @@ def stacks(request):
   
   mumble = MumbleWrapper.ICLMumble()
   data['mumblelists'] = mumble.get_info()	
+  
+  
   
   return render(request, 'matchmaking/stacks.html', data)
 

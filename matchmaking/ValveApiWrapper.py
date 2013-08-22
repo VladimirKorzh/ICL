@@ -13,8 +13,9 @@ class ValveApi():
     self.AllowNewQueries = True
     
     self.CacheFile = 'valve_api_cache.json'
-    self.apikey = settings.STEAM_API_KEY
-    self.apiurls = {}
+    self.apikey    = 'key=' + settings.STEAM_API_KEY
+    print self.apikey
+    self.apiurls   = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
     #self.loadCache()    
@@ -55,6 +56,7 @@ class ValveApi():
       response = None
       if self.AllowNewQueries:
 	#print 'Response NOT found in cache', cachekey
+	print 'Api request', finalurl
 	response = json.load(urllib2.urlopen(finalurl))
 	self.newcache[cachekey] = response
 	time.sleep(1)	        
