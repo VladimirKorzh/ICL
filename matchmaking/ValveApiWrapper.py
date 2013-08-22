@@ -6,36 +6,15 @@ import json, urllib2
 # used to load the steam API key 
 from django.conf import settings
 
+from matchmaking.models import ValveApiCounts
+
 class ValveApi():
   def __init__(self):
-    self.cache = {}
-    self.newcache = {}
-    self.AllowNewQueries = True
-    
-    self.CacheFile = 'valve_api_cache.json'
     self.apikey    = 'key=' + settings.STEAM_API_KEY
-    print self.apikey
     self.apiurls   = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
-    #self.loadCache()    
     
-  def writeCache(self):
-    if len(self.newcache) > 0:
-      with open(self.CacheFile, 'w') as output:
-	  #print 'Writing cache'
-	  json.dump(self.newcache, output)
-	
-
-  def loadCache(self):
-    #print os.path.join(os.getcwd(),self.CacheFile)
-    if os.path.exists(os.path.join(os.getcwd(),self.CacheFile)):
-      with open(self.CacheFile, 'r') as input:
-	  #print 'Loading cache'
-	  self.cache = json.load(input)
-    else:
-      self.cache = {}
-      
   def query_api(self, api2query, conditions):
     apiurl =  api2query       
     finalurl = apiurl+self.apikey+conditions    
@@ -44,22 +23,25 @@ class ValveApi():
     
     if '&date_min=' in cachekey:
       cachekey = cachekey[:-len('date_min=1374442863')]
-    
-    #print cachekey
-    #print "query:", finalurl
-    
-    # check if we have that query in cache
-    if cachekey in self.cache.keys():
-      #print 'Response found in cache', cachekey
-      response = self.cache[cachekey]
-    else:  
-      response = None
-      if self.AllowNewQueries:
-	#print 'Response NOT found in cache', cachekey
-	print 'Api request', finalurl
-	response = json.load(urllib2.urlopen(finalurl))
-	self.newcache[cachekey] = response
-	time.sleep(1)	        
+
+    response = None
+
+    try:
+      obj = ValveApiCounts.objects.get(date=datetime.date.today())
+    except ValveApiCounts.DoesNotExist:
+      obj = ValveApiCounts()
+      obj.date = datetime.date.today()
+      obj.amount = 0
+      
+      if obj.amount < 100000:
+	print 'Api request', finalurl    	
+	response = json.load(urllib2.urlopen(finalurl))      
+	obj.amount = 1
+      else:
+	print 'Amount of requests per day has been exceeded.'
+      
+    obj.save()
+    time.sleep(1)	            
     return response
 
   def get_player_name_from_steamid(self, userid):
