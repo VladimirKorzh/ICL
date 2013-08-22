@@ -11,7 +11,6 @@ def grouper(iterable, n, fillvalue=None):
     return izip_longest(fillvalue=fillvalue, *args)
       
       
-      
 class ICLMumble():
   """ Class is used for managing the Mumble server """
   def __init__(self):    

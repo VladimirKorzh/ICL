@@ -37,7 +37,9 @@ def stacks(request):
   
   mumble              = MumbleWrapper.ICLMumble()
   data['mumblelists'] = mumble.get_info()	
-    
+  
+  mumble = None
+  
   return render(request, 'matchmaking/stacks.html', data)
 
 @login_required 

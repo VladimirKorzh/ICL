@@ -27,10 +27,6 @@ h3 {
 /* 	text-shadow: 0px 1px 2px #555;	 */
 }
 
-img {
-	vertical-align:middle;
-}
-
 .exp {
 	vertical-align:middle;
 	background: #bbb;
@@ -41,6 +37,16 @@ img {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 }
+
+
+
+
+
+
+
+
+
+
 
 /* Vertical Navigation */
 #vertical-navigation { 
@@ -78,7 +84,7 @@ of parent items when mouse hover
 }
 
 /* 
-Applie to group of Child Items
+Apply to group of Child Items
 Each Child Item will be invisible by default
 */
 #vertical-navigation ul {display: none;}
@@ -143,17 +149,16 @@ link of each child item
 	
 /*
 Pretty Table Styling
-CSS Tricks also has a nice writeup: http://css-tricks.com/feature-table-design/
 */
 
-#content {width:100%; margin:6% auto 0;}
-	
 table {
 	overflow:hidden;
 	border:1px solid #d3d3d3;
 	background:#fefefe;
+	
 /* 	width:100%; */
-	margin: auto 0;
+
+	margin: 0;
 	-moz-border-radius:5px; /* FF1+ */
 	-webkit-border-radius:5px; /* Saf3-4 */
 	border-radius:5px;
@@ -161,7 +166,7 @@ table {
 	-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 	
-th, td {padding:0px 28px 0px; text-align:center; }
+th, td {padding:0px 14px 0px; text-align:center; }
 
 th {padding-top:4px; text-shadow: 1px 1px 1px #fff; background:#e8eaeb;}
 	
