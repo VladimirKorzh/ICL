@@ -13,6 +13,9 @@ from matchmaking.models import Player, Lobby, Roles, Search
 import MumbleWrapper
 import ValveApiWrapper
 
+
+# used as a way to get whatever is stored in db
+# for that user. may return old value
 @login_required
 def getPlayerExp(request):      
     try:
@@ -20,13 +23,16 @@ def getPlayerExp(request):
     except Player.DoesNotExist:
       print request.user, 'not found in db'
       updateUserInfo(request)
-      return getPlayerExp(request)
+      exp = 0
+      
     return exp
 
 @login_required
 def recalculateexp(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid    = social_auth.extra_data.get('steamid')    
+    
+    
     valveapi = ValveApiWrapper.ValveApi()        
     playerstats = valveapi.get_player_exp_from_steamid(steamid)
     
@@ -36,7 +42,7 @@ def recalculateexp(request):
     try:
       player_obj = Player.objects.get(nickname=request.user)
     except Player.DoesNotExist: 
-      print 'recalculateexp player does not exist'
+      print 'recalculateexp player does not exist'      
     
     player_obj.exp = response['exp']
     player_obj.save()
@@ -48,8 +54,8 @@ def updateUserInfo(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid    = social_auth.extra_data.get('steamid')
     
-    valveapi   = ValveApiWrapper.ValveApi()
-    playerstats = valveapi.get_player_exp_from_steamid(steamid)
+    #valveapi   = ValveApiWrapper.ValveApi()
+    #playerstats = valveapi.get_player_exp_from_steamid(steamid)
     
     try:
       player = Player.objects.get(uid=steamid)
@@ -59,7 +65,7 @@ def updateUserInfo(request):
     player.uid      = steamid
     player.nickname = str(request.user)
     player.avatar   = social_auth.extra_data.get('avatar')
-    player.exp      = playerstats['exp']
+    #player.exp      = playerstats['exp']
     
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
