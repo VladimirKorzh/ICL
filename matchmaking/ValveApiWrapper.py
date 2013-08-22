@@ -3,6 +3,9 @@ import os
 import time, datetime, calendar
 import json, urllib2
 
+# used to load the steam API key 
+from django.conf import settings
+
 class ValveApi():
   def __init__(self):
     self.cache = {}
@@ -10,8 +13,9 @@ class ValveApi():
     self.AllowNewQueries = True
     
     self.CacheFile = 'valve_api_cache.json'
-    self.apikey = 'key=121A1CB1B99D9FA5C69DA2377E8B407F'    
-    self.apiurls = {}
+    self.apikey    = 'key=' + settings.STEAM_API_KEY
+    print self.apikey
+    self.apiurls   = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
     #self.loadCache()    
@@ -52,6 +56,7 @@ class ValveApi():
       response = None
       if self.AllowNewQueries:
 	#print 'Response NOT found in cache', cachekey
+	print 'Api request', finalurl
 	response = json.load(urllib2.urlopen(finalurl))
 	self.newcache[cachekey] = response
 	time.sleep(1)	        
@@ -65,7 +70,6 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
-# TODO ASYNCHRONOUS CALL OF THIS FUNCTION FROM WEBSITE
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
     amount_of_games[1] = 0
@@ -110,7 +114,6 @@ class ValveApi():
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
-    print playerstats
-
+    print 'get_player_exp_from_steamid', playerstats
     return playerstats
             
