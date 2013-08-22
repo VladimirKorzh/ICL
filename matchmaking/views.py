@@ -20,42 +20,37 @@ def landing(request):
   else:
       return redirect('/stacks')
 
-def intro(request):		
+def intro(request):
   return render(request, 'matchmaking/intro.html')  
-
-@login_required
+  
+@login_required  
 def login(request):
-  mm.updateUserInfo(request)
+  mm.updateUserInfo(request) 
   return redirect('/stacks')
   
 @login_required
 def stacks(request):
-  steam_api_key = settings.STEAM_API_KEY
-  social_auth = request.user.social_auth.get(provider='steam')
+  social_auth   = request.user.social_auth.get(provider='steam')
   
   data = {'username':request.user,
-	  'exp':    mm.getPlayerExp(request),
-	  'apikey': steam_api_key,
-	  'steamid':social_auth.extra_data.get('steamid'),
-	  'avatar':mm.getUserAvatarUrl(request)}
+	  'exp':     mm.getPlayerExp(request)}
   
-  mumble = MumbleWrapper.ICLMumble()
+  mumble              = MumbleWrapper.ICLMumble()
   data['mumblelists'] = mumble.get_info()	
-  
+    
   return render(request, 'matchmaking/stacks.html', data)
 
 @login_required 
 def ratings(request):
-  data = {'username':request.user,'exp': mm.getPlayerExp(request)}
+  data = {'username':request.user,
+          'exp': mm.getPlayerExp(request)}
   
-  players = Player.objects.all()
-  
+  players = Player.objects.all()  
   data['playerslist'] = []
   for each_player in players:
-    data['playerslist'].append( {'nickname': each_player.nickname,
+    data['playerslist'].append({ 'nickname': each_player.nickname,
 				 'uid':      each_player.uid,
-				 #'avatar':   each_player.avatar,
-				  'exp':     each_player.exp
+				 'exp':     each_player.exp
 				})
   
   return render(request, 'matchmaking/ratings.html', data)

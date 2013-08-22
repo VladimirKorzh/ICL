@@ -93,7 +93,7 @@ class ICLMumble():
 	for each in grouper(result, 3):
 	  response.append(each)
 	  
-	print 'Response',response
+	#print 'Response',response
 	return response
       
   def createNewChannel(self, parentchannelname, channelname):
