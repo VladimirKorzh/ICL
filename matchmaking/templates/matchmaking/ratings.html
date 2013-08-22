@@ -38,30 +38,17 @@ $(function() {
 </script>    
 
 <div class="container_12">
-
-<!-- 	HEADER -->
-	<div class="grid_3"><h3>International Crab League</h3></div>
-	<div class="grid_9">
-	      <ul id="vertical-navigation">
-		  <li><a class="" href="/stacks">Stacks</a></li>   
-		  <li><a class="" href="/ratings">Ratings</a></li>      
-		  <li><a class="" href="/">Tournament</a></li>
-		  <li><a><span>{{ username }} <span class="exp" id="exp">{{exp}}</span></span></a></li>
-		  <li><a class="" href="/logout">Logout</a></li>
-	      </ul>  
-	</div>
-	<div class="clear"></div> 
-<!-- 	END HEADER -->
-
-
-	<div class="grid_6 push_3">
-	    
+	{% include 'navigation.html' %}
+	
+	<div class="grid_6 push_3">	    
 	    <div id="content">
 		<h3>Statistics for the past month</h3>  
 		<table cellspacing="0">
 		<tr><th>Nickname</th><th>Exp</th><th>Link</th></tr>
 		{% for player in playerslist %}
-		    <tr><td> {{player.nickname}}</td><td>{{player.exp}}</td><td>{{player.uid}}</td></tr>
+		    <tr><td> {{player.nickname}}</td>
+		    <td>{{player.exp}}</td>
+		    <td><a href="http://steamcommunity.com/profiles/{{player.uid}}">profile</a></td></tr>
 		{% endfor %}		
 		</table>
 	    </div>	

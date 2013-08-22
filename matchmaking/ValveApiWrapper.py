@@ -3,6 +3,9 @@ import os
 import time, datetime, calendar
 import json, urllib2
 
+# used to load the steam API key 
+from django.conf import settings
+
 class ValveApi():
   def __init__(self):
     self.cache = {}
@@ -10,7 +13,7 @@ class ValveApi():
     self.AllowNewQueries = True
     
     self.CacheFile = 'valve_api_cache.json'
-    self.apikey = 'key=121A1CB1B99D9FA5C69DA2377E8B407F'    
+    self.apikey = settings.STEAM_API_KEY
     self.apiurls = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
