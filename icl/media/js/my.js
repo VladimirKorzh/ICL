@@ -2,10 +2,13 @@
 
 $( document ).ajaxStart(function() {
     $( "#loading" ).show(500);
+    $( "#placeholder" ).hide(500);
+    
 });
 
 $( document ).ajaxStop(function() {
     $( "#loading" ).hide(500);
+    $( "#placeholder" ).show(500);
 });
 
 

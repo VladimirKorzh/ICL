@@ -1,8 +1,8 @@
 
+
 import os, sys, string, random, json
 import urllib2
 import time, datetime, calendar
-
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -19,7 +19,8 @@ def getPlayerExp(request):
       exp = Player.objects.get(nickname=request.user).exp
     except Player.DoesNotExist:
       print request.user, 'not found in db'
-      exp = 0
+      updateUserInfo(request)
+      return getPlayerExp(request)
     return exp
 
 @login_required
@@ -59,8 +60,7 @@ def updateUserInfo(request):
     player.nickname = str(request.user)
     player.avatar   = social_auth.extra_data.get('avatar')
     player.exp      = playerstats['exp']
-  
-  
+    
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
   #except Lobby.DoesNotExist:
