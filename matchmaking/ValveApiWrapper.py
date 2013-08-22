@@ -33,12 +33,12 @@ class ValveApi():
       obj.date = datetime.date.today()
       obj.amount = 0
       
-      if obj.amount < 100000:
-	print 'Api request', finalurl    	
-	response = json.load(urllib2.urlopen(finalurl))      
-	obj.amount = 1
-      else:
-	print 'Amount of requests per day has been exceeded.'
+    if obj.amount < 100000:
+      print 'Api request', finalurl    	
+      response = json.load(urllib2.urlopen(finalurl))      
+      obj.amount = 1
+    else:
+      print 'Amount of requests per day has been exceeded.'
       
     obj.save()
     time.sleep(1)	            
@@ -96,6 +96,6 @@ class ValveApi():
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
-    #print 'get_player_exp_from_steamid', playerstats
+    print 'get_player_exp_from_steamid', playerstats
     return playerstats
             
