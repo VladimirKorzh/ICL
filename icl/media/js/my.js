@@ -21,7 +21,7 @@ function recalculateexp(){
 
 	    async: true,    /* If set to non-async, browser shows page as "Loading.." */
 	    cache: false,
-	    timeout: 30000, /* Timeout in ms */
+	    timeout: 90000, /* Timeout in ms */
 	    dataType: 'json',
 	    
 	    success: function(data)
