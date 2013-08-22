@@ -52,7 +52,8 @@ def ratings(request):
   for each_player in players:
     data['playerslist'].append({ 'nickname': each_player.nickname,
 				 'uid':      each_player.uid,
-				 'exp':     each_player.exp
+				 'exp':     each_player.exp,
+				 'last_seen': each_player.last_seen
 				})
   
   return render(request, 'matchmaking/ratings.html', data)

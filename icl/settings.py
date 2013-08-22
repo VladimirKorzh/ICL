@@ -134,7 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'matchmaking',
-    'social_auth'
+    'social_auth',
 )
 
 ####################################################################

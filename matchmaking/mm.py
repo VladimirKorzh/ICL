@@ -3,7 +3,6 @@ import os, sys, string, random, json
 import urllib2
 import time, datetime, calendar
 
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -59,7 +58,7 @@ def updateUserInfo(request):
     player.nickname = str(request.user)
     player.avatar   = social_auth.extra_data.get('avatar')
     player.exp      = playerstats['exp']
-  
+    
   #try:
     #afklobby = Lobby.objects.get(name='AFK')     
   #except Lobby.DoesNotExist:

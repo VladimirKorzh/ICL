@@ -25,7 +25,7 @@ class Player(models.Model):
 	avatar   = models.CharField(max_length=120)
 	
 	exp      = models.PositiveSmallIntegerField(default=0)
-	
+	last_seen= models.DateField(auto_now=True)
 	
 	
 		
