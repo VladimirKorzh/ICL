@@ -25,7 +25,7 @@ def intro(request):
   
 @login_required  
 def login(request):
-  mm.updateUserInfo(request) 
+  mm.updateUserInfo(request)
   return redirect('/stacks')
   
 @login_required
