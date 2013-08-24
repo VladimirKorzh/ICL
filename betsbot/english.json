@@ -6,11 +6,13 @@
   },
 
   "ERRORS" : {
-    "err_not_admin" : "You are not an admin!"
+    "err_not_admin" : "You are not an admin!",
+    "test"          : "test"
   },
 
   "CMDS" : {
-    "bet"  : "bet"
+    "bet"  : "bet",
+    "test" : "test"
   },
 
   "BET_RESPONSES" : {
@@ -18,11 +20,17 @@
     "bet_found" : "Bet is found in database. Press Ready to confirm.",
     "bet_id_not_provided" : "You forgot to tell me what are you betting on.",
     "bet_not_closed" : "You cannot bet items yet. The bet is not closed.",
-    "bet_status_valid" : "Bet is valid. Accepted."
+    "bet_status_valid" : "Bet is valid. Accepted.",
+    "bet_invalid_itemcount": "The amount of items placed{itemcount} does NOT match the amount of the bet{bet_itemcount}.",
+    "bet_corrent_item_added": "{itemrarity} item {itemname} is accepted.",
+    "bet_corrent_item_removed": "{itemrarity} item {itemname} was accepted, but removed by you.",
+    "bet_incorrect_item_added": "!!! {itemrarity} item {itemname} is NOT accepted !!! Please remove this item, it will count as a donation otherwise.",
+    "bet_items_left": "{itemsleft} {itemrarity} items left to add."
   },
 
   "ADMIN" : {
     "quit" : "Okay, quitting...",
+    "test" : "test"
   },
 
   "random_responses" : [
@@ -33,5 +41,5 @@
     "Sure.....what?",
     "Not a clue what you want.",
     "WAT."
-  ],
+  ]
 }
