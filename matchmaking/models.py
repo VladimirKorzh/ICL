@@ -9,12 +9,12 @@ class Player(models.Model):
 	last_seen= models.DateTimeField(auto_now=True)		
 	
 	def __unicode__(self):
-	    string = '\nUid: '+str(self.uid)+'\nNickname: '+str(self.nickname)+'\nAvatar: '+str(self.avatar)
-	    if self.roles:
-	      string += '\nRoles: '+self.roles.__unicode__()
+	    string = '\nUid: '+str(self.uid)+'\nNickname: '+str(self.nickname)
 	    return string
 
 	    
+	    
+# table used by betsbot 
 class Bets(models.Model):
       RESULT_CHOICES = (
 		(u'A', u'Side A won'),
@@ -34,7 +34,8 @@ class Bets(models.Model):
       amount      = models.PositiveSmallIntegerField(default=1)
       result      = models.CharField(max_length=2, choices=RESULT_CHOICES)
       status      = models.CharField(max_length=2, choices=STATUS_CHOICES)
-	    
+
+# table used by betsbot 
 class Betters(models.Model):
       SIDE_CHOICES = (
 	      (u'A', 'Side A'),

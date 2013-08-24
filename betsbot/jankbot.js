@@ -77,13 +77,17 @@ bot.on('sentry', function(sentry) {
 });
 
 bot.on('tradeProposed', function(tradeID, otherClient) {
-  console.log('tradeProposed');
+  console.log('tradeProposed ');
   bot.respondToTrade(tradeID, true);
 });
 
 bot.on('sessionStart', function(otherClient) {
   client = otherClient;
-  console.log('trading with' + bot.users[client].playerName);
+  betid  = 0;
+  itemcount = 0;
+  items_added = []
+    
+  console.log('trading with ' + bot.users[client].playerName);
   steamTrade.open(otherClient);
   steamTrade.loadInventory(570, 2, function(inv) {
     inventory = inv;
@@ -92,7 +96,17 @@ bot.on('sessionStart', function(otherClient) {
 
 steamTrade.on('offerChanged', function(added, item) {
   console.log('they ' + (added ? 'added ' : 'removed ') + item.name);
-  //console.log(item);
+  itemtags = item.tags;
+  items_added.push(item);
+  itemtags.forEach(function(tag){  
+    if (tag.category_name == 'Rarity') {
+	console.log('Rarity:' + tag.name);
+    }
+    
+    if (tag.category_name == 'Type'){
+      console.log('Type:' + tag.internal_name);
+    }    
+  });  
 });
 
 steamTrade.on('ready', function() {
@@ -103,7 +117,10 @@ steamTrade.on('ready', function() {
   });
 });
 
-steamTrade.on('end', function(result) {console.log('trade', result);});
+steamTrade.on('end', function(result) {
+  console.log('trade', result);
+  console.log('items_added',items_added);
+});
 
 // Respond to messages.
 bot.on('message', function(source, message, type, chatter) {
