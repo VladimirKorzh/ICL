@@ -6,13 +6,7 @@ class Player(models.Model):
 	avatar   = models.CharField(max_length=120)
 	
 	exp      = models.PositiveSmallIntegerField(default=0)
-	last_seen= models.DateTimeField(auto_now=True)
-	
-	
-	## TODO lobby = AFK at start
-	#roles = models.ForeignKey(Roles, null = True, related_name='playerroles')
-	#lobby = models.ForeignKey(Lobby, null = True, related_name='playerlobby')
-	
+	last_seen= models.DateTimeField(auto_now=True)		
 	
 	def __unicode__(self):
 	    string = '\nUid: '+str(self.uid)+'\nNickname: '+str(self.nickname)+'\nAvatar: '+str(self.avatar)
@@ -20,11 +14,42 @@ class Player(models.Model):
 	      string += '\nRoles: '+self.roles.__unicode__()
 	    return string
 
-class Lobby(models.Model):
-	name = models.CharField(max_length=20)		
-	
-	def __unicode__(self):
-	    return u"%s" % (self.name)
+	    
+class Bets(models.Model):
+      RESULT_CHOICES = (
+		(u'A', u'Side A won'),
+		(u'B', u'Side B won'),
+		(u'N', u'Not decided'),
+      )
+      
+      STATUS_CHOICES = (
+		(u'O', u'Open'),
+		(u'C', u'Closed. Collecting items'),
+		(u'P', u'In progress'),
+		(u'D', u'Decided'),
+		(u'R', u'Revoked'),
+      )
+  
+      item_rarity = models.CharField(max_length=20) 
+      amount      = models.PositiveSmallIntegerField(default=1)
+      result      = models.CharField(max_length=2, choices=RESULT_CHOICES)
+      status      = models.CharField(max_length=2, choices=STATUS_CHOICES)
+	    
+class Betters(models.Model):
+      SIDE_CHOICES = (
+	      (u'A', 'Side A'),
+	      (u'B', 'Side B'),
+      )
+      STATUS_CHOICES = (
+	      (u'P', u'Awaiting collection'),
+	      (u'S', u'Submitted items'),
+      )
+      side    = models.CharField(max_length=2, choices=SIDE_CHOICES)      
+      status  = models.CharField(max_length=2, choices=STATUS_CHOICES)
+      
+      player  = models.ForeignKey(Player)
+      bet     = models.ForeignKey(Bets)
+	    
 	    
 	    
 class ValveApiCounts(models.Model):
@@ -34,7 +59,10 @@ class ValveApiCounts(models.Model):
 	def __unicode__(self):
 	    return u"%s %s" % (self.date, str(self.amount))
 		
-
+		
+		
+		
+		
 		
 		
 		
@@ -47,13 +75,5 @@ class Roles(models.Model):
 	
 	def __unicode__(self):
 	  string = '\n<Roles>\n1:'+str(self.carry)+'\n2:'+str(self.solomid)+'\n3:'+str(self.offlane)+'\n4:'+str(self.utility)+'\n5:'+str(self.support)
-	  return string
-	  
-	  
-class Search(models.Model):
-      player = models.ForeignKey(Player)
-      response = models.CharField(max_length=20)
-      
-      def __unicode__(self):
-	return "Nickname: "+ self.player.nickname + " Response: " + self.response
+	  return string	  
       

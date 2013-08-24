@@ -36,7 +36,7 @@ class ValveApi():
     if obj.amount < 100000:
       print 'Api request', finalurl    	
       response = json.load(urllib2.urlopen(finalurl))      
-      obj.amount = 1
+      obj.amount += 1
     else:
       print 'Amount of requests per day has been exceeded.'
       

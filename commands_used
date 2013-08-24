@@ -31,6 +31,10 @@
 # install sqlite3 for database administration
   sudo apt-get install sqlite3
 
+# install pkcs1 and rsa for SteamTradingApi
+  sudo pip install pkcs1
+  sudo pip install rsa
+  
 ###########################################################  
   
 # Steam add user url 
