@@ -224,7 +224,7 @@ bot.on('message', function(source, message, type, chatter) {
 	    console.log('User asked to place a bet on: '+provided_betid);
 	    
 	    // check if there is a record about this bet in database
-	    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bets WHERE id="+provided_betid
+	    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bet WHERE id="+provided_betid
 	    db.all(statement, function(err, rows) {
 	      
 		  // throw an error if encountered

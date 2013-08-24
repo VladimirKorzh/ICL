@@ -49,7 +49,7 @@ class Better(models.Model):
       status  = models.CharField(max_length=2, choices=STATUS_CHOICES)
       
       player  = models.ForeignKey(Player)
-      bet     = models.ForeignKey(Bets)
+      bet     = models.ForeignKey(Bet)
 	    
 	    
 	    
