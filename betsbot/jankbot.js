@@ -86,7 +86,8 @@ bot.on('sessionStart', function(otherClient) {
   betid  = 0;
   itemcount = 0;
   items_added = []
-    
+  
+   
   console.log('trading with ' + bot.users[client].playerName);
   steamTrade.open(otherClient);
   steamTrade.loadInventory(570, 2, function(inv) {
@@ -95,18 +96,46 @@ bot.on('sessionStart', function(otherClient) {
 });
 
 steamTrade.on('offerChanged', function(added, item) {
-  console.log('they ' + (added ? 'added ' : 'removed ') + item.name);
+  console.log('+++ they ' + (added ? 'added ' : 'removed ') + item.name);
   itemtags = item.tags;
-  items_added.push(item);
-  itemtags.forEach(function(tag){  
+  correct_item = false;
+  
+  itemtags.forEach(function(tag){      
     if (tag.category_name == 'Rarity') {
 	console.log('Rarity:' + tag.name);
     }
     
-    if (tag.category_name == 'Type'){
+    if (tag.category_name == 'Type') {
       console.log('Type:' + tag.internal_name);
+      if (tag.internal_name == 'DOTA_WearableType_Wearable') {
+	  correct_item = true;
+      }
+    }
+    
+    if (tag.category_name == 'Hero') {
+      console.log('Hero:' + tag.name);
     }    
   });  
+    
+  if (added && correct_item) { 
+    items_added.push(item);    
+    console.log('Correct item added');
+  }
+  
+  if (!added && correct_item) {
+    var index = items_added.indexOf(item);    
+    items_added.splice(index, 1);
+    console.log('Correct item removed');
+  }  
+  
+  if (added && correct_item) {
+    console.log('Incorrect item added');
+  }
+  
+  if (!added && correct_item) {
+    console.log('Incorrect item removed');
+  }
+  
 });
 
 steamTrade.on('ready', function() {
@@ -119,7 +148,7 @@ steamTrade.on('ready', function() {
 
 steamTrade.on('end', function(result) {
   console.log('trade', result);
-  console.log('items_added',items_added);
+  console.log('items that were in trade window',items_added);
 });
 
 // Respond to messages.
