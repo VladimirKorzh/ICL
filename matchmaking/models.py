@@ -15,7 +15,7 @@ class Player(models.Model):
 	    
 	    
 # table used by betsbot 
-class Bets(models.Model):
+class Bet(models.Model):
       RESULT_CHOICES = (
 		(u'A', u'Side A won'),
 		(u'B', u'Side B won'),
@@ -36,7 +36,7 @@ class Bets(models.Model):
       status      = models.CharField(max_length=2, choices=STATUS_CHOICES)
 
 # table used by betsbot 
-class Betters(models.Model):
+class Better(models.Model):
       SIDE_CHOICES = (
 	      (u'A', 'Side A'),
 	      (u'B', 'Side B'),

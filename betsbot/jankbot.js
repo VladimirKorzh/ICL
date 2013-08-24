@@ -170,9 +170,7 @@ bot.on('message', function(source, message, type, chatter) {
   friends.updateFriendsNames(bot);
 
   // If the message is blank (blank messages are received from 'is typing').
-  if (message == '') {
-    return;
-  }
+  if (message == '') return;
 
   // Save the original full message for later use.
   var original = message;
@@ -184,43 +182,74 @@ bot.on('message', function(source, message, type, chatter) {
       DICT.SYSTEM.system_msg_received));
 
   var input = message.split(" ");
-
-  // First, check if this is an admin function request.
+  
+  // check if this is an admin function request.
   if (input[0] == "admin") {
 
     // Authenticate as admin.
     if (isAdmin(source)) {
-      admin(input, source, original, function(resp) {
-        friends.messageUser(source, resp, bot);
-      });
-      return;
-    } else {
-      friends.messageUser(source, DICT.ERRORS.err_not_admin, bot);
-      return;
+	  admin(input, source, original, function(resp) {
+	      friends.messageUser(source, resp, bot);
+	  });
+	  return;
+    }
+    else {
+	  friends.messageUser(source, DICT.ERRORS.err_not_admin, bot);
+	  return;
     }
   }
-
-  // Placing a bet. My feature.
-  else if (input[0] == DICT.CMDS.bet) {
-	user_provided_betid = escape(input[1]);
-	console.log('User asked to place a bet on: '+user_provided_betid);
-	db.each("SELECT id, status FROM matchmaking_bets", function(err, row) {
-	  console.log(row.id + ": " + row.status + ' ' + err);	  
-	});
-	betid = user_provided_betid
-//     friends.messageUser(source, DICT.INHOUSE_RESPONSES.inhouse_response_sender, bot);
-    return;
+  
+  // Placing a bet. 
+  if (input[0] == DICT.CMDS.bet) {
+	provided_betid = escape(input[1]);
+	console.log('User asked to place a bet on: '+provided_betid);
+	
+	// check if there is a record about this bet in database
+	statement = "SELECT id, status FROM matchmaking_bets WHERE id="+provided_betid
+	db.all(statement, function(err, rows) {
+	  
+	      // throw an error if encountered
+	      if (err) throw err;
+		  
+	      if (rows.length == 0) {
+		  // bet not found
+		  console.log(DICT.BET_RESPONSES.bet_not_found);
+		  friends.messageUser(source, DICT.BET_RESPONSES.bet_not_found, bot);
+		  return;
+	      }
+	      else if (rows.length == 1) {
+		  // bet is found
+		  console.log(DICT.BET_RESPONSES.bet_found);
+		  friends.messageUser(source, DICT.BET_RESPONSES.bet_found, bot);		  
+		  rows.forEach( function(row) {
+		      //check the status of this bet
+		      if (row.status != 'C') {
+			    // if its still open or has other invalid status
+			   console.log(DICT.BET_RESPONSES.bet_not_closed); 
+			   friends.messageUser(source, DICT.BET_RESPONSES.bet_not_closed, bot);		  
+			   return;
+		      }
+		      else {
+			   // bet is found and has a closed status
+			   console.log(DICT.BET_RESPONSES.bet_status_valid); 
+			   friends.messageUser(source, DICT.BET_RESPONSES.bet_status_valid, bot);		  			betid = user_provided_betid;   
+			   return;
+		      }
+		  });
+	      }
+	});		
+	return;
   }  
 
-  // Loop through other modules.
-  for (var i = 0; i < modules.length; i++) {
-    if (typeof modules[i].canHandle === 'function') {
-      if (modules[i].canHandle(original)) {
-        modules[i].handle(original, source, bot);
-        return;
-      }
-    }
-  }
+//   // Loop through other modules.
+//   for (var i = 0; i < modules.length; i++) {
+//     if (typeof modules[i].canHandle === 'function') {
+//       if (modules[i].canHandle(original)) {
+//         modules[i].handle(original, source, bot);
+//         return;
+//       }
+//     }
+//   }
 
   // Default
   friends.messageUser(source, randomResponse(), bot);

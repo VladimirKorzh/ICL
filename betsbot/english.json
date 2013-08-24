@@ -1,6 +1,6 @@
 {
   "SYSTEM" : {
-    "system_loggedin" : "Successfully logged in.",
+    "system_loggedin"     : "Successfully logged in.",
     "system_msg_received" : "Received from {user}: {message}",
     "system_added_friend" : "Added new friend: {userid}"
   },
@@ -10,42 +10,19 @@
   },
 
   "CMDS" : {
-    "inhouse" : "inhouse",
-    "help" : "help",
-    "mute" : "mute",
-    "unmute" : "unmute",
-    "ping" : "ping",
     "bet"  : "bet"
   },
 
-  "help_message" : "I'm Jankbot, here to help with your every day DotA!",
-
-  "CMD_HELP" : {
-    "inhouse" : "Alert my friends that you are hosting an inhouse.",
-    "help" : "Shows this help message.",
-    "mute" : "Shuts me up. Your 10 latest missed messages will be saved.",
-    "unmute" : "Resumes messages from me. Saved messages will be delivered.",
-    "ping" : "PONG! I'll tell you your Steam ID."
-    },
-
-  "INHOUSE_RESPONSES" : {
-    "inhouse_response_sender" : "I alerted my friends that you are hosting an inhouse.",
-    "inhouse_broadcast" : "{host} is hosting an inhouse."
+  "BET_RESPONSES" : {
+    "bet_not_found" : "Bet not found in database.",
+    "bet_found" : "Bet is found in database. Press Ready to confirm.",
+    "bet_id_not_provided" : "You forgot to tell me what are you betting on.",
+    "bet_not_closed" : "You cannot bet items yet. The bet is not closed.",
+    "bet_status_valid" : "Bet is valid. Accepted."
   },
-
-  "mute_response" : "Okay, I will stop bugging you. Your missed messages will be delivered when you unmute me.",
-  "unmute_response" : "Hello! Here are the latest messages you missed: \n{messages}",
-
-  "ping_response" : "PONG. Your user id is {userid}",
-
-  "greeting_response" : "Hello there, {user}!",
 
   "ADMIN" : {
     "quit" : "Okay, quitting...",
-    "dump_friends" : "Dumping friends JSON to console...",
-    "dump_users" : "Dumping users JSON to console...",
-    "broadcast_log" : "Admin broadcast request: {message}",
-    "broadcast_sent" : "Your broadcast has been sent."
   },
 
   "random_responses" : [
@@ -55,17 +32,6 @@
     "Huh?",
     "Sure.....what?",
     "Not a clue what you want.",
-    "WAT.",
-    "Perhaps try 'help'?"
+    "WAT."
   ],
-
-  "greetings" : [
-    "hey",
-    "sup",
-    "hello",
-    "hola",
-    "yo",
-    "howdy",
-    "hi"
-  ]
 }
