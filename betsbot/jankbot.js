@@ -6,7 +6,7 @@ var friends = require('./bot_modules/friends.js');
 var logger = require('./bot_modules/logger.js');
 var minimap = require('minimap');
 var SteamTrade = require('steam-trade'); 
-
+var sqlite3 = require("sqlite3").verbose();
 
 // Define command line arguments.
 var argv = require('optimist');
@@ -40,17 +40,14 @@ params['password']    = CONFIG.password
 // load sentry hash file 
 require('fs').existsSync('sentry') ? params['shaSentryfile'] = require('fs').readFileSync('sentry') :  params['authCode'] = '5T529';
 
-
-// create instances of bot and trade apis
+// create instances of bot and trade apis and db connection
 var bot = new Steam.SteamClient();
 var steamTrade = new SteamTrade();
-
-
+var db = new sqlite3.Database("../icl/sqlite3.db");
 
 bot.on('debug', console.log);
 
-
-// Log in and set name.
+// Log in and set name
 bot.logOn(params['accountName'],params['password'], params['shaSentryfile'], params['authCode']);
 
 // happens after you log in.
@@ -85,15 +82,16 @@ bot.on('sessionStart', function(otherClient) {
   client = otherClient;
   betid  = 0;
   itemcount = 0;
-  items_added = []
+  trade_window_items = []
   
-   
   console.log('trading with ' + bot.users[client].playerName);
   steamTrade.open(otherClient);
+  
   steamTrade.loadInventory(570, 2, function(inv) {
     inventory = inv;
   });
 });
+
 
 steamTrade.on('offerChanged', function(added, item) {
   console.log('+++ they ' + (added ? 'added ' : 'removed ') + item.name);
@@ -115,41 +113,54 @@ steamTrade.on('offerChanged', function(added, item) {
     if (tag.category_name == 'Hero') {
       console.log('Hero:' + tag.name);
     }    
-  });  
+  });
     
   if (added && correct_item) { 
-    items_added.push(item);    
-    console.log('Correct item added');
+    trade_window_items.push(item);    
+    console.log('*** Correct item added');
   }
   
   if (!added && correct_item) {
-    var index = items_added.indexOf(item);    
-    items_added.splice(index, 1);
-    console.log('Correct item removed');
+    var index = trade_window_items.indexOf(item);    
+    trade_window_items.splice(index, 1);
+    console.log('*** Correct item removed');
   }  
   
   if (added && correct_item) {
-    console.log('Incorrect item added');
+    console.log('*** Incorrect item added');
   }
   
   if (!added && correct_item) {
-    console.log('Incorrect item removed');
+    console.log('*** Incorrect item removed');
   }
   
+  console.log('! Items in trade window: ' + trade_window_items);
 });
 
+
+
 steamTrade.on('ready', function() {
-  console.log('readying');
-  steamTrade.ready(function() {
-    console.log('confirming');
-    steamTrade.confirm();
-  });
+  if (betid == 0){
+    console.log('Bet id is not provided');
+    friends.messageUser(client, 'Bet id is not provided', bot);    
+  }
+  else {
+    steamTrade.ready(function() {
+      console.log('confirming bet '+ betid);
+      steamTrade.confirm();
+    });
+  }
 });
 
 steamTrade.on('end', function(result) {
   console.log('trade', result);
-  console.log('items that were in trade window',items_added);
+//   console.log('items that were in trade window',trade_window_items);
 });
+
+
+
+
+
 
 // Respond to messages.
 bot.on('message', function(source, message, type, chatter) {
@@ -189,50 +200,17 @@ bot.on('message', function(source, message, type, chatter) {
     }
   }
 
-  // Starting inhouses.
-  else if (message == DICT.CMDS.inhouse) {
-    var broadcastMsg = minimap.map({"host" : fromUser},
-        DICT.INHOUSE_RESPONSES.inhouse_broadcast);
-    friends.broadcast(broadcastMsg, source, bot);
-    friends.messageUser(source, DICT.INHOUSE_RESPONSES.inhouse_response_sender, bot);
+  // Placing a bet. My feature.
+  else if (input[0] == DICT.CMDS.bet) {
+	user_provided_betid = escape(input[1]);
+	console.log('User asked to place a bet on: '+user_provided_betid);
+	db.each("SELECT id, status FROM matchmaking_bets", function(err, row) {
+	  console.log(row.id + ": " + row.status + ' ' + err);	  
+	});
+	betid = user_provided_betid
+//     friends.messageUser(source, DICT.INHOUSE_RESPONSES.inhouse_response_sender, bot);
     return;
-  }
-
-  // Respond to pings.
-  else if (message == DICT.CMDS.ping) {
-    var responseStr = minimap.map({"userid" : source}, DICT.ping_response);
-    friends.messageUser(source, responseStr, bot);
-    return;
-  }
-
-  // Help message.
-  else if (message == DICT.CMDS.help) {
-    friends.messageUser(source, help(), bot);
-    return;
-  }
-
-  // Mute.
-  else if (message == DICT.CMDS.mute) {
-    friends.messageUser(source, DICT.mute_response, bot);
-    friends.setMute(source, true);
-    return;
-  }
-
-  // Unmute player and give missed messages.
-  else if (message == DICT.CMDS.unmute) {
-    friends.setMute(source, false);
-    var responseStr = minimap.map({"messages" : friends.getHeldMessages(source)},
-        DICT.unmute_response);
-    friends.messageUser(source, responseStr, bot);
-    return;
-  }
-
-  // Respond to greetings.
-  else if (isGreeting(message)) {
-    var responseStr = minimap.map({"user" : fromUser}, DICT.greeting_response);
-    friends.messageUser(source, responseStr, bot);
-    return;
-  }
+  }  
 
   // Loop through other modules.
   for (var i = 0; i < modules.length; i++) {
@@ -271,12 +249,17 @@ function randomResponse() {
 
 // Saves data and exits gracefully.
 function shutdown() {
+  // close connection to database
+  db.close();
   friends.save();
+  
+  // exit from modules too
   for (var i = 0; i < modules.length; i++) {
     if (typeof modules[i].onExit === 'function') {
       modules[i].onExit();
     }
   }
+  // close process
   process.exit();
 }
 
@@ -284,31 +267,29 @@ function shutdown() {
 // Handler for admin functionality.
 function admin(input, source, original, callback) {
 
-  // Quit function
+//   Quit function
   if (input[1] == "quit") {
     callback(DICT.ADMIN.quit);
     shutdown();
   }
 
-  // Dump friends info.
-  if (input[1] == "dump" && input[2] == "friends") {
-    logger.log(JSON.stringify(friends.getAllFriends()));
-    callback(DICT.ADMIN.dump_friends);
-  }
-
-  // Dump users info.
-  if (input[1] == "dump" && input[2] == "users") {
-    logger.log(JSON.stringify(bot.users));
-    callback(DICT.ADMIN.dump_users);
-  }
-
-  if (input[1] == "broadcast") {
-    var adminMessage = original.replace("admin broadcast", "");
-    logger.log(minimap.map({message: adminMessage}, DICT.ADMIN.broadcast_log));
-    friends.broadcast(adminMessage, source, bot);
-    callback(DICT.ADMIN.broadcast_sent);
-
-  }
+//   // Dump friends info.
+//   if (input[1] == "dump" && input[2] == "friends") {
+//     logger.log(JSON.stringify(friends.getAllFriends()));
+//     callback(DICT.ADMIN.dump_friends);
+//   }
+// 
+//   // Dump users info.
+//   if (input[1] == "dump" && input[2] == "users") {
+//     logger.log(JSON.stringify(bot.users));
+//     callback(DICT.ADMIN.dump_users);
+//   }
+//   if (input[1] == "broadcast") {
+//     var adminMessage = original.replace("admin broadcast", "");
+//     logger.log(minimap.map({message: adminMessage}, DICT.ADMIN.broadcast_log));
+//     friends.broadcast(adminMessage, source, bot);
+//     callback(DICT.ADMIN.broadcast_sent);
+//   }
 }
 
 
@@ -318,19 +299,19 @@ function isAdmin(source) {
 }
 
 
-// Help text.
-function help() {
-  var resp = DICT.help_message + "\n";
-  for (cmd in DICT.CMDS) {
-    resp += cmd + " - " + DICT.CMD_HELP[cmd] + "\n";
-  }
-  for (var i = 0; i < modules.length; i++) {
-    resp += "\n" + modules[i].getHelp();
-  }
-  return resp;
-}
+// // Help text.
+// function help() {
+//   var resp = DICT.help_message + "\n";
+//   for (cmd in DICT.CMDS) {
+//     resp += cmd + " - " + DICT.CMD_HELP[cmd] + "\n";
+//   }
+//   for (var i = 0; i < modules.length; i++) {
+//     resp += "\n" + modules[i].getHelp();
+//   }
+//   return resp;
+// }
 
-
+/*
 function isGreeting(message) {
   return DICT.greetings.indexOf(message) != -1;
-}
+}*/

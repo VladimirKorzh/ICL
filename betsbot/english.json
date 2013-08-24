@@ -14,7 +14,8 @@
     "help" : "help",
     "mute" : "mute",
     "unmute" : "unmute",
-    "ping" : "ping"
+    "ping" : "ping",
+    "bet"  : "bet"
   },
 
   "help_message" : "I'm Jankbot, here to help with your every day DotA!",

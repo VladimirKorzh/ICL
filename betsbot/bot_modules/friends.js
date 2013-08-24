@@ -12,7 +12,6 @@ if (fs.existsSync('friendslist')) {
   friends = JSON.parse(fs.readFileSync('friendslist'));
 }
 
-
 // Returns the name of the given ID based on friends list.
 exports.nameOf = function(id) {
   if (friends.hasOwnProperty(id)) {
