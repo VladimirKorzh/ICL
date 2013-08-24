@@ -148,7 +148,7 @@ steamTrade.on('offerChanged', function(added, item) {
 	}  
 	
 	if (bet_id != 0){
-	      message = minimap.map({"itemsleft": bet_itemcount, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);
+	      message = minimap.map({"itemsleft": bet_itemcount - trade_window_items.length, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);
 	}
 });
 
