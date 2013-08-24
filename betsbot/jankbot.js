@@ -74,8 +74,10 @@ bot.on('sentry', function(sentry) {
 });
 
 bot.on('tradeProposed', function(tradeID, otherClient) {
-	console.log('tradeProposed ');
-	bot.respondToTrade(tradeID, true);
+	console.log('tradeProposed, but we do not approve it.');
+//	bot.respondToTrade(tradeID, true);
+	// we are no longer accepting trades from people
+	// we only send trade requests ourselves
 });
 
 bot.on('sessionStart', function(otherClient) {
@@ -101,7 +103,8 @@ steamTrade.on('offerChanged', function(added, item) {
 	console.log('===> they ' + (added ? 'added ' : 'removed ') + item.name);
 	itemtags = item.tags;
 	correct_item = false;
-	var item_rarity_value = '';
+	correct_rariry = false;
+	
 	itemtags.forEach(function(tag){      
 	      if (tag.category_name == 'Type') {
 		    console.log('Type:' + tag.internal_name);
@@ -111,22 +114,31 @@ steamTrade.on('offerChanged', function(added, item) {
 	      }    
 	      if (tag.category_name == 'Rarity') {
 		    console.log('Rarity:' + tag.name);
-		    item_rarity_value = tag.name;
+		    if ( tag.name == bet_itemrarity ){		      
+		      correct_rariry = true;
+		    }
 	      }		
 	      if (tag.category_name == 'Hero') {
 		    console.log('Hero:' + tag.name);
 	      }    
 	});
 	  
-	if (added && correct_item) { 
+	if (!correct_item || !correct_rariry) {
+	      message = minimap.map({"itemrarity": item_rarity_value, "itemname": item.name},DICT.BET_RESPONSES.bet_incorrect_item_added);
+	      
+	      console.log(message);
+	      friends.messageUser(client, message, bot);	  
+	      return;
+	}
+
+	if (added) {
 	      trade_window_items.push(item);    
 	      message = minimap.map({"itemrarity": item_rarity_value, "itemname": item.name},DICT.BET_RESPONSES.bet_correct_item_added);
 	      
 	      console.log(message);
-	      friends.messageUser(client, message, bot);
+	      friends.messageUser(client, message, bot);	  
 	}
-	
-	if (!added && correct_item) {
+	if (!added) {
 	      var index = trade_window_items.indexOf(item);    
 	      trade_window_items.splice(index, 1);
 	      
@@ -134,36 +146,17 @@ steamTrade.on('offerChanged', function(added, item) {
 	      
 	      console.log(message);
 	      friends.messageUser(client, message, bot);
-	}  
-	
-	if (added && !correct_item) {
-	      message = minimap.map({"itemrarity": item_rarity_value, "itemname": item.name},DICT.BET_RESPONSES.bet_incorrect_item_added);
 	      
-	      console.log(message);
-	      friends.messageUser(client, message, bot);
 	}
 	
-	if (!added && !correct_item) {	
-	      console.log("Incorrect item was removed.");
-	}  
-	
-	if (bet_id != 0){
-	      message = minimap.map({"itemsleft": bet_itemcount - trade_window_items.length, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);
-	      
-	      console.log(message);
-	      friends.messageUser(client, message, bot);
-	}
+	message = minimap.map({"itemsleft": bet_itemcount - trade_window_items.length, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);	
+	console.log(message);
+	friends.messageUser(client, message, bot);	
 });
 
 
 
 steamTrade.on('ready', function() {
-  
-      // bet id was not setup
-      if (bet_id == 0) {
-	    console.log(DICT.BET_RESPONSES.bet_id_not_provided);
-	    friends.messageUser(client, DICT.BET_RESPONSES.bet_id_not_provided, bot);    
-      }
       // amount of items doesn't match the bet 
       if (bet_itemcount != trade_window_items.length) {
 	    message = minimap.map({"itemcount": trade_window_items.length, "bet_itemcount": bet_itemcount},DICT.BET_RESPONSES.bet_invalid_itemcount);
@@ -173,17 +166,17 @@ steamTrade.on('ready', function() {
       else {
 	    // if all goes through then we are good to go
 	    steamTrade.ready(function() {
-	      console.log("confirming bet "+ bet_id);
-	      steamTrade.confirm();
-	      
-	       //  TODO Write result to database
+	      message = minimap.map({"betid": bet_id}, DICT.BET_RESPONSES.bet_status_valid);
+	      console.log(message);
+	      friends.messageUser(client, message, bot);
+	      steamTrade.confirm();	     
 	    });
       }
 });
 
 steamTrade.on('end', function(result) {
       console.log('trade', result);
-//   console.log('items that were in trade window',trade_window_items);
+  //  TODO Write result to database      
 });
 
 
@@ -224,51 +217,51 @@ bot.on('message', function(source, message, type, chatter) {
       }
       
       // Placing a bet. 
-      if (input[0] == DICT.CMDS.bet) {
-	    provided_betid = escape(input[1]);
-	    console.log('User asked to place a bet on: '+provided_betid);
-	    
-	    // check if there is a record about this bet in database
-	    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bet WHERE id="+provided_betid
-	    db.all(statement, function(err, rows) {
-	      
-		  // throw an error if encountered
-		  if (err) throw err;
-		      
-		  if (rows.length == 0) {
-		      // bet not found
-		      console.log(DICT.BET_RESPONSES.bet_not_found);
-		      friends.messageUser(source, DICT.BET_RESPONSES.bet_not_found, bot);
-		      return;
-		  }
-		  else if (rows.length == 1) {
-		      // bet is found
-		      console.log(DICT.BET_RESPONSES.bet_found);
-		      friends.messageUser(source, DICT.BET_RESPONSES.bet_found, bot);		  
-		      rows.forEach( function(row) {
-			  //check the status of this bet
-			  if (row.status != 'C') {
-				// if its still open or has other invalid status
-			      console.log(DICT.BET_RESPONSES.bet_not_closed); 
-			      friends.messageUser(source, DICT.BET_RESPONSES.bet_not_closed, bot);		  
-			      return;
-			  }
-			  else {
-			      // bet is found and has a closed status
-			      console.log(DICT.BET_RESPONSES.bet_status_valid); 
-			      friends.messageUser(source, DICT.BET_RESPONSES.bet_status_valid, bot);
-			      message = "Bet is " + row.amount + " " + row.item_rarity;
-			      friends.messageUser(source, message, bot);
-			      bet_id = provided_betid;   			   
-			      bet_itemrarity = row.item_rarity;
-			      bet_itemcount  = row.amount;
-			      return;
-			  }
-		      });
-		  }
-	    });
-	    return;
-	}  
+//       if (input[0] == DICT.CMDS.bet) {
+// 	    provided_betid = escape(input[1]);
+// 	    console.log('User asked to place a bet on: '+provided_betid);
+// 	    
+// 	    // check if there is a record about this bet in database
+// 	    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bet WHERE id="+provided_betid
+// 	    db.all(statement, function(err, rows) {
+// 	      
+// 		  // throw an error if encountered
+// 		  if (err) throw err;
+// 		      
+// 		  if (rows.length == 0) {
+// 		      // bet not found
+// 		      console.log(DICT.BET_RESPONSES.bet_not_found);
+// 		      friends.messageUser(source, DICT.BET_RESPONSES.bet_not_found, bot);
+// 		      return;
+// 		  }
+// 		  else if (rows.length == 1) {
+// 		      // bet is found
+// 		      console.log(DICT.BET_RESPONSES.bet_found);
+// 		      friends.messageUser(source, DICT.BET_RESPONSES.bet_found, bot);		  
+// 		      rows.forEach( function(row) {
+// 			  //check the status of this bet
+// 			  if (row.status != 'C') {
+// 				// if its still open or has other invalid status
+// 			      console.log(DICT.BET_RESPONSES.bet_not_closed); 
+// 			      friends.messageUser(source, DICT.BET_RESPONSES.bet_not_closed, bot);		  
+// 			      return;
+// 			  }
+// 			  else {
+// 			      // bet is found and has a closed status
+// 			      console.log(DICT.BET_RESPONSES.bet_status_valid); 
+// 			      friends.messageUser(source, DICT.BET_RESPONSES.bet_status_valid, bot);
+// 			      message = "Bet is " + row.amount + " " + row.item_rarity;
+// 			      friends.messageUser(source, message, bot);
+// 			      bet_id = provided_betid;   			   
+// 			      bet_itemrarity = row.item_rarity;
+// 			      bet_itemcount  = row.amount;
+// 			      return;
+// 			  }
+// 		      });
+// 		  }
+// 	    });
+// 	    return;
+// 	}  
 
 //   // Loop through other modules.
 //   for (var i = 0; i < modules.length; i++) {
@@ -355,6 +348,8 @@ function admin(input, source, original, callback) {
 function isAdmin(source) {
       return ADMINS.indexOf(source) != -1;
 }
+
+
 
 
 // // Help text.

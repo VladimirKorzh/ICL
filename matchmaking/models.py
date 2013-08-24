@@ -44,6 +44,7 @@ class Better(models.Model):
       STATUS_CHOICES = (
 	      (u'P', u'Awaiting collection'),
 	      (u'S', u'Submitted items'),
+	      (u'R', u'Prizes received'),
       )
       side    = models.CharField(max_length=2, choices=SIDE_CHOICES)      
       status  = models.CharField(max_length=2, choices=STATUS_CHOICES)
