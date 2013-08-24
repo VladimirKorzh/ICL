@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.http import HttpResponse
 
-from matchmaking.models import Lobby, Player, Search
+from matchmaking.models import Player
 
 import mm
 import MumbleWrapper

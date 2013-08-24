@@ -1,6 +1,4 @@
 from django.contrib import admin
-from matchmaking.models import Player, Lobby, Search
+from matchmaking.models import Player
 
-admin.site.register(Lobby)
 admin.site.register(Player)
-admin.site.register(Search)

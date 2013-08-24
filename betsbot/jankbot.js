@@ -149,6 +149,9 @@ steamTrade.on('offerChanged', function(added, item) {
 	
 	if (bet_id != 0){
 	      message = minimap.map({"itemsleft": bet_itemcount - trade_window_items.length, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);
+	      
+	      console.log(message);
+	      friends.messageUser(client, message, bot);
 	}
 });
 
@@ -172,6 +175,8 @@ steamTrade.on('ready', function() {
 	    steamTrade.ready(function() {
 	      console.log("confirming bet "+ bet_id);
 	      steamTrade.confirm();
+	      
+	       //  TODO Write result to database
 	    });
       }
 });

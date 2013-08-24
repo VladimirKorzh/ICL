@@ -67,14 +67,14 @@ class ValveApiCounts(models.Model):
 		
 		
 		
-class Roles(models.Model):
-	carry   = models.BooleanField(default=False)
-	offlane = models.BooleanField(default=False)
-	solomid = models.BooleanField(default=False)
-	support = models.BooleanField(default=False)
-	utility = models.BooleanField(default=False)
+#class Roles(models.Model):
+	#carry   = models.BooleanField(default=False)
+	#offlane = models.BooleanField(default=False)
+	#solomid = models.BooleanField(default=False)
+	#support = models.BooleanField(default=False)
+	#utility = models.BooleanField(default=False)
 	
-	def __unicode__(self):
-	  string = '\n<Roles>\n1:'+str(self.carry)+'\n2:'+str(self.solomid)+'\n3:'+str(self.offlane)+'\n4:'+str(self.utility)+'\n5:'+str(self.support)
-	  return string	  
+	#def __unicode__(self):
+	  #string = '\n<Roles>\n1:'+str(self.carry)+'\n2:'+str(self.solomid)+'\n3:'+str(self.offlane)+'\n4:'+str(self.utility)+'\n5:'+str(self.support)
+	  #return string	  
       

@@ -17,7 +17,7 @@
 
   "BET_RESPONSES" : {
     "bet_not_found" : "Bet not found in database.",
-    "bet_found" : "Bet is found in database. Press Ready to confirm.",
+    "bet_found" : "Bet is found in database.",
     "bet_id_not_provided" : "You forgot to tell me what are you betting on.",
     "bet_not_closed" : "You cannot bet items yet. The bet is not closed.",
     "bet_status_valid" : "Bet is valid. Accepted.",

@@ -92,62 +92,66 @@ class ICLMumble():
 	#print 'Response',response
 	return response
       
-  def createNewChannel(self, parentchannelname, channelname):
-    parent = self.getChannelIdFromName(parentchannelname)
-    self.server.addChannel(channelname, parent.id)
+      
+      
+      
+      
+  #def createNewChannel(self, parentchannelname, channelname):
+    #parent = self.getChannelIdFromName(parentchannelname)
+    #self.server.addChannel(channelname, parent.id)
     
-  def moveUser2Channel(self, username, channelname):
-    channel = self.getChannelIdFromName(channelname)
-    user    = self.getUserIdFromName(username)
+  #def moveUser2Channel(self, username, channelname):
+    #channel = self.getChannelIdFromName(channelname)
+    #user    = self.getUserIdFromName(username)
     
-    user.channel = channel.id
-    self.server.setState(user)    
+    #user.channel = channel.id
+    #self.server.setState(user)    
     
-  def deleteChannelbyName(self, channelname):
-    channel = self.getChannelIdFromName(channelname)
-    self.server.removeChannel(channel.id)
+  #def deleteChannelbyName(self, channelname):
+    #channel = self.getChannelIdFromName(channelname)
+    #self.server.removeChannel(channel.id)
 
-  def refresh(self):      
-    # clean empty mumble channels except for AFK
-    mumble_used_channel_ids_list = [self.users[i].channel for i in self.users]
-    mumble_total_channel_ids_list = [i.id for i in self.channels.values()]
-    print 'Used channel ids:',  mumble_used_channel_ids_list
-    print 'Total channel ids:', mumble_total_channel_ids_list
+  #def refresh(self):      
+    ## clean empty mumble channels except for AFK
+    #mumble_used_channel_ids_list = [self.users[i].channel for i in self.users]
+    #mumble_total_channel_ids_list = [i.id for i in self.channels.values()]
+    #print 'Used channel ids:',  mumble_used_channel_ids_list
+    #print 'Total channel ids:', mumble_total_channel_ids_list
     
-    for each in self.channels.values():
-      if each.id not in mumble_used_channel_ids_list:
-	if each.id == self.getChannelIdFromName("Root"): continue
-	print self.getChannelNameFromId(each.id), 'is removed: no users'
-	self.server.removeChannel(each.id)
+    #for each in self.channels.values():
+      #if each.id not in mumble_used_channel_ids_list:
+	#if each.id == self.getChannelIdFromName("Root"): continue
+	#print self.getChannelNameFromId(each.id), 'is removed: no users'
+	#self.server.removeChannel(each.id)
 	
-    # refresh local list
-    self.channels = self.server.getChannels()	
+    ## refresh local list
+    #self.channels = self.server.getChannels()	
     
-    mumble_users_list     = [self.users[each] for each in self.users]    
-    db_lobbys_names       = [i.name for i in Lobby.objects.all()]
-    mumble_channels_names = [self.channels[i].name for i in self.channels]
+    #mumble_users_list     = [self.users[each] for each in self.users]    
+    #db_lobbys_names       = [i.name for i in Lobby.objects.all()]
+    #mumble_channels_names = [self.channels[i].name for i in self.channels]
        
-    # create those that are not in db
-    for each in mumble_channels_names:
-      if each not in db_lobbys_names:
-	newLobby = Lobby(name=each)
-	newLobby.save()
+    ## create those that are not in db
+    #for each in mumble_channels_names:
+      #if each not in db_lobbys_names:
+	#newLobby = Lobby(name=each)
+	#newLobby.save()
 	
-    # delete unused channels in db
-    for each in db_lobbys_names:
-      if each not in mumble_channels_names:
-	Lobby.objects.get(name=each).delete()
+    ## delete unused channels in db
+    #for each in db_lobbys_names:
+      #if each not in mumble_channels_names:
+	#Lobby.objects.get(name=each).delete()
 	
-    # find players in Mumble and assign them to
-    # the respective lobbies in db    
-    for user in mumble_users_list:
-      try:
-	user_obj = Player.objects.get(nickname=user.name)	
-	lookup_channel = self.getChannelNameFromId(user.channel)
-	user_obj.lobby = Lobby.objects.get(name=lookup_channel)
-	user_obj.save()
+    ## find players in Mumble and assign them to
+    ## the respective lobbies in db    
+    #for user in mumble_users_list:
+      #try:
+	#user_obj = Player.objects.get(nickname=user.name)	
+	#lookup_channel = self.getChannelNameFromId(user.channel)
+	#user_obj.lobby = Lobby.objects.get(name=lookup_channel)
+	#user_obj.save()
 	  
-      except Player.DoesNotExist:
-	self.server.kickUser(user.session, "You are not allowed to login directly to Mumble server without using WebAuth.")
-	print user.name, 'is in Mumble, not using webauth. KICKED'
+      #except Player.DoesNotExist:
+	#self.server.kickUser(user.session, "You are not allowed to login directly to Mumble server without using WebAuth.")
+	#print user.name, 'is in Mumble, not using webauth. KICKED'
 	
