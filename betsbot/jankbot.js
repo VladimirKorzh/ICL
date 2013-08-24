@@ -254,7 +254,7 @@ bot.on('message', function(source, message, type, chatter) {
 			      friends.messageUser(source, DICT.BET_RESPONSES.bet_status_valid, bot);
 			      message = "Bet is " + row.amount + " " + row.item_rarity;
 			      friends.messageUser(source, message, bot);
-			      bet_id = user_provided_betid;   			   
+			      bet_id = provided_betid;   			   
 			      bet_itemrarity = row.item_rarity;
 			      bet_itemcount  = row.amount;
 			      return;
