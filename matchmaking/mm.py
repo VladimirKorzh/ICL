@@ -85,12 +85,49 @@ def updateUserInfo(request):
     print "Player logged in:", player.nickname, player.exp
 
 
-  
-  
-  
-  
-  
+from matchmaking.models import Bet, Bidder 
 
+def test_create_bidder(betid, playerid):
+  test_bidder = Bidder()
+  test_bidder.side = 'A'
+  test_bidder.status = 'COLLECTION'
+  test_bidder.player = Player.objects.get(id=playerid)
+  test_bidder.bet = Bet.objects.get(id=betid)
+  test_bidder.save()
+
+def test_close_bet(betid):
+  bet = Bet.objects.get(id=betid)
+  bet.status = 'CLOSED'
+  bet.save()  
+  
+def test_create_bet():
+  test_bet = Bet()
+  test_bet.item_rarity = 'Common'
+  test_bet.amount = 1
+  test_bet.result = 'NOTDECIDED'
+  test_bet.status = 'OPEN'
+  test_bet.save()
+  print 'bet',test_bet.id, 'has been created'
+  
+  player = Player.objects.get(nickname="ICR.korzh")  
+  test_create_bidder(test_bet.id, player.id)
+  print 'bidder has been created'  
+  
+  test_close_bet(test_bet.id)
+  print 'bet was closed'
+  
+def test_decide_winner_A(betid):
+  print 'winner assigned'
+  bet = Bet.objects.get(id=betid)
+  
+  
+  
+  bet.result = 'A'
+  bet.status = 'PRIZES'
+  bet.save()
+  
+  
+  
   
 #def getUserAvatarUrl(request):
   #steam_api_key = settings.STEAM_API_KEY

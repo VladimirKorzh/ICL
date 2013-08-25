@@ -13,22 +13,23 @@ class Player(models.Model):
 	    return string
 
 	    
-	    
 # table used by betsbot 
 class Bet(models.Model):
       RESULT_CHOICES = (
 		(u'A', u'Side A won'),
 		(u'B', u'Side B won'),
-		(u'N', u'Not decided'),
+		(u'NOTDECIDED', u'Not decided'),
       )
       
       STATUS_CHOICES = (
-		(u'OPEN', u'Bet is Open for new bidders'),
-		(u'CLOSED', u'Bet is Closed. No new bids are accepted'),
-		(u'COLLECTING', u'The bot is collecting items from bidders'),
-		(u'COLLECTED',  u'The bot has finished collecting items from bidders'),
-		(u'PRIZES', u'Giving prizes to the winners'),
-		(u'FINISHED', u'Finished interraction. Nothing more to do.'),
+		(u'OPEN',       u'Bet is Open for new bidders'),
+		(u'CLOSED',     u'Bet is Closed. No new bids are accepted'),
+		
+		(u'COLLECTING',  u'The bot is collecting items from bidders'),
+		(u'COLLECTED',   u'The bot has finished collecting items from bidders'),
+		
+		(u'PRIZES',       u'Giving prizes to the winners'),
+		(u'FINISHED',     u'Finished interraction. Nothing more to do.'),
       )
   
       item_rarity = models.CharField(max_length=20) 
@@ -44,9 +45,9 @@ class Bidder(models.Model):
       )
       
       STATUS_CHOICES = (
-	      (u'WAITING', u'Waiting collection'),
-	      (u'SUBMITTED', u'Submitted items'),
-	      (u'R', u'Prizes received'),
+	      (u'COLLECTION', u'Waiting collection'),
+	      (u'SUBMITTED',  u'Submitted items'),
+	      (u'PRIZES',     u'Waiting for prizes'),
       )
       
       side    = models.CharField(max_length=2, choices=SIDE_CHOICES)      
@@ -65,12 +66,7 @@ class ValveApiCounts(models.Model):
 	    return u"%s %s" % (self.date, str(self.amount))
 		
 		
-		
-		
-		
-		
-		
-		
+
 #class Roles(models.Model):
 	#carry   = models.BooleanField(default=False)
 	#offlane = models.BooleanField(default=False)

@@ -331,49 +331,88 @@ function admin(input, source, original, callback) {
 function isAdmin(source) {
       return ADMINS.indexOf(source) != -1;
 }
-/*
+
+
 function readdb() {
-    console.log('DEBUG',actions_collect);
-    if (actions_collect.length == 0 && actions_award.length == 0) {
-	  // MONSTER SQL SELECT that returns players that are waiting to place their bet
-	  statement_collect = "SELECT matchmaking_bet.item_rarity as ir, matchmaking_bet.amount as am, matchmaking_player.uid as uid FROM matchmaking_bet INNER JOIN matchmaking_bidder, matchmaking_player ON matchmaking_bet.id = matchmaking_bidder.bet_id AND matchmaking_bidder.status = 'WAITING' AND matchmaking_bidder.id = matchmaking_player.id";
-     
-	  db.all(statement_collect, function(err, rows) {
-		// throw an error if encountered
-		if (err) throw err;
-		    
-		if (closed_bets_rows.length == 0) {
-		    // bet not found
-		    console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);
-		    return;
-		}
-		else {
-		    rows.forEach( function(row) {
-			actions_collect.push({"item_rarity": row.ir, "amount": row.am, "uid": row.uid});
-		    });
-		}
-	  });
-	  
-	  // MONSTER statement that returns players that wait for their prizes
-	  statement_award = "SELECT matchmaking_bet.item_rarity, matchmaking_bet.amount, matchmaking_player.uid FROM matchmaking_bet INNER JOIN matchmaking_bidder, matchmaking_player ON matchmaking_bet.id = matchmaking_bidder.bet_id AND matchmaking_bidder.status = 'SUBMITTED' AND matchmaking_bet.result = matchmaking_bidder.side";
-	  
-	  db.all(statement_award, function(err, rows) {
-		// throw an error if encountered
-		if (err) throw err;
-		    
-		if (closed_bets_rows.length == 0) {
-		    // bet not found
-		    console.log(DICT.BET_RESPONSES.no_players_waiting_for_prizes);
-		    return;
-		}
-		else {
-		    rows.forEach( function(row){
-			actions_award.push({"item_rarity": row.ir, "amount": row.am, "uid": row.uid});
-		    });
-		}
-	  });
-    }
+    var currentdate = new Date();
+    console.log('new cycle: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
+    console.log('Collect ', actions_collect);
+    console.log('Award ', actions_award);
+    
+    
+    statement_collect = "SELECT  item_rarity, amount, player_id, bet.id as bet_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION'"
+    
+// SELECT  	item_rarity,
+// 		amount, player_id,
+// 		bet.id as bet_id
+// 
+// FROM     	matchmaking_bet AS bet, 
+// 		matchmaking_bidder AS bidder
+// 
+// WHERE       bet.id = bidder.bet_id 
+// 	AND    bet.result = 'NOTDECIDED' 
+// 	AND    bet.status = 'CLOSED'  
+// 	AND    bidder.status = 'COLLECTION'
+    
+    db.all(statement_collect, function(err, rows) {
+	  if (err) throw err;
+	    
+	  if (rows.length == 0) {
+	      console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);
+	  }
+	  else {
+	      console.log('found new ppl to collect');
+	      // read info and append to actions 
+	      rows.forEach( function(row) {
+		  actions_collect.push({"item_rarity": row.item_rarity, "amount": row.amount, "player_id": row.player_id, "bet_id": row.bet_id});			
+		  
+		  // mark the row as being processed 
+		  statement_upd8 = "UPDATE matchmaking_bet SET status='COLLECTING' WHERE id="+row.bet_id 
+		  db.run(statement_upd8, function(err) {
+			if (err) throw err;
+		  });
+	      });	      
+	  }
+    });
+    
+    statement_award = "SELECT  item_rarity, amount, player_id, bet.id as bet_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder WHERE bet.id = bidder.bet_id AND bet.result = bidder.side  AND bet.status = 'PRIZES'  AND bidder.status = 'SUBMITTED'"
+    
+// SELECT  	item_rarity,
+// 		amount, player_id,
+// 		bet.id as bet_id
+// 
+// FROM     	matchmaking_bet AS bet, 
+// 		matchmaking_bidder AS bidder
+// 
+// WHERE       bet.id = bidder.bet_id 
+// 	AND    bet.result = bidder.side      
+// 	AND    bet.status = 'PRIZES'  
+// 	AND    bidder.status = 'SUBMITTED'    
+    
+    db.all(statement_award, function(err, rows) {
+      
+	  // throw an error if encountered
+	  if (err) throw err;
+  
+	  if (rows.length == 0) {
+	      // bet not found
+	      console.log(DICT.BET_RESPONSES.no_players_waiting_for_prizes);
+	      return;
+	  }
+	  else {		    
+	      console.log('found new ppl to award');
+	      rows.forEach( function(row) {
+		  actions_award.push({"item_rarity": row.item_rarity, "amount": row.amount, "player_id": row.player_id, "bet_id": row.bet_id});
+		  
+		  // mark the row as being processed 
+		  statement_upd8 = "UPDATE matchmaking_bidder SET status='PRIZES' WHERE player_id="+row.player_id	    
+		  db.run(statement_upd8, function(err) {
+			if (err) throw err;
+		  });
+	      });
+	  }
+    });
 } // end refresh function
 
-update_interval = 5000;
-setInterval(readdb(), update_interval);*/
+update_interval = 10000;
+setInterval(readdb, update_interval);
