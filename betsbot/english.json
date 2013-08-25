@@ -16,6 +16,7 @@
   },
 
   "BET_RESPONSES" : {
+  
     "bet_status_valid" : "Bet {betid} is valid. Accepted.",
     
     "bet_invalid_itemcount": "The amount of items placed {itemcount} does NOT match the amount of the bet {bet_itemcount}.",
@@ -25,7 +26,10 @@
     
     "bet_incorrect_item_added": "!!! {itemrarity} item {itemname} is NOT accepted !!! Please remove this item, it will count as a donation otherwise.",
     
-    "bet_items_left": "{itemsleft} {itemrarity} items left to add."
+    "bet_items_left": "{itemsleft} {itemrarity} items left to add.",
+    
+    "bet_no_closed_bets": "There is no closed bets in database to process."
+    
   },
 
   "ADMIN" : {

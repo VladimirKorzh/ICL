@@ -317,30 +317,11 @@ function shutdown() {
 
 // Handler for admin functionality.
 function admin(input, source, original, callback) {
-
     //   Quit function
       if (input[1] == "quit") {
-	callback(DICT.ADMIN.quit);
+	console.log(DICT.ADMIN.quit);
 	shutdown();
       }
-
-//   // Dump friends info.
-//   if (input[1] == "dump" && input[2] == "friends") {
-//     logger.log(JSON.stringify(friends.getAllFriends()));
-//     callback(DICT.ADMIN.dump_friends);
-//   }
-// 
-//   // Dump users info.
-//   if (input[1] == "dump" && input[2] == "users") {
-//     logger.log(JSON.stringify(bot.users));
-//     callback(DICT.ADMIN.dump_users);
-//   }
-//   if (input[1] == "broadcast") {
-//     var adminMessage = original.replace("admin broadcast", "");
-//     logger.log(minimap.map({message: adminMessage}, DICT.ADMIN.broadcast_log));
-//     friends.broadcast(adminMessage, source, bot);
-//     callback(DICT.ADMIN.broadcast_sent);
-//   }
 }
 
 
@@ -349,22 +330,22 @@ function isAdmin(source) {
       return ADMINS.indexOf(source) != -1;
 }
 
+function readdb() {
+    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bet WHERE status='C'"
+    db.all(statement, function(err, rows) {
+      
+	  // throw an error if encountered
+	  if (err) throw err;
+	      
+	  if (rows.length == 0) {
+	      // bet not found
+	      console.log(DICT.BET_RESPONSES.no_closed_bets);
+	      return;
+	  }
+	  else {
+	      
+	  }
+}
 
-
-
-// // Help text.
-// function help() {
-//   var resp = DICT.help_message + "\n";
-//   for (cmd in DICT.CMDS) {
-//     resp += cmd + " - " + DICT.CMD_HELP[cmd] + "\n";
-//   }
-//   for (var i = 0; i < modules.length; i++) {
-//     resp += "\n" + modules[i].getHelp();
-//   }
-//   return resp;
-// }
-
-/*
-function isGreeting(message) {
-  return DICT.greetings.indexOf(message) != -1;
-}*/
+update_interval = 5000
+setInterval(readdb(), update_interval);
