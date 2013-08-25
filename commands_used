@@ -30,10 +30,14 @@
   
 # install sqlite3 for database administration
   sudo apt-get install sqlite3
-
-# install pkcs1 and rsa for SteamTradingApi
-  sudo pip install pkcs1
-  sudo pip install rsa
+  
+# install nodejs for bot and node sqlite3
+  sudo apt-get update
+  sudo apt-get install python-software-properties python g++ make
+  sudo add-apt-repository ppa:chris-lea/node.js
+  sudo apt-get update
+  sudo apt-get install nodejs
+  npm install sqlite3
   
 ###########################################################  
   

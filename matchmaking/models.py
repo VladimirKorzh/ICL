@@ -23,29 +23,32 @@ class Bet(models.Model):
       )
       
       STATUS_CHOICES = (
-		(u'O', u'Open'),
-		(u'C', u'Closed. Collecting items'),
-		(u'P', u'In progress'),
-		(u'D', u'Decided'),
-		(u'R', u'Revoked'),
+		(u'OPEN', u'Bet is Open for new bidders'),
+		(u'CLOSED', u'Bet is Closed. No new bids are accepted'),
+		(u'COLLECTING', u'The bot is collecting items from bidders'),
+		(u'COLLECTED',  u'The bot has finished collecting items from bidders'),
+		(u'PRIZES', u'Giving prizes to the winners'),
+		(u'FINISHED', u'Finished interraction. Nothing more to do.'),
       )
   
       item_rarity = models.CharField(max_length=20) 
       amount      = models.PositiveSmallIntegerField(default=1)
-      result      = models.CharField(max_length=2, choices=RESULT_CHOICES)
-      status      = models.CharField(max_length=2, choices=STATUS_CHOICES)
+      result      = models.CharField(max_length=14, choices=RESULT_CHOICES)
+      status      = models.CharField(max_length=14, choices=STATUS_CHOICES)
 
 # table used by betsbot 
-class Better(models.Model):
+class Bidder(models.Model):
       SIDE_CHOICES = (
 	      (u'A', 'Side A'),
 	      (u'B', 'Side B'),
       )
+      
       STATUS_CHOICES = (
-	      (u'P', u'Awaiting collection'),
-	      (u'S', u'Submitted items'),
+	      (u'WAITING', u'Waiting collection'),
+	      (u'SUBMITTED', u'Submitted items'),
 	      (u'R', u'Prizes received'),
       )
+      
       side    = models.CharField(max_length=2, choices=SIDE_CHOICES)      
       status  = models.CharField(max_length=2, choices=STATUS_CHOICES)
       

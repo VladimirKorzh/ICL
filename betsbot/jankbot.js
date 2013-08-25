@@ -1,12 +1,12 @@
 
-// Imports.
-var fs = require('fs');
-var Steam = require('steam');
-var friends = require('./bot_modules/friends.js');
-var logger = require('./bot_modules/logger.js');
-var minimap = require('minimap');
+//Imports.
+var fs         = require('fs');
+var Steam      = require('steam');
+var friends    = require('./bot_modules/friends.js');
+var logger     = require('./bot_modules/logger.js');
+var minimap    = require('minimap');
 var SteamTrade = require('steam-trade'); 
-var sqlite3 = require("sqlite3").verbose();
+var sqlite3    = require("sqlite3").verbose();
 
 // Define command line arguments.
 var argv = require('optimist');
@@ -44,6 +44,9 @@ require('fs').existsSync('sentry') ? params['shaSentryfile'] = require('fs').rea
 var bot = new Steam.SteamClient();
 var steamTrade = new SteamTrade();
 var db = new sqlite3.Database("../icl/sqlite3.db");
+
+var actions_collect = [];
+var actions_award   = [];
 
 bot.on('debug', console.log);
 
@@ -324,28 +327,53 @@ function admin(input, source, original, callback) {
       }
 }
 
-
 // Returns true if the given ID is an admin.
 function isAdmin(source) {
       return ADMINS.indexOf(source) != -1;
 }
-
+/*
 function readdb() {
-    statement = "SELECT id, item_rarity, amount, status FROM matchmaking_bet WHERE status='C'"
-    db.all(statement, function(err, rows) {
-      
-	  // throw an error if encountered
-	  if (err) throw err;
-	      
-	  if (rows.length == 0) {
-	      // bet not found
-	      console.log(DICT.BET_RESPONSES.no_closed_bets);
-	      return;
-	  }
-	  else {
-	      
-	  }
-}
+    console.log('DEBUG',actions_collect);
+    if (actions_collect.length == 0 && actions_award.length == 0) {
+	  // MONSTER SQL SELECT that returns players that are waiting to place their bet
+	  statement_collect = "SELECT matchmaking_bet.item_rarity as ir, matchmaking_bet.amount as am, matchmaking_player.uid as uid FROM matchmaking_bet INNER JOIN matchmaking_bidder, matchmaking_player ON matchmaking_bet.id = matchmaking_bidder.bet_id AND matchmaking_bidder.status = 'WAITING' AND matchmaking_bidder.id = matchmaking_player.id";
+     
+	  db.all(statement_collect, function(err, rows) {
+		// throw an error if encountered
+		if (err) throw err;
+		    
+		if (closed_bets_rows.length == 0) {
+		    // bet not found
+		    console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);
+		    return;
+		}
+		else {
+		    rows.forEach( function(row) {
+			actions_collect.push({"item_rarity": row.ir, "amount": row.am, "uid": row.uid});
+		    });
+		}
+	  });
+	  
+	  // MONSTER statement that returns players that wait for their prizes
+	  statement_award = "SELECT matchmaking_bet.item_rarity, matchmaking_bet.amount, matchmaking_player.uid FROM matchmaking_bet INNER JOIN matchmaking_bidder, matchmaking_player ON matchmaking_bet.id = matchmaking_bidder.bet_id AND matchmaking_bidder.status = 'SUBMITTED' AND matchmaking_bet.result = matchmaking_bidder.side";
+	  
+	  db.all(statement_award, function(err, rows) {
+		// throw an error if encountered
+		if (err) throw err;
+		    
+		if (closed_bets_rows.length == 0) {
+		    // bet not found
+		    console.log(DICT.BET_RESPONSES.no_players_waiting_for_prizes);
+		    return;
+		}
+		else {
+		    rows.forEach( function(row){
+			actions_award.push({"item_rarity": row.ir, "amount": row.am, "uid": row.uid});
+		    });
+		}
+	  });
+    }
+} // end refresh function
 
-update_interval = 5000
-setInterval(readdb(), update_interval);
+update_interval = 5000;
+setInterval(readdb(), update_interval);*/
