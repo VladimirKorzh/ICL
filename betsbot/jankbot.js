@@ -45,8 +45,11 @@ var bot = new Steam.SteamClient();
 var steamTrade = new SteamTrade();
 var db = new sqlite3.Database("../icl/sqlite3.db");
 
-var actions_collect = [];
-var actions_award   = [];
+
+var bot_status = 'free'; // busy - when trading
+var current_task = '';   // holds current task of the bot
+var task_start_time = '';
+var actions = [];
 
 bot.on('debug', console.log);
 
@@ -77,32 +80,53 @@ bot.on('sentry', function(sentry) {
 });
 
 bot.on('tradeProposed', function(tradeID, otherClient) {
-	console.log('tradeProposed, but we do not approve it.');
-//	bot.respondToTrade(tradeID, true);
 	// we are no longer accepting trades from people
-	// we only send trade requests ourselves
+	// we only send trade requests ourselves  
+	console.log('tradeProposed, but we do not approve it.');
 });
 
 bot.on('sessionStart', function(otherClient) {
 	client = otherClient;
-	
-	// variables that hold the information about current bet
-	bet_id  = 0;
-	bet_itemrarity = '';
-	bet_itemcount  = 0;
-	
 	trade_window_items = []
 	
 	console.log('trading with ' + bot.users[client].playerName);
 	steamTrade.open(otherClient);
 	
-	steamTrade.loadInventory(570, 2, function(inv) {
-	  inventory = inv;
-	});
+	if (current_task.type == 'award') {
+		steamTrade.loadInventory(570, 2, function(inv) {
+		    inventory = inv;
+		    itemsmatching = inv.filter(function(item) { 
+			    tags=item.tags;
+			    
+			    correct_item   = false;
+			    correct_rariry = false;
+			    
+			    tags.forEach(function(tag){  
+				    if (tag.category_name == 'Type') {
+					  if (tag.internal_name == 'DOTA_WearableType_Wearable') {
+					      correct_item = true;
+					  }
+				    }
+				    if (tag.category_name == 'Rarity') {
+					  if ( tag.name == current_task.item_rarity ) {
+					    correct_rariry = true;
+					  }
+				    }
+			      });
+			    
+			    if (correct_item == true && correct_rariry == true) {
+			      return true;
+			    }
+			    else {
+			      return false;
+			    }
+		    });		    
+		    steamTrade.addItems(itemsmatching.slice(0, current_task.amount);
+	  });
 });
 
-
 steamTrade.on('offerChanged', function(added, item) {
+	task_start_time = Math.round(+new Date()/1000);
 	console.log('===> they ' + (added ? 'added ' : 'removed ') + item.name);
 	itemtags = item.tags;
 	correct_item = false;
@@ -120,7 +144,7 @@ steamTrade.on('offerChanged', function(added, item) {
 		    if ( tag.name == bet_itemrarity ){		      
 		      correct_rariry = true;
 		    }
-	      }		
+	      }
 	      if (tag.category_name == 'Hero') {
 		    console.log('Hero:' + tag.name);
 	      }    
@@ -161,24 +185,27 @@ steamTrade.on('offerChanged', function(added, item) {
 
 steamTrade.on('ready', function() {
       // amount of items doesn't match the bet 
-      if (bet_itemcount != trade_window_items.length) {
-	    message = minimap.map({"itemcount": trade_window_items.length, "bet_itemcount": bet_itemcount},DICT.BET_RESPONSES.bet_invalid_itemcount);
-	    console.log(message);
-	    friends.messageUser(client, message, bot);
-      }  
-      else {
+//       if (bet_itemcount != trade_window_items.length) {
+// 	    message = minimap.map({"itemcount": trade_window_items.length, "bet_itemcount": bet_itemcount},DICT.BET_RESPONSES.bet_invalid_itemcount);
+// 	    console.log(message);
+// 	    friends.messageUser(client, message, bot);
+//       }  
+//       else {
 	    // if all goes through then we are good to go
-	    steamTrade.ready(function() {
-	      message = minimap.map({"betid": bet_id}, DICT.BET_RESPONSES.bet_status_valid);
-	      console.log(message);
-	      friends.messageUser(client, message, bot);
-	      steamTrade.confirm();	     
-	    });
+      if (current_task.type == 'award') {
+	      steamTrade.ready(function() {
+		      message = minimap.map({"betid": current_task.bet_id}, DICT.BET_RESPONSES.bet_status_valid);
+		      console.log(message);
+		      friends.messageUser(client, message, bot);
+		      steamTrade.confirm();    
+	      });
       }
 });
 
 steamTrade.on('end', function(result) {
       console.log('trade', result);
+      bot.removeFriend(current_task.uid);
+      current_task = ''
   //  TODO Write result to database      
 });
 
@@ -335,36 +362,30 @@ function isAdmin(source) {
 
 function readdb() {
     var currentdate = new Date();
-    console.log('new cycle: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
-    console.log('Collect ', actions_collect);
-    console.log('Award ', actions_award);
+    console.log('readdb: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
+
+    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
     
-    
-    statement_collect = "SELECT  item_rarity, amount, player_id, bet.id as bet_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION'"
-    
-// SELECT  	item_rarity,
-// 		amount, player_id,
-// 		bet.id as bet_id
-// 
-// FROM     	matchmaking_bet AS bet, 
-// 		matchmaking_bidder AS bidder
-// 
-// WHERE       bet.id = bidder.bet_id 
-// 	AND    bet.result = 'NOTDECIDED' 
-// 	AND    bet.status = 'CLOSED'  
-// 	AND    bidder.status = 'COLLECTION'
-    
+   
     db.all(statement_collect, function(err, rows) {
 	  if (err) throw err;
 	    
 	  if (rows.length == 0) {
-	      console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);
+	      console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);	      
+	      return;
 	  }
 	  else {
 	      console.log('found new ppl to collect');
 	      // read info and append to actions 
 	      rows.forEach( function(row) {
-		  actions_collect.push({"item_rarity": row.item_rarity, "amount": row.amount, "player_id": row.player_id, "bet_id": row.bet_id});			
+		  actions.push({"type": 'collect',
+			       "item_rarity":  row.item_rarity,
+				"amount":      row.amount,
+				"nickname":    row.nickname,
+				"uid":         row.uid,
+				"bet_id":      row.bet_id,
+				"player_id":   row.player_id
+				});
 		  
 		  // mark the row as being processed 
 		  statement_upd8 = "UPDATE matchmaking_bet SET status='COLLECTING' WHERE id="+row.bet_id 
@@ -375,19 +396,8 @@ function readdb() {
 	  }
     });
     
-    statement_award = "SELECT  item_rarity, amount, player_id, bet.id as bet_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder WHERE bet.id = bidder.bet_id AND bet.result = bidder.side  AND bet.status = 'PRIZES'  AND bidder.status = 'SUBMITTED'"
-    
-// SELECT  	item_rarity,
-// 		amount, player_id,
-// 		bet.id as bet_id
-// 
-// FROM     	matchmaking_bet AS bet, 
-// 		matchmaking_bidder AS bidder
-// 
-// WHERE       bet.id = bidder.bet_id 
-// 	AND    bet.result = bidder.side      
-// 	AND    bet.status = 'PRIZES'  
-// 	AND    bidder.status = 'SUBMITTED'    
+    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side  AND bet.status = 'PRIZES' AND bidder.status = 'SUBMITTED AND player.id = player_id'"
+       
     
     db.all(statement_award, function(err, rows) {
       
@@ -402,7 +412,14 @@ function readdb() {
 	  else {		    
 	      console.log('found new ppl to award');
 	      rows.forEach( function(row) {
-		  actions_award.push({"item_rarity": row.item_rarity, "amount": row.amount, "player_id": row.player_id, "bet_id": row.bet_id});
+		  actions.push({"type": 'award',
+			       "item_rarity":  row.item_rarity,
+				"amount":      row.amount,
+				"nickname":    row.nickname,
+				"uid":         row.uid,
+				"bet_id":      row.bet_id,
+				"player_id":   row.player_id
+				});
 		  
 		  // mark the row as being processed 
 		  statement_upd8 = "UPDATE matchmaking_bidder SET status='PRIZES' WHERE player_id="+row.player_id	    
@@ -412,7 +429,30 @@ function readdb() {
 	      });
 	  }
     });
+    console.log('Actions: ', actions);    
 } // end refresh function
 
+
+function work(){
+      var current_time = Math.round(+new Date()/1000);
+      if (current_task == ''){
+	  if (actions.length == 0) return;
+	  
+	  current_task = actions.pop();
+	  console.log('Started task ' + current_task.type + ' ' + current_task.nickname);	  
+	  bot.trade(current_task.uid);
+	  task_start_time = Math.round(+new Date()/1000);
+      }
+      else if (current_time - task_start_time > 20) {
+	  console.log('Task time expired')
+	  bot.cancelTrade(current_task.uid);
+	  actions.push(current_task);
+	  current_task = '';
+	  work();
+      }
+}
+
 update_interval = 10000;
+work_interval   = 8000;
 setInterval(readdb, update_interval);
+setInterval(work, work_interval);
