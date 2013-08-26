@@ -23,7 +23,7 @@ class ICLMumble():
     self.ice.getImplicitContext().put("secret", "1234567890")
 
     # Let Ice know where to go to connect to mumble
-    self.proxy = ice.stringToProxy("Meta:tcp -p 6502")
+    self.proxy = self.ice.stringToProxy("Meta:tcp -p 6502")
 
     # Create a dynamic object that allows us to get a programmable interface for Mumble
     self.meta = Murmur.MetaPrx.checkedCast(self.proxy)
