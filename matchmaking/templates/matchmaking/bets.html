@@ -41,7 +41,7 @@
 	    &nbsp; 
 		    <table>
 			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Owner</th><th>Actions</th></tr>
-			{% for bet in results %}      <tr><td>{{bet.id}}</td><td>{{bet.item_rarity}}</td><td>{{bet.amount}}</td><td>{{bet.status}}</td><td>{{bet.result}}</td><td>{{bet.a}}</td><td>{{bet.b}}</td><td>{{bet.owner}}</td><td><a href="" onclick="JavaScript:takeside('a', {{bet.id}});return false;">Side A</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Side B</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Cancel bet</a></td></tr>
+			{% for bet in results %}      <tr><td>{{bet.id}}</td><td>{{bet.item_rarity}}</td><td>{{bet.amount}}</td><td>{{bet.status}}</td><td>{{bet.result}}</td><td>{{bet.a}}</td><td>{{bet.b}}</td><td>{{bet.owner}}</td><td><a href="" onclick="JavaScript:takeside('a', {{bet.id}});return false;">Side A</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Side B</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Cancel bet</a> {% if bet.isowner %} <br><a href="" onclick="JavaScript:cancelbet({{bet.id}}); return false;">Close Betting</a>  {% endif %}</td></tr>
 			{% endfor %}
 		    </table>
 			

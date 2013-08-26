@@ -49,16 +49,18 @@ def bets(request, bet_id=None, action='mybets'):
       name = request.user  
       data = {'username': request.user,
 	      'exp':       mm.getPlayerExp(request)}  
-
-      if bet_id:
-	data['bet_id'] = bet_id      
+      
+      data['results'] = []      
+      dataset = []
+      
+      
       
       if action == 'mybets':
-	data['results'] = []
-	
 	for each in Bet.objects.filter(owner__nickname__exact=name):
 	  each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
 	  each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
+	  if each.owner == Player.objects.get(nickname = name):
+	    each.isowner = True
 	  data['results'].append(each)
 
 	
@@ -68,7 +70,17 @@ def bets(request, bet_id=None, action='mybets'):
 	for each in Bet.objects.filter(id__exact=bet_id):
 	  each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
 	  each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
+	  if each.owner == Player.objects.get(nickname = name):
+	    each.isowner = True	  
 	  data['results'].append(each)	
+		
+      if (action == 'cancelbet'):
+	  res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
+	  if len( res ) == 0:
+	    print 'nothing to cancel'
+	  else:
+	    res[0].delete()
+	  return redirect('/bets/show/'+bet_id)
 	
       if (action == 'takesidea' or action == 'takesideb') and bet_id:
 	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)

@@ -16,6 +16,10 @@ function searchbet() {
 	window.location = "/bets/show/"+document.getElementById("bet_id").value;
 }
 
+function cancelbet(bet_id) {
+	window.location = "/bets/cancelbet/"+bet_id
+}
+
 function takeside(side, bet_id) {
   if (side == 'a') window.location = "/bets/takesidea/"+bet_id;
   if (side == 'b') window.location = "/bets/takesideb/"+bet_id;
