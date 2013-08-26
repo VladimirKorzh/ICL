@@ -1,0 +1,24 @@
+
+{% include 'header.html' %}
+
+<div class="container_12">
+	{% include 'navigation.html' %}
+	
+	<div class="grid_9">
+	    <div id="content">
+		<p>Statistics for the past month</p>  
+		<table cellspacing="0" id="ratingtable"><tbody>
+		<tr><th>#</th><th>Nickname</th><th>Exp</th><th>Links</th><th>Last Seen (PST: GMT-7)</th></tr>
+		{% for player in playerslist %}
+		    <tr><td>{{player.position}}</td>
+		    <td> {{player.nickname}}</td>
+		    <td>{{player.exp}}</td>
+		    <td><a href="http://steamcommunity.com/profiles/{{player.uid}}">profile</a></td><td>{{player.last_seen}}</td></tr>
+		{% endfor %}		
+		</tbody></table>
+	    </div>	
+	</div>
+	<div class="clear"></div>
+</div> <!-- end of container_12 -->
+
+
