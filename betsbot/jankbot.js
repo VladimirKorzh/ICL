@@ -90,64 +90,65 @@ bot.on('sessionStart', function(otherClient) {
 	trade_window_items = []
 	
 	console.log('trading with ' + bot.users[client].playerName);
-	steamTrade.open(otherClient);
-	
-	if (current_task.type == 'award') {
-		steamTrade.loadInventory(570, 2, function(inv) {
-		    inventory = inv;
-		    itemsmatching = inv.filter(function(item) { 
-			    tags=item.tags;
-			    
-			    correct_item   = false;
-			    correct_rariry = false;
-			    
-			    tags.forEach(function(tag){  
-				    if (tag.category_name == 'Type') {
-					  if (tag.internal_name == 'DOTA_WearableType_Wearable') {
-					      correct_item = true;
-					  }
-				    }
-				    if (tag.category_name == 'Rarity') {
-					  if ( tag.name == current_task.item_rarity ) {
-					    correct_rariry = true;
-					  }
-				    }
-			      });
-			    
-			    if (correct_item == true && correct_rariry == true) {
-			      return true;
-			    }
-			    else {
-			      return false;
-			    }
-		    });		    
-		    steamTrade.addItems(itemsmatching.slice(0, current_task.amount);
-	  });
+	steamTrade.open(otherClient, function(){		  
+		  if (current_task.type == 'award') {
+			  steamTrade.loadInventory(570, 2, function(inv) {
+			      inventory = inv;
+			      itemsmatching = inv.filter(function(item) { 
+				      tags=item.tags;
+				      
+				      correct_item   = false;
+				      correct_rariry = false;
+				      
+				      tags.forEach(function(tag){  
+					      if (tag.category_name == 'Type') {
+						    if (tag.internal_name == 'DOTA_WearableType_Wearable') {
+							correct_item = true;
+						    }
+					      }
+					      if (tag.category_name == 'Rarity') {
+						    if ( tag.name == current_task.item_rarity ) {
+						      correct_rariry = true;
+						    }
+					      }
+					});
+				      
+				      if (correct_item == true && correct_rariry == true) {
+					      return true;
+				      }
+				      else {
+					      return false;
+				      }
+			      });      
+			      steamTrade.addItems(itemsmatching.slice(0, current_task.amount));
+			});
+		}
+		if (current_task.type == 'collect'){
+		      console.log('collecting')
+		}
+	});
 });
 
 steamTrade.on('offerChanged', function(added, item) {
 	task_start_time = Math.round(+new Date()/1000);
 	console.log('===> they ' + (added ? 'added ' : 'removed ') + item.name);
 	itemtags = item.tags;
+	
 	correct_item = false;
 	correct_rariry = false;
 	
 	itemtags.forEach(function(tag){      
 	      if (tag.category_name == 'Type') {
-		    console.log('Type:' + tag.internal_name);
 		    if (tag.internal_name == 'DOTA_WearableType_Wearable') {
 			correct_item = true;
 		    }
 	      }    
 	      if (tag.category_name == 'Rarity') {
-		    console.log('Rarity:' + tag.name);
-		    if ( tag.name == bet_itemrarity ){		      
+		    if ( tag.name == current_task.item_rarity ){		      
 		      correct_rariry = true;
+		      item_rarity_value = tag.name;
 		    }
 	      }
-	      if (tag.category_name == 'Hero') {
-		    console.log('Hero:' + tag.name);
-	      }    
 	});
 	  
 	if (!correct_item || !correct_rariry) {
@@ -176,7 +177,7 @@ steamTrade.on('offerChanged', function(added, item) {
 	      
 	}
 	
-	message = minimap.map({"itemsleft": bet_itemcount - trade_window_items.length, "itemrarity": bet_itemrarity},DICT.BET_RESPONSES.bet_items_left);	
+	message = minimap.map({"itemsleft": current_task.amount - trade_window_items.length, "itemrarity": current_task.item_rarity},DICT.BET_RESPONSES.bet_items_left);	
 	console.log(message);
 	friends.messageUser(client, message, bot);	
 });
@@ -185,11 +186,12 @@ steamTrade.on('offerChanged', function(added, item) {
 
 steamTrade.on('ready', function() {
       // amount of items doesn't match the bet 
-//       if (bet_itemcount != trade_window_items.length) {
-// 	    message = minimap.map({"itemcount": trade_window_items.length, "bet_itemcount": bet_itemcount},DICT.BET_RESPONSES.bet_invalid_itemcount);
-// 	    console.log(message);
-// 	    friends.messageUser(client, message, bot);
-//       }  
+      if (current_task.amount == trade_window_items.length && current_task.type =='collect') {
+	    steamTrade.ready(function() {
+	      console.log('confirming');
+	      steamTrade.confirm();
+	    });
+      }  
 //       else {
 	    // if all goes through then we are good to go
       if (current_task.type == 'award') {
@@ -197,6 +199,7 @@ steamTrade.on('ready', function() {
 		      message = minimap.map({"betid": current_task.bet_id}, DICT.BET_RESPONSES.bet_status_valid);
 		      console.log(message);
 		      friends.messageUser(client, message, bot);
+		      
 		      steamTrade.confirm();    
 	      });
       }
@@ -205,10 +208,20 @@ steamTrade.on('ready', function() {
 steamTrade.on('end', function(result) {
       console.log('trade', result);
       bot.removeFriend(current_task.uid);
-      current_task = ''
-  //  TODO Write result to database      
+      if (result == 'complete') {
+	    current_task = '';
+	    if (current_task.type == 'collect'){
+		  statement = "UPDATE matchmaking_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
+		  
+		  db.run(statement, function(err){
+		      if (err) throw err;
+		  });
+	    }
+      }
+      if (result == 'failed'){
+	console.log('failed');
+      }
 });
-
 
 // Respond to messages.
 bot.on('message', function(source, message, type, chatter) {
@@ -396,7 +409,7 @@ function readdb() {
 	  }
     });
     
-    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side  AND bet.status = 'PRIZES' AND bidder.status = 'SUBMITTED AND player.id = player_id'"
+    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
        
     
     db.all(statement_award, function(err, rows) {

@@ -48,6 +48,7 @@ class Bidder(models.Model):
 	      (u'COLLECTION', u'Waiting collection'),
 	      (u'SUBMITTED',  u'Submitted items'),
 	      (u'PRIZES',     u'Waiting for prizes'),
+	      (u'DONE',       u'Interraction complete'),
       )
       
       side    = models.CharField(max_length=2, choices=SIDE_CHOICES)      
