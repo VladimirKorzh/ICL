@@ -7,7 +7,6 @@ urlpatterns = patterns('',
     url(r'',                  include('social_auth.urls')),
     url(r'',                  include('matchmaking.urls')),
     
-    #(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}),
     
     url(r'^logout$',         'django.contrib.auth.views.logout', {'next_page': '/intro'}),

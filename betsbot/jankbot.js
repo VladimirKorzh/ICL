@@ -192,8 +192,7 @@ steamTrade.on('ready', function() {
 	      steamTrade.confirm();
 	    });
       }  
-//       else {
-	    // if all goes through then we are good to go
+      // if all goes through then we are good to go
       if (current_task.type == 'award') {
 	      steamTrade.ready(function() {
 		      message = minimap.map({"betid": current_task.bet_id}, DICT.BET_RESPONSES.bet_status_valid);

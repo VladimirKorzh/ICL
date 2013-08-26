@@ -15,23 +15,25 @@ class ICLMumble():
   """ Class is used for managing the Mumble server """
   def __init__(self):    
     # initialize Ice
-    prop = Ice.createProperties()
-    prop.setProperty("Ice.ImplicitContext", "Shared")
-    idd = Ice.InitializationData()
-    idd.properties = prop
-    ice = Ice.initialize(idd)
-    ice.getImplicitContext().put("secret", "1234567890")
+    self.prop = Ice.createProperties()
+    self.prop.setProperty("Ice.ImplicitContext", "Shared")
+    self.idd = Ice.InitializationData()
+    self.idd.properties = self.prop
+    self.ice = Ice.initialize(self.idd)
+    self.ice.getImplicitContext().put("secret", "1234567890")
 
     # Let Ice know where to go to connect to mumble
-    proxy = ice.stringToProxy("Meta:tcp -p 6502")
+    self.proxy = ice.stringToProxy("Meta:tcp -p 6502")
 
     # Create a dynamic object that allows us to get a programmable interface for Mumble
-    meta = Murmur.MetaPrx.checkedCast(proxy)
+    self.meta = Murmur.MetaPrx.checkedCast(self.proxy)
 
     # Get the server instance from the set of servers.    
-    self.server   = meta.getServer(1)
+    self.server   = self.meta.getServer(1)
     self.channels = self.server.getChannels()
     self.users    = self.server.getUsers()
+    
+    self.ice.destroy()
                                
   def getChannelObj(self, value):
     """ Returns the channel object if there is one that has name or id

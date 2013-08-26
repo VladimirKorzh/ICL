@@ -49,6 +49,11 @@
 # Steam add user url 
   steam://friends/add/76561198087841351
   
+# kill process
+  ps aux | grep -i manage.py
+  sudo kill -9 <pid>
+  
+  
 # usefull links 
   mumble.sourceforge.net/Murmur.ini
   http://django-social-auth.readthedocs.org/en/latest/configuration.html#application-setup
