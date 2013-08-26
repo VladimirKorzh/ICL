@@ -54,6 +54,8 @@
   sudo kill -9 <pid>
   
   
+  
+  
 # usefull links 
   mumble.sourceforge.net/Murmur.ini
   http://django-social-auth.readthedocs.org/en/latest/configuration.html#application-setup

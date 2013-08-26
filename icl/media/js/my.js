@@ -12,8 +12,16 @@ $( document ).ajaxStop(function() {
 });
 
 
+function searchbet() {
+	window.location = "/bets/show/"+document.getElementById("bet_id").value;
+}
+
+function takeside(side, bet_id) {
+  if (side == 'a') window.location = "/bets/takesidea/"+bet_id;
+  if (side == 'b') window.location = "/bets/takesideb/"+bet_id;
+}
+
 function recalculateexp(){
-// 	alert('ajax request');
 	document.getElementById("exp").innerHTML = '?';
 	$.ajax({
 	    type: "GET",

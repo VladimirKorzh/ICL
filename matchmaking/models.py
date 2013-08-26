@@ -9,7 +9,7 @@ class Player(models.Model):
 	last_seen= models.DateTimeField(auto_now=True)		
 	
 	def __unicode__(self):
-	    string = '\nUid: '+str(self.uid)+'\nNickname: '+str(self.nickname)
+	    string = str(self.nickname)
 	    return string
 
 	    
@@ -36,6 +36,8 @@ class Bet(models.Model):
       amount      = models.PositiveSmallIntegerField(default=1)
       result      = models.CharField(max_length=14, choices=RESULT_CHOICES)
       status      = models.CharField(max_length=14, choices=STATUS_CHOICES)
+      
+      owner       = models.ForeignKey(Player)
 
 # table used by betsbot 
 class Bidder(models.Model):
@@ -56,7 +58,10 @@ class Bidder(models.Model):
       
       player  = models.ForeignKey(Player)
       bet     = models.ForeignKey(Bet)
-	    
+      
+      def __unicode__(self):
+	    string = str(self.player.nickname)
+	    return string	    
 	    
 	    
 class ValveApiCounts(models.Model):

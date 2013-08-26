@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.http import HttpResponse
 
-from matchmaking.models import Player
+from matchmaking.models import Player, Bet, Bidder
 
 import mm
 import MumbleWrapper
@@ -46,15 +46,52 @@ def bets(request, bet_id=None, action='mybets'):
   # find id
   # create bet
   # mybets
-  
+      name = request.user  
       data = {'username': request.user,
 	      'exp':       mm.getPlayerExp(request)}  
 
-      if action:
-	data['action'] = action	      
-	      
       if bet_id:
-	data['bet_id'] = bet_id
+	data['bet_id'] = bet_id      
+      
+      if action == 'mybets':
+	data['results'] = []
+	
+	for each in Bet.objects.filter(owner__nickname__exact=name):
+	  each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
+	  each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
+	  data['results'].append(each)
+
+	
+      if action == 'show':	
+	data['results'] = []
+	
+	for each in Bet.objects.filter(id__exact=bet_id):
+	  each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
+	  each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
+	  data['results'].append(each)	
+	
+      if (action == 'takesidea' or action == 'takesideb') and bet_id:
+	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
+	    if len( res ) == 0:
+		print 'no bidders matched -> creating new'
+		bid = Bidder()
+		bid.status = 'COLLECTION'
+		bid.player = Player.objects.get(nickname=name)
+		bid.bet    = Bet.objects.get(id__exact=bet_id)
+
+	    else:
+		print 'bidders matched -> updating'
+		bid = res[0]
+		
+	    if action == 'takesidea':
+	      bid.side = 'A'
+	    if action == 'takesideb':
+	      bid.side = 'B'
+	    bid.save()	    
+	    return redirect('/bets/show/'+bet_id)
+
+	
+	
 
       return render(request, 'matchmaking/bets.html', data)
 
