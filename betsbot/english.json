@@ -1,0 +1,51 @@
+{
+  "SYSTEM" : {
+    "system_loggedin"     : "Successfully logged in.",
+    "system_msg_received" : "Received from {user}: {message}",
+    "system_added_friend" : "Added new friend: {userid}"
+  },
+
+  "ERRORS" : {
+    "err_not_admin" : "You are not an admin!",
+    "test"          : "test"
+  },
+
+  "CMDS" : {
+    "bet"  : "bet",
+    "test" : "test"
+  },
+
+  "BET_RESPONSES" : {
+    "no_players_waiting_for_prizes": "There are no players waiting for prizes",
+    "no_players_waiting_to_bet": "There are no new accept bet requests",
+    
+    "bet_status_valid" : "Bet {betid} is valid. Accepted.",
+    
+    "bet_invalid_itemcount": "The amount of items placed {itemcount} does NOT match the amount of the bet {bet_itemcount}.",
+    
+    "bet_correct_item_added": "{itemrarity} item {itemname} is accepted.",
+    
+    "bet_correct_item_removed": "{itemrarity} item {itemname} was accepted, but removed by you.",
+    
+    "bet_incorrect_item_added": "!!! {itemrarity} item {itemname} is NOT accepted !!! Please remove this item, it will count as a donation otherwise.",
+    
+    "bet_items_left": "{itemsleft} {itemrarity} items left to add.",
+       
+    "bet_still_have_actions_todo": "Skipping actions update cycle, we still have actions to do."
+  },
+
+  "ADMIN" : {
+    "quit" : "Okay, quitting...",
+    "test" : "test"
+  },
+
+  "random_responses" : [
+    "Come again?",
+    "Wuzzat?",
+    "Wut",
+    "Huh?",
+    "Sure.....what?",
+    "Not a clue what you want.",
+    "WAT."
+  ]
+}

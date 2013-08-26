@@ -6,10 +6,16 @@ import mm
 
 urlpatterns = patterns('',
     url(r'^$',             views.landing,    name='landing'),
-    url(r'^profile$',      views.profile,    name='logged-in'),
-    url(r'^intro$',        views.intro,      name='intro'),
+    
+    url(r'^intro$',        views.intro,      name='intro'),    
+    url(r'^login$',        views.login,      name='login'), 
+    url(r'^bets$',         views.bets,       name='bets'), 
+    url(r'^stacks$',       views.stacks,     name='stacks'),
+    url(r'^ratings$',      views.ratings,    name='ratings'),
+    
+    url(r'^bets/(?P<action>\w+)/(?P<bet_id>\d+)/$', views.bets, name='viewbet'),
     
     # Matchmaking APIs
-    url(r'^matchmaking/getmatch$',    mm.getmatch,      name='getmatch'),
-    url(r'^matchmaking/startsearch$', mm.startsearch,   name='getmatch')
+    url(r'^ajax/recalculateexp', mm.recalculateexp,  name='recalculateexp'),
+    #url(r'^matchmaking/getchannelsinfo$', mm.getchannelsinfo,   name='getchannelsinfo')
 )

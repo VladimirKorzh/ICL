@@ -1,19 +1,26 @@
 # Django settings for icl project.
 
+import os
+
+#TODO COMMENT THIS WHEN SWITCHING TO PRODUCTION
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# this gives us the full path to the file
+# which resides in the base folder of the project
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+
 ADMINS = (
-    ('Vladimir Korshak', 'vladimirkorshak@gmail.com'),
     # ('Your Name', 'your_email@example.com'),
+    ('Vladimir Korshak', 'vladimirkorshak@gmail.com'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/vladimir/Documents/ICL/sqlite3.db',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',          # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME':    os.path.abspath(os.path.join(PROJECT_PATH,'sqlite3.db')), # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -21,7 +28,6 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
-
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -52,7 +58,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = '/home/vladimir/Documents/ICL/icl/media'
+MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_PATH, 'media'))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -63,7 +69,8 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.abspath(os.path.join(PROJECT_PATH, 'static'))
+#STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -113,6 +120,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_PATH, '..', 'matchmaking/templates/matchmaking')
 )
 
 INSTALLED_APPS = (
@@ -160,6 +168,9 @@ LOGIN_ERROR_URL    = '/'
 
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
 
+
+
+#TODO FIND OUT THE RIGHT PIPELINE SETTINGS
 #SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 #SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
 
