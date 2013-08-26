@@ -14,6 +14,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
     ('Vladimir Korshak', 'vladimirkorshak@gmail.com'),
 )
+
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -30,8 +31,6 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-#TODO COMMENT THIS WHEN SWITCHING TO PRODUCTION
-#ALLOWED_HOSTS = [ 'icl.dyndns.org' ]
 ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
@@ -164,7 +163,7 @@ SOCIAL_AUTH_SESSION_EXPIRATION = False
 SOCIAL_AUTH_CREATE_USERS = False
 
 LOGIN_URL          = '/'
-LOGIN_REDIRECT_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL    = '/'
 
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
