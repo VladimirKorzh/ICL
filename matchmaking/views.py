@@ -284,7 +284,7 @@ def ratings(request):
 				     'uid':       each_player.uid,
 				     'exp':       each_player.exp,
 				     'last_seen': pretty_time
-				    })
+				      })
 			
       data['playerslist'] = sorted(data['playerslist'], key=lambda pl:pl['exp'], reverse=True)
       n = 1
