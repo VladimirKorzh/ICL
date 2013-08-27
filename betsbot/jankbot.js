@@ -441,7 +441,8 @@ function readdb() {
 	      });
 	  }
     });
-    console.log('Actions: ', actions);    
+    console.log('Actions: ', actions);   
+    console.log('current_task:', current_task);
 } // end refresh function
 
 
@@ -458,6 +459,7 @@ function work(){
       else if (current_time - task_start_time > 20) {
 	  console.log('Task time expired')
 	  bot.cancelTrade(current_task.uid);
+	  SteamTrade.cancel();
 	  actions.push(current_task);
 	  current_task = '';
 	  work();
