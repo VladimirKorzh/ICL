@@ -79,7 +79,7 @@
 				    <a href="bets/takeside_bet/{{bet.id}}/b/">Side B</a><br>
 				    <a href="bets/cancel_bet/{{bet.id}}/">Cancel my bet</a>
 				  {% endif %}
-				  {% if bet.status|stringformat:"s" == "CLOSED"  %}
+				  {% if bet.status|stringformat:"s" == "COLLECTING"  %}
 				    {% if bet.passwd %}
 					<br><b>pass:{{bet.passwd}}</b>
 				    {% endif %}
