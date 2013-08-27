@@ -82,7 +82,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	    bet = Bet.objects.filter(id__exact=each.bet_id)[0]	    
 	    if bet.id not in selection_bets_ids:  
 	      selection_bets_ids.append(bet.id)
-	      selection.append(each)
+	      selection.append(bet)
 	  
 
 	  for each in selection:
