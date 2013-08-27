@@ -274,7 +274,7 @@ function readdb() {
     var currentdate = new Date();
     console.log('readdb: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
 
-    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, betting_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
+    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
     
    
     db.all(statement_collect, function(err, rows) {
@@ -307,7 +307,7 @@ function readdb() {
 	  }
     });
     
-    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, betting_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
+    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
        
     
     db.all(statement_award, function(err, rows) {
