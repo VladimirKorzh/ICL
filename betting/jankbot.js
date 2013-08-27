@@ -228,7 +228,7 @@ steamTrade.on('end', function(result, items) {
       if (result == 'complete') {    // TODO
 	    current_task = '';
 	    if (current_task.type == 'collect') {
-		  statement = "UPDATE matchmaking_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
+		  statement = "UPDATE betting_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
 		  
 		  db.run(statement, function(err){
 		      if (err) throw err;
@@ -237,7 +237,7 @@ steamTrade.on('end', function(result, items) {
 		  console.log('marked as SUBMITTED');
 	    }
 	    if (current_task.type == 'award') {  // TODO
-		statement = "UPDATE matchmaking_bidder SET status='AWARDED' WHERE player_id="+current_task.player_id+" AND bet_id="+current_task.bet_id;
+		statement = "UPDATE betting_bidder SET status='AWARDED' WHERE player_id="+current_task.player_id+" AND bet_id="+current_task.bet_id;
 		console.log('marked as AWARDED');
 	    }
       }
@@ -274,7 +274,7 @@ function readdb() {
     var currentdate = new Date();
     console.log('readdb: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
 
-    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
+    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, betting_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
     
    
     db.all(statement_collect, function(err, rows) {
@@ -299,7 +299,7 @@ function readdb() {
 				});
 		  
 		  // mark the row as being processed 
-		  statement_upd8 = "UPDATE matchmaking_bet SET status='COLLECTING' WHERE id="+row.bet_id 
+		  statement_upd8 = "UPDATE betting_bet SET status='COLLECTING' WHERE id="+row.bet_id 
 		  db.run(statement_upd8, function(err) {
 			if (err) throw err;
 		  });
@@ -307,7 +307,7 @@ function readdb() {
 	  }
     });
     
-    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM matchmaking_bet AS bet, matchmaking_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
+    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, betting_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
        
     
     db.all(statement_award, function(err, rows) {
@@ -334,7 +334,7 @@ function readdb() {
 				});
 		  
 		  // mark the row as being processed 
-		  statement_upd8 = "UPDATE matchmaking_bidder SET status='PRIZES' WHERE player_id="+row.player_id	    
+		  statement_upd8 = "UPDATE betting_bidder SET status='PRIZES' WHERE player_id="+row.player_id	    
 		  db.run(statement_upd8, function(err) {
 			if (err) throw err;
 		  });
