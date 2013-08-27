@@ -12,8 +12,33 @@ $( document ).ajaxStop(function() {
 });
 
 
+function searchbet() {
+  window.location = "/bets/show/"+document.getElementById("bet_id").value;
+}
+
+function cancelbet(bet_id) {
+  window.location = "/bets/cancelbet/"+bet_id;
+}
+
+function deletebet(bet_id) {
+  window.location = "/bets/deletebet/"+bet_id;
+}
+
+function takeside(side, bet_id) {
+  if (side == 'a') window.location = "/bets/takesidea/"+bet_id;
+  if (side == 'b') window.location = "/bets/takesideb/"+bet_id;
+}
+
+function closebetting(bet_id) {
+  window.location = "/bets/closebetting/"+bet_id;  
+}
+
+function winnerside(side, bet_id) {
+  if (side == 'a') window.location = "/bets/winnersidea/"+bet_id;  
+  if (side == 'b') window.location = "/bets/winnersideb/"+bet_id;  
+}
+
 function recalculateexp(){
-// 	alert('ajax request');
 	document.getElementById("exp").innerHTML = '?';
 	$.ajax({
 	    type: "GET",

@@ -5,6 +5,8 @@
 	{% include 'navigation.html' %}
 	
 	<div class="grid_4" id="create">
+	    <form action="/bets/createbet" method="POST">
+		{% csrf_token %}	
 		<table>
 		<tr><th><label for="rarity">Rarity</label></th><th><label for="amount">Amount</label></th><th>Actions</th></tr>
 		<tr><td>
@@ -20,27 +22,62 @@
 		    <option value="4">4</option> 
 		</select></td>
 		<td>
-		<input type="button" name="action" value="Create">
+		<input type="submit" name="action" value="Create">
 		</td>
 		</tr>
 		</table>
-
+	    </form>
 	</div>
 	
 	<div class="grid_4" id="find">
 		<table>
 		    <tr><th>Id</th><th>Actions</th></tr>
-		    <tr><td><input type="text" name="bet_id"></td><td><input type="submit" name="action" value="Find"></td></tr>
+		    <tr><td><input id="bet_id" type="text" name="bet_id"></td><td>
+		    <a href="" onclick="JavaScript:searchbet();return false;">Find</a></td></tr>
 		</table>
 		    
 	</div>
 	
 	{% if results %}
-	    <div class="grid_9" id="results">
+	    <div class="grid_12" id="results">
 	    &nbsp; 
 		    <table>
-			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Actions</th></tr>
-			{% for bet in results %}      <tr><td>{{bet.id}}</td><td>{{bet.item_rarity}}</td><td>{{bet.amount}}</td><td>{{bet.status}}</td><td>{{bet.result}}</td><td>{{bet.a}}</td><td>{{bet.b}}</td><td>test</td></tr>
+			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Owner</th><th>Actions</th></tr>
+			{% for bet in results %}      
+			<tr>
+			      <td>{{bet.id}}</td>
+			      <td>{{bet.item_rarity}}</td>
+			      <td>{{bet.amount}}</td>
+			      
+			      <td>
+				  {{bet.status}}
+				  {% if bet.isowner %} 
+				      {% if bet.status|stringformat:"s" == "OPEN"  %} 
+					  <br><a href="" onclick="JavaScript:closebetting({{bet.id}}); return false;">Close Betting</a>  
+					  <br><a href="" onclick="JavaScript:deletebet({{bet.id}}); return false;">DELETE BET</a>
+				      {% endif %}
+				  {% endif %}
+			      </td>
+			      
+			      <td>
+				  {{bet.result}}{% if bet.status|stringformat:"s" != "OPEN"  %}
+				  {% if bet.result|stringformat:"s" == "NOTDECIDED" %}
+				    <br><a href="" onclick="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
+				    <br><a href="" onclick="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
+				  {% endif %}{% endif %}
+			      </td>
+			      
+			      <td>{{bet.a}}</td>
+			      <td>{{bet.b}}</td>
+			      <td>{{bet.owner}}</td>
+			      
+			      <td>
+				  {% if bet.status|stringformat:"s" == "OPEN"  %} 			      
+				    <a href="" onclick="JavaScript:takeside('a', {{bet.id}});return false;">Side A</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Side B</a><br><a href="" onclick="JavaScript:cancelbet({{bet.id}});return false;">Cancel my bet</a>
+				  {% endif %}
+			      </td>
+			      
+			</tr>
 			{% endfor %}
 		    </table>
 			
