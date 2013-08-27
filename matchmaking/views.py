@@ -60,7 +60,7 @@ def remove_bet(request, bet_id):
     
     # check if we are the owner of this bet
     # only owner can order a delete call.
-    if get_player_id_in_internal_database(request.name) == bet2delete.owner.id:    
+    if get_player_id_in_internal_database(request.user) == bet2delete.owner.id:    
       bet2delete.delete()
     
     return redirect('/bets')
@@ -68,7 +68,7 @@ def remove_bet(request, bet_id):
     
 @login_required
 def cancel_bet(request, bet_id):
-    player_id = get_player_id_in_internal_database(request.name)  
+    player_id = get_player_id_in_internal_database(request.user)  
   
     # if we are able to find the persons bid on this bet, than delete it.
     # account for multiple returned rows to prevent multiple bets being
@@ -89,7 +89,7 @@ def close_bet(request, bet_id):
     b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')	    
     
     # only allow the owner of the bet to close it
-    if get_player_id_in_internal_database(request.name) == bet2close.owner.id:
+    if get_player_id_in_internal_database(request.user) == bet2close.owner.id:
       
       # check that both sides have equal amount of bidders
       # and also check that the bet has any bidders at all
@@ -106,7 +106,7 @@ def close_bet(request, bet_id):
     
 @login_required    
 def decide_bet(request, bet_id, side, password):
-    player_id = get_player_id_in_internal_database(request.name)
+    player_id = get_player_id_in_internal_database(request.user)
     
     # bet result can be decided by any person that provides the 
     # correct password. It is absolutely important to keep it 
@@ -134,7 +134,7 @@ def decide_bet(request, bet_id, side, password):
     
 @login_required
 def takeside_bet(request, bet_id, side):
-    player_id = get_player_id_in_internal_database(request.name)
+    player_id = get_player_id_in_internal_database(request.user)
     
     # check if the user has already placed his bid on this
     # bet first, to prevent multiple bidding.
@@ -180,7 +180,7 @@ def create_new(request):
     
 @login_required    
 def mybets(request, bet_id=None):
-      player_id = get_player_id_in_internal_database(request.name)
+      player_id = get_player_id_in_internal_database(request.user)
       
       # data structure that will hold information that we pass on
       # to render call
