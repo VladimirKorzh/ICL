@@ -13,8 +13,8 @@ urlpatterns = patterns('',
     url(r'^stacks$',       views.stacks,     name='stacks'),
     url(r'^ratings$',      views.ratings,    name='ratings'),
     
-    url(r'^bets/(?P<action>\w+)/(?P<bet_id>\d+)/$', views.bets, name='viewbet'),
-    
+    url(r'^bets/(?P<action>\w+)/(?P<bet_id>\d+)/$', views.bets),
+    url(r'^bets/(?P<action>\w+)/(?P<bet_id>\d+)/(?P<passwd>\d+)/$', views.bets, name='winnerside'),
     url(r'^bets/createbet$', views.bets, name='createbet'),
     
     # Matchmaking APIs

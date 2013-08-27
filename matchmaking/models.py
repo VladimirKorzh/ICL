@@ -37,6 +37,9 @@ class Bet(models.Model):
       result      = models.CharField(max_length=14, choices=RESULT_CHOICES)
       status      = models.CharField(max_length=14, choices=STATUS_CHOICES)
       
+      
+      sideapass   = models.PositiveSmallIntegerField(default=0)
+      sidebpass   = models.PositiveSmallIntegerField(default=0)
       owner       = models.ForeignKey(Player)
 
 # table used by betsbot 

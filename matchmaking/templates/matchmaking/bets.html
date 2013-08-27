@@ -72,8 +72,13 @@
 			      <td>{{bet.owner}}</td>
 			      
 			      <td>
-				  {% if bet.status|stringformat:"s" == "OPEN"  %} 			      
+				  {% if bet.status|stringformat:"s" == "OPEN"  %}      
 				    <a href="" onclick="JavaScript:takeside('a', {{bet.id}});return false;">Side A</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Side B</a><br><a href="" onclick="JavaScript:cancelbet({{bet.id}});return false;">Cancel my bet</a>
+				  {% endif %}
+				  {% if bet.status|stringformat:"s" == "CLOSED"  %}
+				    {% if bet.passwd %}
+					<br><b>pass:{{bet.passwd}}</b>
+				    {% endif %}
 				  {% endif %}
 			      </td>
 			      

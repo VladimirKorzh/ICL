@@ -34,8 +34,9 @@ function closebetting(bet_id) {
 }
 
 function winnerside(side, bet_id) {
-  if (side == 'a') window.location = "/bets/winnersidea/"+bet_id;  
-  if (side == 'b') window.location = "/bets/winnersideb/"+bet_id;  
+var retVal = prompt("Enter passwd: ", "0000");  
+  if (side == 'a') window.location = "/bets/winnersidea/"+bet_id+"/"+retVal;  
+  if (side == 'b') window.location = "/bets/winnersideb/"+bet_id+"/"+retVal;  
 }
 
 function recalculateexp(){
