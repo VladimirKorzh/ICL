@@ -55,7 +55,7 @@ def get_player_id_in_internal_database(playername):
 
     
 @login_required
-def remove_bet_from_db(request, bet_id):
+def remove_bet(request, bet_id):
     bet2delete = Bet.objects.filter(id__exact=bet_id)[0]
     
     # check if we are the owner of this bet
@@ -67,7 +67,7 @@ def remove_bet_from_db(request, bet_id):
 
     
 @login_required
-def cancel_users_bet(request, bet_id):
+def cancel_bet(request, bet_id):
     player_id = get_player_id_in_internal_database(request.name)  
   
     # if we are able to find the persons bid on this bet, than delete it.
@@ -80,7 +80,7 @@ def cancel_users_bet(request, bet_id):
     
     
 @login_required
-def close_betting(request, bet_id):  
+def close_bet(request, bet_id):  
     # find the bet that we are about to close
     bet2close = Bet.objects.filter(id__exact=bet_id)[0]	    
     
@@ -105,7 +105,7 @@ def close_betting(request, bet_id):
     
     
 @login_required    
-def decide_bet_result(request, bet_id, side, password):
+def decide_bet(request, bet_id, side, password):
     player_id = get_player_id_in_internal_database(request.name)
     
     # bet result can be decided by any person that provides the 
@@ -133,7 +133,7 @@ def decide_bet_result(request, bet_id, side, password):
 
     
 @login_required
-def bet_takeside(request, bet_id, side):
+def takeside_bet(request, bet_id, side):
     player_id = get_player_id_in_internal_database(request.name)
     
     # check if the user has already placed his bid on this
@@ -162,15 +162,9 @@ def bet_takeside(request, bet_id, side):
       
     bid.save()    
     return redirect('/bets')      
-      
-#########################################################################
-# END OF BETTING PART
-#########################################################################
-      
-      
-      
+            
 @login_required
-def create_new_bet(request):
+def create_new(request):
     # only allow creation of new bets on POST requests
     # otherwise skip the whole thing.
     if request.method == 'POST':
@@ -259,6 +253,10 @@ def mybets(request, bet_id=None):
       # presort the results so that the higher ids are on top.
       data['results'] = sorted(data['results'], key=lambda bet:bet.id, reverse=True)      
       return render(request, 'matchmaking/bets.html', data)    
+
+#########################################################################
+# END OF BETTING PART
+#########################################################################
       
           
 from datetime import tzinfo, timedelta, datetime
