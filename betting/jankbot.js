@@ -46,7 +46,7 @@ bot.logOn(params['accountName'],params['password'], params['shaSentryfile'], par
 bot.on('loggedOn', function() {
 	console.log('loggedOn');
 	bot.setPersonaState(Steam.EPersonaState.Online);
-	bot.setPersonaName(myName);
+	bot.setPersonaName(DISPLAY_NAME);
 });
 
 
