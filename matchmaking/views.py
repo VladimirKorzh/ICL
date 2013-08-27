@@ -176,7 +176,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	    
       if action == 'cancelbet':
 	    for each in Bidder.objects.filter(status__exact='COLLECTION'):
-	      if each.player.nickname == name and each.bet.id == bet_id:
+	      if str(each.player.nickname) == str(name) and each.bet.id == bet_id:
 		each.delete()
 	      
 	    return redirect('/bets')
@@ -186,7 +186,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	    res = Bidder.objects.filter(id__exact=bet_id)
 	    
 	    for each in res:
-	      if each.player.nickname == name:
+	      if str(each.player.nickname) == str(name):
 		  print 'bidder matched -> updating'
 		  bid = each
 		  break
