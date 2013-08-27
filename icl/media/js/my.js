@@ -13,8 +13,10 @@ $( document ).ajaxStop(function() {
 
 
 function winnerside(side, bet_id) {
-var retVal = prompt("Enter passwd: ", "0000");  
-  window.location = "/bets/decide_bet/"+bet_id+"/"+side+"/"+retVal;  
+var retVal = prompt("Enter password: ", "0000"); 
+  if (retVal != 'null') {
+    window.location = "/bets/decide_bet/"+bet_id+"/"+side+"/"+retVal;  
+  }
 }
 
 function recalculateexp(){
