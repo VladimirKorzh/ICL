@@ -73,8 +73,9 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	  selection.extend( Bet.objects.filter(owner__nickname__exact=name) )
 	
 	  for each in Bidder.objects.filter(player__nickname__exact=name):
-	    if each not in selection:
-	      selection.extend(Bet.objects.filter(id__exact=each.bet_id))
+	      bet = Bet.objects.filter(id__exact=each.bet_id)
+	      if bet not in selection:
+		selection.extend(bet)
 
 	  for each in selection:
 	    each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
