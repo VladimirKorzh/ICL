@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
 from matchmaking.models import Player
+from betting.models import Bet, Bidder 
+
 
 import MumbleWrapper
 import ValveApiWrapper
@@ -85,7 +87,20 @@ def updateUserInfo(request):
     print "Player logged in:", player.nickname, player.exp
 
 
-from matchmaking.models import Bet, Bidder 
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 def test_create_bidder(betid, playerid):
   test_bidder = Bidder()

@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 
 from betting.models import Bet, Bidder
 from matchmaking.models import Player
+from matchmaking import mm
+
 
 from random import randint
 
