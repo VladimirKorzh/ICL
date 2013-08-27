@@ -165,6 +165,8 @@ def takeside_bet(request, bet_id, side):
             
 @login_required
 def create_new(request):
+    player_id = get_player_id_in_internal_database(request.user)
+  
     # only allow creation of new bets on POST requests
     # otherwise skip the whole thing.
     if request.method == 'POST':
@@ -173,7 +175,7 @@ def create_new(request):
 	bet.item_rarity = request.POST['rarity']
 	bet.result      = 'NOTDECIDED'
 	bet.status      = 'OPEN'
-	bet.owner       = Player.objects.get(nickname=name)
+	bet.owner       = Player.objects.get(id__exact=player_id)
 	bet.save()
 	
     return redirect('/bets')  
@@ -233,7 +235,7 @@ def mybets(request, bet_id=None):
 	each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
 	  
 	# mark the bet if the requester is its owner
-	if each.owner == Player.objects.get(nickname = name):
+	if each.owner == Player.objects.get(id__exact=player_id):
 	  each.isowner = True
 		
 	# show side passwords only if the person if on that side.
