@@ -281,7 +281,6 @@ function readdb() {
 	  if (err) throw err;
 	    
 	  if (rows.length == 0) {
-	      console.log(DICT.BET_RESPONSES.no_players_waiting_to_bet);	      
 	      return;
 	  }
 	  else {
@@ -317,7 +316,6 @@ function readdb() {
   
 	  if (rows.length == 0) {
 	      // bet not found
-	      console.log(DICT.BET_RESPONSES.no_players_waiting_for_prizes);
 	      return;
 	  }
 	  else {		    
