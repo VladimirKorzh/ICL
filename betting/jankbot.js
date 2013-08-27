@@ -83,6 +83,10 @@ bot.on('sessionStart', function(otherClient) {
   
   // variable to hold other client info 
   client = otherClient; 
+  
+  // structure to hold items offered by trade partner
+  trade_window_items = []  
+  
   console.log('sessionStart with', otherClient);
 
   steamTrade.open(otherClient, function(){		  
@@ -135,11 +139,8 @@ bot.on('sessionStart', function(otherClient) {
 
 steamTrade.on('offerChanged', function(added, item) {
     console.log('offerChanged ' + (added ? 'added ' : 'removed ') + item.name);
-    
-    // structure to hold items offered by trade partner
-    trade_window_items = []
-    
-    itemtags = item.tags;	
+        
+    itemtags = item.tags;
     correct_item = false;
     correct_rariry = false;
     
