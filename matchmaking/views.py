@@ -53,36 +53,82 @@ def bets(request, bet_id=None, action='mybets'):
       data['results'] = []      
       dataset = []
       
+      if request.method == 'POST':
+	print 'createbet'	  
+	print 'request post'
+	print request.POST
+	bet = Bet()
+	bet.amount = request.POST['amount']
+	bet.item_rarity = request.POST['rarity']
+	bet.result = 'NOTDECIDED'
+	bet.status = 'OPEN'
+	bet.owner = Player.objects.get(nickname=name)
+	bet.save()
+	return redirect('/bets')	
       
       
       if action == 'mybets':
-	for each in Bet.objects.filter(owner__nickname__exact=name):
-	  each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
-	  each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
-	  if each.owner == Player.objects.get(nickname = name):
-	    each.isowner = True
-	  data['results'].append(each)
+	  for each in Bet.objects.filter(owner__nickname__exact=name):
+	    each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
+	    each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
+	    if each.owner == Player.objects.get(nickname = name):
+	      each.isowner = True
+	    data['results'].append(each)
+	    
+	  data['results'] = sorted(data['results'], key=lambda bet:bet.id, reverse=True)
+	  
+	  return render(request, 'matchmaking/bets.html', data)
+	
+      #if action == 'show':	
+	  #data['results'] = []
+	  
+	  #for each in Bet.objects.filter(id__exact=bet_id):
+	    #each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
+	    #each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
+	    #if each.owner == Player.objects.get(nickname = name):
+	      #each.isowner = True	  
+	    #data['results'].append(each)	
+	  #return render(request, 'matchmaking/bets.html', data)	
 
-	
-      if action == 'show':	
-	data['results'] = []
-	
-	for each in Bet.objects.filter(id__exact=bet_id):
-	  each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
-	  each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
-	  if each.owner == Player.objects.get(nickname = name):
-	    each.isowner = True	  
-	  data['results'].append(each)	
+	    
 		
-      if (action == 'cancelbet'):
-	  res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
-	  if len( res ) == 0:
-	    print 'nothing to cancel'
-	  else:
-	    res[0].delete()
-	  return redirect('/bets/show/'+bet_id)
+      if action == 'deletebet':
+	    bet2delete = Bet.objects.filter(id__exact=bet_id)[0]
+	    bet2delete.delete()
+	    return redirect('/bets')	
+	    
+		
+      if action == 'closebetting':
+	    bet2close = Bet.objects.filter(id__exact=bet_id)[0]
+	    bet2close.status = 'CLOSED'
+	    bet2close.save()
+	    return redirect('/bets')	
+		
+      if action == 'winnersidea' or action == 'winnersideb':
+	    res = Bet.objects.filter(id__exact=bet_id)[0]
+	    print 'setting result', res.id
+	    
+	    if action == 'winnersidea':
+	      res.result = 'A'
+	      print 'to a'
+	      
+	    if action == 'winnersideb':	      
+	      res.result = 'B'
+	      print 'to b'
+	    
+	    res.status = 'PRIZES'
+	    res.save()
+	    return redirect('/bets')	
+	    
+      if action == 'cancelbet':
+	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
+	    if len( res ) == 0:
+	      print 'nothing to cancel'
+	    else:
+	      res[0].delete()
+	    return redirect('/bets')	  
 	
-      if (action == 'takesidea' or action == 'takesideb') and bet_id:
+      if action == 'takesidea' or action == 'takesideb':
 	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
 	    if len( res ) == 0:
 		print 'no bidders matched -> creating new'
@@ -100,12 +146,8 @@ def bets(request, bet_id=None, action='mybets'):
 	    if action == 'takesideb':
 	      bid.side = 'B'
 	    bid.save()	    
-	    return redirect('/bets/show/'+bet_id)
+	    return redirect('/bets')
 
-	
-	
-
-      return render(request, 'matchmaking/bets.html', data)
 
 @login_required 
 def ratings(request):
