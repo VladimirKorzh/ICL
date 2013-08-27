@@ -13,6 +13,8 @@ import mm
 import MumbleWrapper
 import ValveApiWrapper
 
+from random import randint
+
 
 def landing(request):
   if not request.user.is_authenticated():
@@ -42,7 +44,7 @@ def stacks(request):
       return render(request, 'matchmaking/stacks.html', data)
 
 @login_required
-def bets(request, bet_id=None, action='mybets'):
+def bets(request, bet_id=None, action='mybets', passwd=None):
   # find id
   # create bet
   # mybets
@@ -71,8 +73,19 @@ def bets(request, bet_id=None, action='mybets'):
 	  for each in Bet.objects.filter(owner__nickname__exact=name):
 	    each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
 	    each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
+	      
 	    if each.owner == Player.objects.get(nickname = name):
 	      each.isowner = True
+	    	    
+	    if len(Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A', player__nickname__exact=name)):
+	      each.passwd = each.sideapass
+	      
+	    if len(Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B', player__nickname__exact=name)):
+	      each.passwd = each.sidebpass	      
+	      
+	    each.sideapass = ''
+	    each.sidebpass = ''	      
+	      
 	    data['results'].append(each)
 	    
 	  data['results'] = sorted(data['results'], key=lambda bet:bet.id, reverse=True)
@@ -85,9 +98,21 @@ def bets(request, bet_id=None, action='mybets'):
 	  for each in Bet.objects.filter(id__exact=bet_id):
 	    each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
 	    each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
+	    
 	    if each.owner == Player.objects.get(nickname = name):
-	      each.isowner = True	  
-	    data['results'].append(each)	
+	      each.isowner = True
+	    	    
+	    if len(Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A', player__nickname__exact=name)):
+	      each.passwd = each.sideapass
+	      
+	    if len(Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B', player__nickname__exact=name)):
+	      each.passwd = each.sidebpass	      
+	      
+	    each.sideapass = ''
+	    each.sidebpass = ''
+	    
+	    data['results'].append(each)
+	    
 	  return render(request, 'matchmaking/bets.html', data)	
 
 	    
@@ -99,25 +124,33 @@ def bets(request, bet_id=None, action='mybets'):
 	    
 		
       if action == 'closebetting':
-	    bet2close = Bet.objects.filter(id__exact=bet_id)[0]
-	    bet2close.status = 'CLOSED'
-	    bet2close.save()
+	    bet2close = Bet.objects.filter(id__exact=bet_id)[0]	    
+	    a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
+	    b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')	    
+	    if len(a) == len(b) and len(a) and len(b):
+	      bet2close.status = 'CLOSED'
+	      bet2close.sideapass = randint(1000, 9999)
+	      bet2close.sidebpass = randint(1000, 9999)
+	      bet2close.save()
 	    return redirect('/bets')	
-		
+
       if action == 'winnersidea' or action == 'winnersideb':
 	    res = Bet.objects.filter(id__exact=bet_id)[0]
-	    print 'setting result', res.id
+	    res.status = 'PRIZES'	    
+	    user_passwd = passwd
 	    
-	    if action == 'winnersidea':
+	    print res.sideapass, res.sidebpass
+	    print user_passwd == res.sideapass, user_passwd == res.sidebpass
+	    print action, user_passwd
+	    
+	    if action == 'winnersidea' and str(user_passwd) == str(res.sidebpass):
 	      res.result = 'A'
-	      print 'to a'
-	      
-	    if action == 'winnersideb':	      
+	      res.save()
+	     
+	    if action == 'winnersideb' and str(user_passwd) == str(res.sideapass):
 	      res.result = 'B'
-	      print 'to b'
+	      res.save()
 	    
-	    res.status = 'PRIZES'
-	    res.save()
 	    return redirect('/bets')	
 	    
       if action == 'cancelbet':
