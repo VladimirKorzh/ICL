@@ -172,8 +172,9 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
 	    if len( res ) == 0:
 	      print 'nothing to cancel'
-	    else:
-	      res[0].delete()
+	    for each in res:
+	      each.delete()
+	      
 	    return redirect('/bets')	  
 	
       if action == 'takesidea' or action == 'takesideb':
