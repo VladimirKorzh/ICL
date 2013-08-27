@@ -80,6 +80,9 @@ bot.on('tradeProposed', function(tradeID, otherClient) {
 // Gets called when trade window appears on the screen
 // Here we place items that award to the player
 bot.on('sessionStart', function(otherClient) {
+  
+  // variable to hold other client info 
+  client = otherClient; 
   console.log('sessionStart with', otherClient);
 
   steamTrade.open(otherClient, function(){		  
