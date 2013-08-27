@@ -216,4 +216,4 @@ def mybets(request):
 	
       # presort the results so that the higher ids are on top.
       data['results'] = sorted(data['results'], key=lambda bet:bet.id, reverse=True)      
-      return render(request, 'matchmaking/bets.html', data)    
+      return render(request, 'betting/bets.html', data)    
