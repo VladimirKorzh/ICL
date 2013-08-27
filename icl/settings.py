@@ -120,7 +120,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_PATH, '..', 'matchmaking/templates/matchmaking')
+    os.path.join(PROJECT_PATH, 'templates')
 )
 
 INSTALLED_APPS = (
@@ -130,9 +130,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
     'matchmaking',
+    'betting',
     'social_auth'
 )
 
@@ -154,13 +153,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 SOCIAL_AUTH_ENABLED_BACKENDS = ('steam')
 
-SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
-SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH = 16
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH     = 16
+SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH       = 16
 SOCIAL_AUTH_ASSOCIATION_SERVER_URL_LENGTH = 16
-SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH     = 16
 
 SOCIAL_AUTH_SESSION_EXPIRATION = False
-SOCIAL_AUTH_CREATE_USERS = False
+SOCIAL_AUTH_CREATE_USERS       = False
 
 LOGIN_URL          = '/'
 LOGIN_REDIRECT_URL = '/'
