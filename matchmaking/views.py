@@ -79,23 +79,23 @@ def bets(request, bet_id=None, action='mybets'):
 	  
 	  return render(request, 'matchmaking/bets.html', data)
 	
-      #if action == 'show':	
-	  #data['results'] = []
+      if action == 'show':	
+	  data['results'] = []
 	  
-	  #for each in Bet.objects.filter(id__exact=bet_id):
-	    #each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
-	    #each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
-	    #if each.owner == Player.objects.get(nickname = name):
-	      #each.isowner = True	  
-	    #data['results'].append(each)	
-	  #return render(request, 'matchmaking/bets.html', data)	
+	  for each in Bet.objects.filter(id__exact=bet_id):
+	    each.a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
+	    each.b = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='B')
+	    if each.owner == Player.objects.get(nickname = name):
+	      each.isowner = True	  
+	    data['results'].append(each)	
+	  return render(request, 'matchmaking/bets.html', data)	
 
 	    
 		
       if action == 'deletebet':
 	    bet2delete = Bet.objects.filter(id__exact=bet_id)[0]
 	    bet2delete.delete()
-	    return redirect('/bets')	
+	    return redirect('/bets')
 	    
 		
       if action == 'closebetting':
