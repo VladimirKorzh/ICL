@@ -205,10 +205,10 @@ steamTrade.on('ready', function() {
       }
 });
 
-steamTrade.on('end', function(result) {
-      console.log('trade', result);
+steamTrade.on('end', function(result, items) {
+      console.log('trade', result.toString());
       bot.removeFriend(current_task.uid);
-      if (result == 'complete') {
+      if (result.toString() == 'complete') {
 	    current_task = '';
 	    if (current_task.type == 'collect'){
 		  statement = "UPDATE matchmaking_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
