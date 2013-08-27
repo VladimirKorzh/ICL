@@ -121,7 +121,7 @@ bot.on('sessionStart', function(otherClient) {
 					      return false;
 				      }
 			      });      
-			      steamTrade.addItems(itemsmatching.slice(0, current_task.amount));
+			      steamTrade.addItems(itemsmatching.slice(0, current_task.amount*2));
 			});
 		}
 		if (current_task.type == 'collect'){
