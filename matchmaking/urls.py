@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     
     url(r'^bets/(?P<action>\w+)/(?P<bet_id>\d+)/$', views.bets, name='viewbet'),
     
+    url(r'^bets/createbet$', views.bets, name='createbet'),
+    
     # Matchmaking APIs
     url(r'^ajax/recalculateexp', mm.recalculateexp,  name='recalculateexp'),
     #url(r'^matchmaking/getchannelsinfo$', mm.getchannelsinfo,   name='getchannelsinfo')
