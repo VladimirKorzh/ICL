@@ -54,8 +54,8 @@
 				  {{bet.status}}
 				  {% if bet.isowner %} 
 				      {% if bet.status|stringformat:"s" == "OPEN"  %} 
-					  <br><a href="" onclick="JavaScript:closebetting({{bet.id}}); return false;">Close Betting</a>  
-					  <br><a href="" onclick="JavaScript:deletebet({{bet.id}}); return false;">DELETE BET</a>
+					  <br><a href="bets/close_bet/{{bet.id}}">Close Betting</a>  
+					  <br><a href="bets/remove_bet/{{bet.id}}">DELETE BET</a>
 				      {% endif %}
 				  {% endif %}
 			      </td>
@@ -63,8 +63,8 @@
 			      <td>
 				  {{bet.result}}{% if bet.status|stringformat:"s" != "OPEN"  %}
 				  {% if bet.result|stringformat:"s" == "NOTDECIDED" %}
-				    <br><a href="" onclick="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
-				    <br><a href="" onclick="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
+				    <br><a href="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
+				    <br><a href="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
 				  {% endif %}{% endif %}
 			      </td>
 			      
@@ -74,7 +74,9 @@
 			      
 			      <td>
 				  {% if bet.status|stringformat:"s" == "OPEN"  %}      
-				    <a href="" onclick="JavaScript:takeside('a', {{bet.id}});return false;">Side A</a><br><a href="" onclick="JavaScript:takeside('b', {{bet.id}});return false;">Side B</a><br><a href="" onclick="JavaScript:cancelbet({{bet.id}});return false;">Cancel my bet</a>
+				    <a href="bets/takeside_bet/{{bet.id}}/a/">Side A</a><br>
+				    <a href="bets/takeside_bet/{{bet.id}}/b/">Side B</a><br>
+				    <a href="bets/cancel_bet/{{bet.id}}/">Cancel my bet</a>
 				  {% endif %}
 				  {% if bet.status|stringformat:"s" == "CLOSED"  %}
 				    {% if bet.passwd %}
