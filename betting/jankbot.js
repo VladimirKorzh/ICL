@@ -220,15 +220,7 @@ steamTrade.on('ready', function() {
 // result variable is supposed to hold the string representing
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
-      console.log( result == 'complete' );
-      console.log( result === 'complete' );  
-      console.log('trade', result.toString());
-            
-      // Since steam has a limitation on the amount of friend one might have
-      // we have to remove people from friends list after each transaction
-      bot.removeFriend(current_task.uid);
-      
-      if (result == 'complete') {    // TODO
+      if (result === 'complete') {    // TODO
 	    current_task = '';
 	    if (current_task.type == 'collect') {
 		  statement = "UPDATE betting_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
@@ -244,6 +236,10 @@ steamTrade.on('end', function(result, items) {
 		console.log('marked as AWARDED');
 	    }
       }
+            
+      // Since steam has a limitation on the amount of friend one might have
+      // we have to remove people from friends list after each transaction
+      bot.removeFriend(current_task.uid);     
 });
 
 // DON'T Respond to messages at all. Simply ignore them 
@@ -252,9 +248,9 @@ bot.on('message', function(source, message, type, chatter) {
 });
 
 // Add friends automatically.
-bot.on('relationship', function(other, type){
-      console.log('friend invite received!');
+bot.on('relationship', function(other, type){      
       if(type == Steam.EFriendRelationship.PendingInvitee) {
+	console.log('friend invite received!');
 	bot.addFriend(other);
       }
 });
