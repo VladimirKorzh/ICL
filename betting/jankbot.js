@@ -220,6 +220,7 @@ steamTrade.on('ready', function() {
 // result variable is supposed to hold the string representing
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
+      console.log('FUCKING SHIT IS HERE');
       if (result === 'complete') {    // TODO
 	    current_task = '';
 	    if (current_task.type == 'collect') {
@@ -235,8 +236,9 @@ steamTrade.on('end', function(result, items) {
 		statement = "UPDATE betting_bidder SET status='AWARDED' WHERE player_id="+current_task.player_id+" AND bet_id="+current_task.bet_id;
 		console.log('marked as AWARDED');
 	    }
+	    console.log('FUCKING SHIT IS HERE');
       }
-            
+      console.log('FUCKING SHIT IS HERE');      
       // Since steam has a limitation on the amount of friend one might have
       // we have to remove people from friends list after each transaction
       bot.removeFriend(current_task.uid);     
