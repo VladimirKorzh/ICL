@@ -146,8 +146,8 @@ steamTrade.on('offerChanged', function(added, item) {
 	      if (tag.category_name == 'Rarity') {
 		    if ( tag.name == current_task.item_rarity ){		      
 		      correct_rariry = true;
-		      item_rarity_value = tag.name;
 		    }
+		    item_rarity_value = tag.name;
 	      }
 	});
 	  
