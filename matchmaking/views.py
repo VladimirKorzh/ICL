@@ -157,7 +157,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 
       if action == 'winnersidea' or action == 'winnersideb':
 	    res = Bet.objects.filter(id__exact=bet_id)[0]
-	    res.status = 'PRIZES'	    
+	    res.status = 'PRIZES'
 	    user_passwd = passwd
 	    
 	    print res.sideapass, res.sidebpass
@@ -182,12 +182,13 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	    return redirect('/bets')
 	
       if action == 'takesidea' or action == 'takesideb':
-	    res = Bidder.objects.filter(id__exact=bet_id)
 	    bid = None
+	    res = Bidder.objects.filter(id__exact=bet_id)
+	    
 	    for each in res:
-	      if res.player.nickname == name:
+	      if each.player.nickname == name:
 		  print 'bidder matched -> updating'
-		  bid = res
+		  bid = each
 		  break
 	    
 	    if bid == None:
@@ -201,7 +202,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	      bid.side = 'A'
 	    if action == 'takesideb':
 	      bid.side = 'B'
-	    bid.save()	    
+	    bid.save()
 	    
 	    return redirect('/bets')
 
