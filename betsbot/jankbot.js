@@ -469,7 +469,7 @@ function work(){
       else if (current_time - task_start_time > 20) {
 	  console.log('Task time expired')
 	  bot.cancelTrade(current_task.uid);
-	  SteamTrade.cancel();
+// 	  SteamTrade.cancel();
 	  current_task.tries -= 1;
 	  actions.push(current_task);
 	  current_task = '';
