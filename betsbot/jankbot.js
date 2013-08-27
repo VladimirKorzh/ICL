@@ -50,6 +50,7 @@ var bot_status = 'free'; // busy - when trading
 var current_task = '';   // holds current task of the bot
 var task_start_time = '';
 var actions = [];
+var maxnumtries = 3
 
 bot.on('debug', console.log);
 
@@ -146,8 +147,8 @@ steamTrade.on('offerChanged', function(added, item) {
 	      if (tag.category_name == 'Rarity') {
 		    if ( tag.name == current_task.item_rarity ){		      
 		      correct_rariry = true;
-		      item_rarity_value = tag.name;
 		    }
+		    item_rarity_value = tag.name;
 	      }
 	});
 	  
@@ -396,7 +397,8 @@ function readdb() {
 				"nickname":    row.nickname,
 				"uid":         row.uid,
 				"bet_id":      row.bet_id,
-				"player_id":   row.player_id
+				"player_id":   row.player_id,
+				"tries":       maxnumtries
 				});
 		  
 		  // mark the row as being processed 
@@ -430,7 +432,8 @@ function readdb() {
 				"nickname":    row.nickname,
 				"uid":         row.uid,
 				"bet_id":      row.bet_id,
-				"player_id":   row.player_id
+				"player_id":   row.player_id,
+				"tries":       maxnumtries
 				});
 		  
 		  // mark the row as being processed 
@@ -441,7 +444,8 @@ function readdb() {
 	      });
 	  }
     });
-    console.log('Actions: ', actions);    
+    console.log('Actions: ', actions);   
+    console.log('current_task:', current_task);
 } // end refresh function
 
 
@@ -451,13 +455,22 @@ function work(){
 	  if (actions.length == 0) return;
 	  
 	  current_task = actions.pop();
-	  console.log('Started task ' + current_task.type + ' ' + current_task.nickname);	  
-	  bot.trade(current_task.uid);
-	  task_start_time = Math.round(+new Date()/1000);
+	  if (current_task.tries > 0) {
+	    current_task.tries -= 1;
+	    console.log('Started task ' + current_task.type + ' ' + current_task.nickname+' '+current_task.tries);
+	    bot.trade(current_task.uid);
+	    task_start_time = Math.round(+new Date()/1000);
+	  }
+	  else {
+	    current_task = '';
+	    work();
+	  }
       }
       else if (current_time - task_start_time > 20) {
 	  console.log('Task time expired')
 	  bot.cancelTrade(current_task.uid);
+	  SteamTrade.cancel();
+	  current_task.tries -= 1;
 	  actions.push(current_task);
 	  current_task = '';
 	  work();
