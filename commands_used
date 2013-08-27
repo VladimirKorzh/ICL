@@ -27,6 +27,7 @@
 # install django-social-auth module
   sudo pip install django-social-auth
   sudo apt-get install python-openid python-oauth2
+  sudo pip install pytz  
   
 # install sqlite3 for database administration
   sudo apt-get install sqlite3
