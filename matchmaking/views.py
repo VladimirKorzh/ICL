@@ -69,13 +69,21 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
       
       
       if action == 'mybets':
+	  selection_bets_ids = []
 	  selection = []
-	  selection.extend( Bet.objects.filter(owner__nickname__exact=name) )
+	  	  
+	  ownbets = Bet.objects.filter(owner__nickname__exact=name)	  
+	  for each in ownbets:
+	    selection_bets_ids.append( each.id )
+	    selection.append(each)
 	
-	  for each in Bidder.objects.filter(player__nickname__exact=name):
-	      bet = Bet.objects.filter(id__exact=each.bet_id)
-	      if bet not in selection:
-		selection.extend(bet)
+	  ownbids = Bidder.objects.filter(player__nickname__exact=name)
+	  for each in ownbids:
+	    bet = Bet.objects.filter(id__exact=each.bet_id)[0]	    
+	    if bet.id not in selection_bets_ids:  
+	      selection_bets_ids.append(bet.id)
+	      selection.append(each)
+	  
 
 	  for each in selection:
 	    each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
