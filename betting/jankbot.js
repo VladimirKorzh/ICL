@@ -165,7 +165,7 @@ steamTrade.on('offerChanged', function(added, item) {
     if (!correct_item || !correct_rariry) {	      
       msg = message + ' is not accepted. Wrong Rarity or Item Type.';
       console.log(msg);
-      SteamTrade.chatMsg(msg);
+      bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
       return;
     }
 
@@ -174,7 +174,7 @@ steamTrade.on('offerChanged', function(added, item) {
       trade_window_items.push(item);    	      
       msg = message + ' is accepted.';
       console.log(msg);
-      SteamTrade.chatMsg(msg);
+      bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
     }
     
     // if the user has removed a valid item
@@ -185,12 +185,12 @@ steamTrade.on('offerChanged', function(added, item) {
       
       msg = message + ' was accepted. But you have removed it.';
       console.log(msg);
-      SteamTrade.chatMsg(msg);
+      bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
     }
     items_left = current_task.amount - trade_window_items.length
     msg = 'Items left to add: ' + items_left;
     console.log(msg);
-    SteamTrade.chatMsg(msg);
+    bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
 });
 
 
