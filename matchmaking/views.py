@@ -137,17 +137,9 @@ def takeside_bet(request, bet_id, side):
     player_id = get_player_id_in_internal_database(request.user)
     
     # check if the user has already placed his bid on this
-    # bet first, to prevent multiple bidding.
-    bid = None
-    res = Bidder.objects.filter(id__exact=bet_id, player__id__exact=player_id)
-
-    # if we have matched any bidders at all we'd rather delete them all
-    # to prevent any bugs related to dublication at all.    
-    if len(res):
-      #print 'Bidder found -> updating his record'
-      for each in res:
-	each.delete()
-            
+    # bet first, to prevent multiple bidding.    
+    cancel_bet(request, bet_id)
+    
     # if we haven't matched any bidders than we have to create a new bidder
     # for this bet and this user. 
     bid = Bidder()
@@ -181,7 +173,7 @@ def create_new(request):
     return redirect('/bets')  
     
 @login_required    
-def mybets(request, bet_id=None):
+def mybets(request):
       player_id = get_player_id_in_internal_database(request.user)
       
       # data structure that will hold information that we pass on
@@ -221,10 +213,17 @@ def mybets(request, bet_id=None):
       
       # if the user has provided a specific bet id to show, then add it
       # to selection list too
-      if bet_id:
-	for each in Bet.objects.filter(id__exact=bet_id):
-	  selection_bets_ids.append(each.id)
-	  selection.append(each)	  
+      if request.method == 'POST':
+	bet_id = None
+	# make sure the value is not empty
+	if request.POST['bet_id'] != '':
+	  bet_id = request.POST['bet_id']      
+	  
+	if bet_id:
+	  for each in Bet.objects.filter(id__exact=bet_id):
+	    if each.id not in selection_bets_ids:
+	      selection_bets_ids.append(each.id)
+	      selection.append(each)
       
       # after we have prepared our selection we have to fill in some extra
       # information in.
