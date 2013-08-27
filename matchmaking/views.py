@@ -54,6 +54,11 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
       data['results'] = []      
       dataset = []
       
+      print 'bet_id:',bet_id
+      print 'action:', action
+      print 'passwd:', passwd
+      
+      
       if request.method == 'POST':
 	print 'createbet'	  
 	print 'request post'
