@@ -30,7 +30,8 @@
 	</div>
 	
 	<div class="grid_4" id="find">
-	    <form action="/bets" method="POST">	
+	    <form action="/bets" method="POST">
+		{% csrf_token %}
 		<table>
 		    <tr><th>Id</th><th>Actions</th></tr>
 		    <tr><td><input id="bet_id" type="text" name="bet_id"></td>
