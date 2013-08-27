@@ -216,6 +216,8 @@ steamTrade.on('end', function(result) {
 		  db.run(statement, function(err){
 		      if (err) throw err;
 		  });
+		  
+		  console.log('marked as SUBMITTED');
 	    }
       }
       if (result == 'failed'){
