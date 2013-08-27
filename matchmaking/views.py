@@ -57,6 +57,7 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
       print 'bet_id:',bet_id
       print 'action:', action
       print 'passwd:', passwd
+      print 'name:', name
       
       
       if request.method == 'POST':
@@ -171,19 +172,14 @@ def bets(request, bet_id=None, action='mybets', passwd=None):
 	      res.result = 'B'
 	      res.save()
 	    
-	    return redirect('/bets')	
+	    return redirect('/bets')
 	    
       if action == 'cancelbet':
-	    print bet_id, name
-	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
-	    print len(res)
-	    if len( res ) == 0:
-	      print 'nothing to cancel'
-	    else:
-	      for each in res:
+	    for each in Bidder.objects.all():
+	      if each.player.nickname == name and each.bet.id == bet_id:
 		each.delete()
 	      
-	    return redirect('/bets')	  
+	    return redirect('/bets')
 	
       if action == 'takesidea' or action == 'takesideb':
 	    res = Bidder.objects.filter(player__nickname__exact=name, id__exact=bet_id)
