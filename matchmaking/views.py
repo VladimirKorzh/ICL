@@ -221,8 +221,9 @@ def mybets(request):
 	  
 	if bet_id:
 	  for each in Bet.objects.filter(id__exact=bet_id):
-	    selection_bets_ids.append(each.id)
-	    selection.append(each)
+	    if each.id not in selection_bets_ids:
+	      selection_bets_ids.append(each.id)
+	      selection.append(each)
       
       # after we have prepared our selection we have to fill in some extra
       # information in.
