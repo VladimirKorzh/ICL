@@ -19,6 +19,7 @@ def get_player_id_in_internal_database(playername):
 def update_bet_status(request, bet_id):
   # function that allows bet to transition from one state to
   # the other. Open -> Collecting -> Ready -> Awarding -> Done
+  print 'updating bet status:', bet_id
   
   # find the bet that we are dealing with
   bet = Bet.objects.filter(id__exact=bet_id)[0]
