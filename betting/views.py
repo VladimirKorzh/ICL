@@ -248,6 +248,10 @@ def mybets(request):
 	      selection_bets_ids.append(each.id)
 	      selection.append(each)
       
+      # update bet status for each bet that we are looking at
+      for each in selection_bets_ids:
+	  update_bet_status(request, each)
+      
       # after we have prepared our selection we have to fill in some extra
       # information in.
       for each in selection:

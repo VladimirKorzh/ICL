@@ -285,47 +285,44 @@ process.on( 'SIGINT', function() {
   process.exit( )
 });
 
-
-function get_player_id(uid){
-    statement = "SELECT player.id FROM matchmaking_player as player WHERE player.uid="+uid;
-    player_id = 0;
-    db.each( function(err, row){
-      if (err) throw err;
-      player_id = row.id;
-    });
-    return player_id;
-}
-
 function check_db(uid) {
   console.log('Checking for tasks related to ', uid);  
   // returns all bidders that are not OK, which means they are waiting
   // either for collection or awarding.
   
-  player_id = get_player_id(uid);
-  statement = "SELECT bidder.status, bet.amount, bet.rarity, bet.id as bet_id FROM betting_bidder as bidder, betting_bet as bet WHERE bidder.player_id="+player_id+" AND bet.id = bidder.bet_id AND bidder.status != 'OK'";
+  statement = "SELECT player.id as id FROM matchmaking_player as player WHERE player.uid="+uid;
+  player_id = 0;
   
-  
-  db.all(statement, function (err, rows) {
+  db.each(statement, function(err, row, player_id){
       if (err) throw err;
-	  
-      if (rows.length == 0) {
-	console.log('nothing has been found');
-	return;
-      }
-      else {
-	rows.forEach( function(row) {
-	  console.log('found', row);
-	  actions.push({"type":  row.status,
-			"amount": row.amount,
-			"rarity": row.rarity,
-			"uid":    uid,
-			"bet_id": row.bet_id,
-			"player_id": player_id
-		      });
-	}); // end for each row that we've found
-      } // end if found rows
-      keep_or_remove(uid);	
-  }); // end db.all
+      console.log(row.id);      
+      player_id = row.id; 
+
+      statement = "SELECT bidder.status, bet.amount, bet.rarity, bet.id as bet_id FROM betting_bidder as bidder, betting_bet as bet WHERE bidder.player_id="+player_id+" AND bet.id = bidder.bet_id AND bidder.status != 'OK'";
+      
+      console.log(statement);
+      db.all(statement, function (err, rows) {
+	  if (err) throw err;
+	      
+	  if (rows.length == 0) {
+	    console.log('nothing has been found');
+	    return;
+	  }
+	  else {
+	    rows.forEach( function(row) {
+	      console.log('found', row);
+	      actions.push({"type":  row.status,
+			    "amount": row.amount,
+			    "rarity": row.rarity,
+			    "uid":    uid,
+			    "bet_id": row.bet_id,
+			    "player_id": player_id
+			  });
+	    }); // end for each row that we've found
+	  } // end if found rows
+	  keep_or_remove(uid);	
+      }); // end db.all    
+  }); // end for each player_id row
 } // end check_db
 
 function keep_or_remove(uid) {
