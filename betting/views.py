@@ -121,6 +121,7 @@ def decide_bet(request, bet_id, side, password):
     # correct password. It is absolutely important to keep it 
     # this way in order to avoid scams.
     
+    print bet_id, side, password
     # find the bet that we are about to decide result of
     res = Bet.objects.filter(id__exact=bet_id)[0]
     
@@ -185,7 +186,7 @@ def create_new(request):
     if request.method == 'POST':
 	bet = Bet()
 	bet.amount      = request.POST['amount']
-	bet.item_rarity = request.POST['rarity']
+	bet.rarity      = request.POST['rarity']
 	bet.result      = '?'
 	bet.status      = 'Open'
 	bet.owner       = Player.objects.get(id__exact=player_id)

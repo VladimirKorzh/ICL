@@ -15,7 +15,7 @@ $( document ).ajaxStop(function() {
 function winnerside(side, bet_id) {
   var pass=prompt("Enter password: ", "????"); 
   if (pass!=null && pass!="") {
-    alert(retVal);
+//     alert(pass);
     window.location = "/bets/decide_bet/"+bet_id+"/"+side+"/"+pass;  
   }
 }
