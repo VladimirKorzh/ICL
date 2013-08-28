@@ -19,18 +19,22 @@ def get_player_id_in_internal_database(playername):
 def update_bet_status(request, bet_id):
   # function that allows bet to transition from one state to
   # the other. Open -> Collecting -> Ready -> Awarding -> Done
+  print 'updating bet status:', bet_id
   
   # find the bet that we are dealing with
   bet = Bet.objects.filter(id__exact=bet_id)[0]
     
   if bet.status == 'Collecting' or bet.status == 'Awarding':
+    print 'valid status:', bet.status
     # check if we have already collected\awarded all the items\players
     res = Bidder.objets.filter(bet_id__exact=bet_id)
     ok = True
     for each in res:
       if each.status != 'OK':
+	print 'each.id:', each.id
 	ok = false
 	break
+	
 	
     if ok:
       if bet.status == 'Collecting':
