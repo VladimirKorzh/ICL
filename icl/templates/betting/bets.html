@@ -48,13 +48,13 @@
 			{% for bet in results %}      
 			<tr>
 			      <td>{{bet.id}}</td>
-			      <td>{{bet.item_rarity}}</td>
+			      <td>{{bet.rarity}}</td>
 			      <td>{{bet.amount}}</td>
 			      
 			      <td>
 				  {{bet.status}}
 				  {% if bet.isowner %} 
-				      {% if bet.status|stringformat:"s" == "OPEN"  %} 
+				      {% if bet.status|stringformat:"s" == "Open"  %} 
 					  <br><a href="bets/close_bet/{{bet.id}}">Close Betting</a>  
 					  <br><a href="bets/remove_bet/{{bet.id}}">DELETE BET</a>
 				      {% endif %}
@@ -62,8 +62,8 @@
 			      </td>
 			      
 			      <td>
-				  {{bet.result}}{% if bet.status|stringformat:"s" != "OPEN"  %}
-				  {% if bet.result|stringformat:"s" == "NOTDECIDED" %}
+				  {{bet.result}}{% if bet.status|stringformat:"s" == "Ready"  %}
+				  {% if bet.result|stringformat:"s" == "?" %}
 				    <br><a href="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
 				    <br><a href="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
 				  {% endif %}{% endif %}
@@ -74,12 +74,12 @@
 			      <td>{{bet.owner}}</td>
 			      
 			      <td>
-				  {% if bet.status|stringformat:"s" == "OPEN"  %}      
+				  {% if bet.status|stringformat:"s" == "Open"  %}      
 				    <a href="bets/takeside_bet/{{bet.id}}/a/">Side A</a><br>
 				    <a href="bets/takeside_bet/{{bet.id}}/b/">Side B</a><br>
 				    <a href="bets/cancel_bet/{{bet.id}}/">Cancel my bet</a>
 				  {% endif %}
-				  {% if bet.status|stringformat:"s" == "COLLECTING"  %}
+				  {% if bet.status|stringformat:"s" == "Ready"  %}
 				    {% if bet.passwd %}
 					<br><b>pass:{{bet.passwd}}</b>
 				    {% endif %}

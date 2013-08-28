@@ -27,13 +27,16 @@ require('fs').existsSync('sentry') ? params['shaSentryfile'] = require('fs').rea
 params['accountName'] = USERNAME
 params['password']    = PASSWORD
 
+// structure that holds actions that we need to execute.
+var actions = [];
+var current_task = '';
 
 //////////////////////////////////////////////
-var bot_status = 'free'; // busy - when trading
-var current_task = '';   // holds current task of the bot
-var task_start_time = '';
-var actions = [];
-var maxnumtries = 3
+// var bot_status = 'free'; // busy - when trading
+// var current_task = '';   // holds current task of the bot
+// var task_start_time = '';
+
+// var maxnumtries = 3
 //////////////////////////////////////////////
 
 bot.on('debug', console.log);
@@ -80,6 +83,9 @@ bot.on('tradeProposed', function(tradeID, otherClient) {
 // Gets called when trade window appears on the screen
 // Here we place items that award to the player
 bot.on('sessionStart', function(otherClient) {
+  
+  msg = 'Hello, I am here to '+current_task.type+ ': '+current_task.amount+' '+current_task.item_rarity
+  bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);  
   
   // variable to hold other client info 
   client = otherClient; 
@@ -201,52 +207,42 @@ steamTrade.on('ready', function() {
       // check if the amount of items does match the bet 
       // in case if we are collecting items
       if (current_task.amount == trade_window_items.length && current_task.type =='collect') {
-	  steamTrade.ready(function() {
-	    console.log('confirming');
-	    steamTrade.confirm();
-	  });
-      }  
-      
+	console.log('Checks passed. Finishing trade.');
+      }
+      else {
+	return;
+      }
+
       // if we are awarding a person, than we have already placed the right amount of items
       // in the trade window in the sessionStart callback
       if (current_task.type == 'award') {
-	  steamTrade.ready(function() {
-	    console.log('confirming');
-	    steamTrade.confirm();
-	  });
+	console.log('Checks passed. Finishing trade.');
       }
+      else {
+	return;
+      }
+      
+      // if we got to here then all the checks are fine
+      steamTrade.ready(function() {
+	console.log('confirming');
+	steamTrade.confirm( function (){
+	  console.log("Pressing 'Make Trade' button.");	  
+	});
+      });            
 });
 
 // this function gets called after the trade is finished
 // result variable is supposed to hold the string representing
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
-
-      if (result === 'complete') {    // TODO
+      if (result === 'complete') {
 	    current_task = '';
-	    if (current_task.type == 'collect') {
-		  statement = "UPDATE betting_bidder SET status='SUBMITTED' WHERE player_id ="+current_task.player_id+" AND bet_id="+current_task.bet_id;
-		  
-		  db.run(statement, function(err){
-		      if (err) throw err;
-		  });
-		  
-		  console.log('marked as SUBMITTED');
-	    }
-	    if (current_task.type == 'award') {  // TODO
-		statement = "UPDATE betting_bidder SET status='AWARDED' WHERE player_id="+current_task.player_id+" AND bet_id="+current_task.bet_id;
-		db.run(statement, function(err){
-		  if (err) throw err;
-		  console.log('FUCKING SHIT IS HERE');
-		});			
-		console.log('marked as AWARDED');
-	    }
+	    // marking the transaction in db
+	    statement = "UPDATE betting_bidder SET status='OK' WHERE bet_id="+current_task.bet_id; 
+	    db.run(statement);
 	    
-      }
-
-      // Since steam has a limitation on the amount of friend one might have
-      // we have to remove people from friends list after each transaction
-      bot.removeFriend(current_task.uid);     
+	    keep_or_remove(client);
+      }     
 });
 
 // DON'T Respond to messages at all. Simply ignore them 
@@ -255,10 +251,15 @@ bot.on('message', function(source, message, type, chatter) {
 });
 
 // Add friends automatically.
-bot.on('relationship', function(other, type){      
+bot.on('relationship', function(other, type){  
+//       console.log('Bot relationship:', other, type);
       if(type == Steam.EFriendRelationship.PendingInvitee) {
-	console.log('friend invite received!');
+	console.log('friend invite received!',other);
 	bot.addFriend(other);
+	
+	check_db(other);
+	keep_or_remove(other);
+	
       }
 });
 
@@ -269,116 +270,64 @@ process.on( 'SIGINT', function() {
   // close connection to database
   db.close();
   process.exit( )
-})
+});
 
 
-
-
-
-
-function readdb() {
-    var currentdate = new Date();
-    console.log('readdb: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());
-
-    statement_collect = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = 'NOTDECIDED'  AND bet.status = 'CLOSED'  AND bidder.status = 'COLLECTION' AND player.id = player_id"
-    
-   
-    db.all(statement_collect, function(err, rows) {
-	  if (err) throw err;
-	    
-	  if (rows.length == 0) {
-	      return;
-	  }
-	  else {
-	      console.log('found new ppl to collect');
-	      // read info and append to actions 
-	      rows.forEach( function(row) {
-		  actions.push({"type": 'collect',
-			       "item_rarity":  row.item_rarity,
-				"amount":      row.amount,
-				"nickname":    row.nickname,
-				"uid":         row.uid,
-				"bet_id":      row.bet_id,
-				"player_id":   row.player_id,
-				"tries":       maxnumtries
-				});
-		  
-		  // mark the row as being processed 
-		  statement_upd8 = "UPDATE betting_bet SET status='COLLECTING' WHERE id="+row.bet_id 
-		  db.run(statement_upd8, function(err) {
-			if (err) throw err;
-		  });
-	      });	      
-	  }
-    });
-    
-    statement_award = "SELECT item_rarity, amount, uid, nickname, bet.id as bet_id, player_id FROM betting_bet AS bet, betting_bidder AS bidder, matchmaking_player AS player WHERE bet.id = bidder.bet_id AND bet.result = bidder.side AND bet.status = 'PRIZES' AND bidder.status ='SUBMITTED' AND player.id = player_id"
-       
-    
-    db.all(statement_award, function(err, rows) {
-      
-	  // throw an error if encountered
-	  if (err) throw err;
+function check_db(uid) {
+  console.log('Checking for tasks related to ', uid);  
+  // returns all bidders that are not OK, which means they are waiting
+  // either for collection or awarding.
+  statement = "SELECT  bidder.status,bet.amount, bet.rarity, player.uid, bet.id as bet_id FROM  betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
   
-	  if (rows.length == 0) {
-	      // bet not found
-	      return;
-	  }
-	  else {		    
-	      console.log('found new ppl to award');
-	      rows.forEach( function(row) {
-		  actions.push({"type": 'award',
-			       "item_rarity":  row.item_rarity,
-				"amount":      row.amount,
-				"nickname":    row.nickname,
-				"uid":         row.uid,
-				"bet_id":      row.bet_id,
-				"player_id":   row.player_id,
-				"tries":       maxnumtries
-				});
-		  
-		  // mark the row as being processed 
-		  statement_upd8 = "UPDATE betting_bidder SET status='PRIZES' WHERE player_id="+row.player_id	    
-		  db.run(statement_upd8, function(err) {
-			if (err) throw err;
-		  });
-	      });
-	  }
-    });
-    console.log('Actions: ', actions);   
-    console.log('current_task:', current_task);
-} // end refresh function
-
-
-function work(){
-      var current_time = Math.round(+new Date()/1000);
-      if (current_task == ''){
-	  if (actions.length == 0) return;
+  db.all(statement, function (err, rows) {
+      if (err) throw err;
 	  
-	  current_task = actions.pop();
-	  if (current_task.tries > 0) {
-	    current_task.tries -= 1;
-	    console.log('Started task ' + current_task.type + ' ' + current_task.nickname+' '+current_task.tries);
-	    bot.trade(current_task.uid);
-	    task_start_time = Math.round(+new Date()/1000);
-	  }
-	  else {
-	    current_task = '';
-	    work();
-	  }
+      if (rows.length == 0) {
+	return;
       }
-      else if (current_time - task_start_time > 20) {
-	  console.log('Task time expired')
-	  bot.cancelTrade(current_task.uid);
-// 	  SteamTrade.cancel();
-	  current_task.tries -= 1;
-	  actions.push(current_task);
-	  current_task = '';
-	  work();
-      }
+      else {
+	rows.forEach( function(row) {
+	  actions.push({"type":  row.status,
+			"amount": row.amount,
+			"rarity": row.rarity,
+			"uid":    row.uid,
+			"bet_id": row.bet_id
+		      });
+	}); // end for each row that we've found
+      } // end if found rows
+  }); // end db.all
+} // end check_db
+
+function keep_or_remove(uid) {
+  // this function is used to determine if there are any other tasks
+  // related to the provided user. In case if there are none, it 
+  // removes the user from friend list.
+  found_other_tasks = false;
+  for (var i=0; i<actions.length; i++) {
+    action = actions[i];
+    if (action.uid == uid){
+      found_other_tasks = true;
+    } 
+  } // end for 
+  
+  if (!found_other_tasks) {
+    bot.removeFriend(uid);     
+  } 
+} // end function
+
+
+function tick(){
+  // if we don't have any current tasks
+  if (current_task == ''){
+      // if there are no other tasks to do
+      // just IDLE
+      if (actions.length == 0) return;
+      
+      // if we have some, then take the task
+      current_task = actions.pop();
+      bot.trade(current_task.uid);
+  }
 }
 
-update_interval = 10000;
-work_interval   = 8000;
-setInterval(readdb, update_interval);
-setInterval(work, work_interval);
+// Setup speed of tick function.
+setInterval(tick, 1000);
