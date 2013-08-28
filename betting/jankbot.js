@@ -81,6 +81,9 @@ bot.on('tradeProposed', function(tradeID, otherClient) {
 // Here we place items that award to the player
 bot.on('sessionStart', function(otherClient) {
   
+  msg = 'Hello, I am here to '+current_task.type+ ': '+current_task.amount+' '+current_task.item_rarity
+  bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);  
+  
   // variable to hold other client info 
   client = otherClient; 
   
@@ -206,7 +209,7 @@ steamTrade.on('ready', function() {
 	    steamTrade.confirm();
 	  });
       }  
-      
+
       // if we are awarding a person, than we have already placed the right amount of items
       // in the trade window in the sessionStart callback
       if (current_task.type == 'award') {
