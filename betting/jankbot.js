@@ -30,14 +30,7 @@ params['password']    = PASSWORD
 // structure that holds actions that we need to execute.
 var actions = [];
 var current_task = '';
-
-//////////////////////////////////////////////
-// var bot_status = 'free'; // busy - when trading
-// var current_task = '';   // holds current task of the bot
-// var task_start_time = '';
-
-// var maxnumtries = 3
-//////////////////////////////////////////////
+var time_trade_initiated = '';
 
 bot.on('debug', console.log);
 
@@ -258,8 +251,7 @@ bot.on('relationship', function(other, type){
 	bot.addFriend(other);
 	
 	check_db(other);
-	keep_or_remove(other);
-	
+	keep_or_remove(other);	
       }
 });
 
@@ -277,16 +269,18 @@ function check_db(uid) {
   console.log('Checking for tasks related to ', uid);  
   // returns all bidders that are not OK, which means they are waiting
   // either for collection or awarding.
-  statement = "SELECT  bidder.status,bet.amount, bet.rarity, player.uid, bet.id as bet_id FROM  betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
+  statement = "SELECT bidder.status,bet.amount, bet.rarity, player.uid, bet.id as bet_id FROM betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
   
   db.all(statement, function (err, rows) {
       if (err) throw err;
 	  
       if (rows.length == 0) {
+	console.log('nothing has been found');
 	return;
       }
       else {
 	rows.forEach( function(row) {
+	  console.log('found', row);
 	  actions.push({"type":  row.status,
 			"amount": row.amount,
 			"rarity": row.rarity,
@@ -311,12 +305,19 @@ function keep_or_remove(uid) {
   } // end for 
   
   if (!found_other_tasks) {
+    console.log('tasks not found. Removing friend');
     bot.removeFriend(uid);     
   } 
+  console.log('more tasks found. Keeping this friend');
 } // end function
 
 
 function tick(){
+//   if (time_trade_initiated != '') {
+//       time_now = new Date().getTime() / 1000;      
+//       if (time_now - time_trade_initiated) > 30
+//   }
+  
   // if we don't have any current tasks
   if (current_task == ''){
       // if there are no other tasks to do
@@ -326,6 +327,7 @@ function tick(){
       // if we have some, then take the task
       current_task = actions.pop();
       bot.trade(current_task.uid);
+//       time_trade_initiated = new Date().getTime() / 1000;
   }
 }
 
