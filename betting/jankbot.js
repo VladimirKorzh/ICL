@@ -259,9 +259,9 @@ bot.on('message', function(source, message, type, chatter) {
 
 // Add friends automatically.
 bot.on('relationship', function(other, type){  
-      console.log('Bot friends:', bot.friends);
+//       console.log('Bot relationship:', other, type);
       if(type == Steam.EFriendRelationship.PendingInvitee) {
-	console.log('friend invite received!');
+	console.log('friend invite received!',other);
 	bot.addFriend(other);
       }
 });
@@ -276,10 +276,15 @@ process.on( 'SIGINT', function() {
 })
 
 
+function check_db(uid) {
+  console.log('Checking for tasks');
+  statement = ""
+}
+
+
+
 
 /*
-
-
 function readdb() {
     var currentdate = new Date();
     console.log('readdb: ' + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds());

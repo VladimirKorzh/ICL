@@ -3,14 +3,14 @@ from django.db import models
 from matchmaking.models import Player
 
 class Bet(models.Model):  
-      rarity      = models.CharField() 
+      rarity      = models.CharField(max_length=12) 
       amount      = models.PositiveSmallIntegerField()
       
       # A - B - ?
-      result      = models.CharField()
+      result      = models.CharField(max_length=12)
       
       # Open - Collecting - Ready - Awarding - Done
-      status      = models.CharField()
+      status      = models.CharField(max_length=12)
             
       sideapass   = models.PositiveSmallIntegerField()
       sidebpass   = models.PositiveSmallIntegerField()
@@ -20,8 +20,8 @@ class Bet(models.Model):
 
 class Bidder(models.Model):      
       # OK - Collect - Award 
-      status  = models.CharField()      
-      side    = models.CharField()
+      status  = models.CharField(max_length=12)      
+      side    = models.CharField(max_length=12)
       
       player  = models.ForeignKey(Player)
       bet     = models.ForeignKey(Bet)
