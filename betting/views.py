@@ -31,7 +31,7 @@ def update_bet_status(bet_id):
     for each in res:
       if each.status != 'OK':
 	print 'each.id:', each.id
-	ok = false
+	ok = False
 	break
 	
 	
