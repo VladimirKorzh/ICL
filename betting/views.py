@@ -25,13 +25,16 @@ def update_bet_status(request, bet_id):
   bet = Bet.objects.filter(id__exact=bet_id)[0]
     
   if bet.status == 'Collecting' or bet.status == 'Awarding':
+    print 'valid status:', bet.status
     # check if we have already collected\awarded all the items\players
     res = Bidder.objets.filter(bet_id__exact=bet_id)
     ok = True
     for each in res:
       if each.status != 'OK':
+	print 'each.id:', each.id
 	ok = false
 	break
+	
 	
     if ok:
       if bet.status == 'Collecting':
