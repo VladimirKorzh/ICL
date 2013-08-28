@@ -258,7 +258,8 @@ bot.on('message', function(source, message, type, chatter) {
 });
 
 // Add friends automatically.
-bot.on('relationship', function(other, type){      
+bot.on('relationship', function(other, type){  
+      console.log('Bot friends:', bot.friends);
       if(type == Steam.EFriendRelationship.PendingInvitee) {
 	console.log('friend invite received!');
 	bot.addFriend(other);
@@ -276,7 +277,7 @@ process.on( 'SIGINT', function() {
 
 
 
-
+/*
 
 
 function readdb() {
@@ -384,4 +385,4 @@ function work(){
 update_interval = 10000;
 work_interval   = 8000;
 setInterval(readdb, update_interval);
-setInterval(work, work_interval);
+setInterval(work, work_interval);*/
