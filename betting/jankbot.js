@@ -14,7 +14,8 @@ var DICTIONARY_FILE = 'english.json'
 
 // create instances of bot and trade APIs 
 // setup db connection as well
-var db = new sqlite3.Database("../icl/sqlite3.db");
+// var db = new sqlite3.Database("../icl/sqlite3.db");
+var db = new sqlite3.Database("../../ICL/icl/sqlite3.db");
 var bot = new Steam.SteamClient();
 var steamTrade = new SteamTrade();
 
@@ -29,8 +30,8 @@ params['password']    = PASSWORD
 
 // structure that holds actions that we need to execute.
 var actions = [];
-var current_task = '';
-var time_trade_initiated = '';
+var current_task  = '';
+var time_lastping = '';
 
 bot.on('debug', console.log);
 
@@ -76,13 +77,21 @@ bot.on('tradeProposed', function(tradeID, otherClient) {
 // Gets called when trade window appears on the screen
 // Here we place items that award to the player
 bot.on('sessionStart', function(otherClient) {
-  
+  time_lastping = new Date().getTime() / 1000;
   // variable to hold other client info 
   client = otherClient;   
   
   console.log('sessionStart with', otherClient);
   
-  msg = 'Hello, I am here to '+current_task.type+ ': '+current_task.amount+' '+current_task.item_rarity
+  msg = 'Hello, I am here to '+current_task.type;
+  
+  if (current_task.type == 'Award') {
+    msg = msg+ ': '+current_task.amount*2+' '+current_task.rarity
+  }
+  if (current_task.type == 'Collect') {
+    msg = msg+ ': '+current_task.amount+' '+current_task.rarity
+  }
+  
   bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);  
   console.log(msg);
   
@@ -107,7 +116,7 @@ bot.on('sessionStart', function(otherClient) {
 			}
 		  }
 		  if (tag.category_name == 'Rarity') {
-			if ( tag.name == current_task.item_rarity ) {
+			if ( tag.name == current_task.rarity ) {
 			  correct_rariry = true;
 			}
 		  }
@@ -139,7 +148,8 @@ bot.on('sessionStart', function(otherClient) {
 
 steamTrade.on('offerChanged', function(added, item) {
     console.log('offerChanged ' + (added ? 'added ' : 'removed ') + item.name);
-        
+    time_lastping = new Date().getTime() / 1000;
+    
     itemtags = item.tags;
     correct_item = false;
     correct_rariry = false;
@@ -153,7 +163,7 @@ steamTrade.on('offerChanged', function(added, item) {
 		}
 	  }    
 	  if (tag.category_name == 'Rarity') {
-		if ( tag.name == current_task.item_rarity ){		      
+		if ( tag.name == current_task.rarity ){		      
 		  correct_rariry = true;
 		}
 		item_rarity_value = tag.name;
@@ -192,6 +202,11 @@ steamTrade.on('offerChanged', function(added, item) {
     msg = 'Items left to add: ' + items_left;
     console.log(msg);
     bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
+    
+    if (items_left == 0) {
+	msg = 'Press ready.'
+	bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
+    }
 });
 
 
@@ -200,20 +215,20 @@ steamTrade.on('offerChanged', function(added, item) {
 steamTrade.on('ready', function() {
       // check if the amount of items does match the bet 
       // in case if we are collecting items
-      if (current_task.amount == trade_window_items.length && current_task.type =='collect') {
-	console.log('Checks passed. Finishing trade.');
-      }
-      else {
-	return;
+      if (current_task.type =='collect') {
+	  if (current_task.amount == trade_window_items.length) {
+	    console.log('Checks passed. Finishing trade.');
+	  }
+	  else {
+	    console.log('Amount of items does not match the collect required amount');
+	    return;
+	  }
       }
 
       // if we are awarding a person, than we have already placed the right amount of items
       // in the trade window in the sessionStart callback
       if (current_task.type == 'award') {
-	console.log('Checks passed. Finishing trade.');
-      }
-      else {
-	return;
+	  console.log('Checks passed. Finishing trade.');
       }
       
       // if we got to here then all the checks are fine
@@ -229,12 +244,17 @@ steamTrade.on('ready', function() {
 // result variable is supposed to hold the string representing
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
+      console.log('End trade event', result);
       if (result === 'complete') {
-	    current_task = '';
 	    // marking the transaction in db
-	    statement = "UPDATE betting_bidder SET status='OK' WHERE bet_id="+current_task.bet_id; 
-	    db.run(statement);
+	    statement = "UPDATE betting_bidder SET status='OK' WHERE bet_id="+current_task.bet_id+" AND player_id="+current_task.player_id; 
 	    
+	    db.run(statement, function(err){
+		if (err) throw err;
+	    });
+	    
+	    // empty the task
+	    current_task = '';  
 	    keep_or_remove(client);
       }     
 });
@@ -269,7 +289,7 @@ function check_db(uid) {
   console.log('Checking for tasks related to ', uid);  
   // returns all bidders that are not OK, which means they are waiting
   // either for collection or awarding.
-  statement = "SELECT bidder.status,bet.amount, bet.rarity, player.uid, bet.id as bet_id FROM betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
+  statement = "SELECT bidder.status,bet.amount, bet.rarity, player.uid, bidder.player_id, bet.id as bet_id FROM betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
   
   db.all(statement, function (err, rows) {
       if (err) throw err;
@@ -285,7 +305,8 @@ function check_db(uid) {
 			"amount": row.amount,
 			"rarity": row.rarity,
 			"uid":    row.uid,
-			"bet_id": row.bet_id
+			"bet_id": row.bet_id,
+			"player_id": row.player_id
 		      });
 	}); // end for each row that we've found
       } // end if found rows
@@ -315,13 +336,17 @@ function keep_or_remove(uid) {
 
 
 function tick(){
-//   if (time_trade_initiated != '') {
-//       time_now = new Date().getTime() / 1000;      
-//       if (time_now - time_trade_initiated) > 30
-//   }
+  if (time_lastping != '' && current_task != '') {
+      time_now = new Date().getTime() / 1000;      
+      if ((time_now - time_lastping) > 30) {
+	console.log('task takes too much time, reloading it');
+	actions.push(current_task);
+	current_task = '';
+      }
+  }
   
   // if we don't have any current tasks
-  if (current_task == ''){
+  if (current_task == '') {
       // if there are no other tasks to do
       // just IDLE
       if (actions.length == 0) return;
@@ -329,7 +354,7 @@ function tick(){
       // if we have some, then take the task
       current_task = actions.pop();
       bot.trade(current_task.uid);
-//       time_trade_initiated = new Date().getTime() / 1000;
+      time_lastping = new Date().getTime() / 1000;
   }
 }
 
