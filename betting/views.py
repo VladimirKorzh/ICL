@@ -15,8 +15,7 @@ def get_player_id_in_internal_database(playername):
     return Player.objects.get(nickname=playername).id
 
     
-@login_required   
-def update_bet_status(request, bet_id):
+def update_bet_status(bet_id):
   # function that allows bet to transition from one state to
   # the other. Open -> Collecting -> Ready -> Awarding -> Done
   print 'updating bet status:', bet_id
@@ -254,7 +253,8 @@ def mybets(request):
       
       # update bet status for each bet that we are looking at
       for each in selection_bets_ids:
-	  update_bet_status(request, each)
+	  print 'update is here'
+	  update_bet_status(each)
       
       # after we have prepared our selection we have to fill in some extra
       # information in.
