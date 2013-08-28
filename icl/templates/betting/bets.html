@@ -69,8 +69,24 @@
 				  {% endif %}{% endif %}
 			      </td>
 			      
-			      <td>{{bet.a}}</td>
-			      <td>{{bet.b}}</td>
+			      <td>
+				  {% for bidder in bet.a %}
+				      {{bidder.0}}
+				      {% if bidder.1|stringformat:"s" == "OK"  %}
+					  -> {{bidder.1}}
+				      {% endif %}				      
+				      <br>
+				  {% endfor %}
+			      </td>
+			      <td>
+				  {% for bidder in bet.b %}
+				      {{bidder.0}}
+				      {% if bidder.1|stringformat:"s" == "OK"  %}
+					  -> {{bidder.1}}
+				      {% endif %}				      
+				      <br>
+				  {% endfor %}
+			      </td>
 			      <td>{{bet.owner}}</td>
 			      
 			      <td>
@@ -89,7 +105,6 @@
 			</tr>
 			{% endfor %}
 		    </table>
-			
 	    </div>	
 	{% endif %}
 	
