@@ -99,7 +99,7 @@ bot.on('sessionStart', function(otherClient) {
   trade_window_items = []  
   
   steamTrade.open(otherClient, function(){		  
-    if (current_task.type == 'award') {
+    if (current_task.type == 'Award') {
       console.log('Awarding player');
       steamTrade.loadInventory(570, 2, function(inv) {      
 	  // find items that match our award
@@ -137,7 +137,7 @@ bot.on('sessionStart', function(otherClient) {
 	    steamTrade.addItems(itemsmatching.slice(0, current_task.amount*2));
     });
   }
-  if (current_task.type == 'collect'){
+  if (current_task.type == 'Collect'){
     // if our task is to collect items than we simply wait for the user
     // to place them in the trade window and react accordingly
     console.log('Collecting');
@@ -215,7 +215,7 @@ steamTrade.on('offerChanged', function(added, item) {
 steamTrade.on('ready', function() {
       // check if the amount of items does match the bet 
       // in case if we are collecting items
-      if (current_task.type =='collect') {
+      if (current_task.type =='Collect') {
 	  if (current_task.amount == trade_window_items.length) {
 	    console.log('Checks passed. Finishing trade.');
 	  }
@@ -227,7 +227,7 @@ steamTrade.on('ready', function() {
 
       // if we are awarding a person, than we have already placed the right amount of items
       // in the trade window in the sessionStart callback
-      if (current_task.type == 'award') {
+      if (current_task.type == 'Award') {
 	  console.log('Checks passed. Finishing trade.');
       }
       
@@ -295,12 +295,12 @@ function check_db(uid) {
   
   db.each(statement, function(err, row, player_id){
       if (err) throw err;
-      console.log(row.id);      
+//       console.log(row.id);      
       player_id = row.id; 
 
       statement = "SELECT bidder.status, bet.amount, bet.rarity, bet.id as bet_id FROM betting_bidder as bidder, betting_bet as bet WHERE bidder.player_id="+player_id+" AND bet.id = bidder.bet_id AND bidder.status != 'OK'";
       
-      console.log(statement);
+//       console.log(statement);
       db.all(statement, function (err, rows) {
 	  if (err) throw err;
 	      
@@ -332,7 +332,7 @@ function keep_or_remove(uid) {
   found_other_tasks = false;
   for (var i=0; i<actions.length; i++) {    
     action = actions[i];
-    console.log('Actionlist',i,action)
+//  console.log('Actionlist',i,action)
     if (action.uid == uid){
       found_other_tasks = true;
     } 
