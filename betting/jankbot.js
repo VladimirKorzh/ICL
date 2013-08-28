@@ -245,7 +245,7 @@ steamTrade.on('ready', function() {
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
       console.log('End trade event', result);
-      if (result === 'complete') {
+      if (result === 'complete') {	
 	    // marking the transaction in db
 	    statement = "UPDATE betting_bidder SET status='OK' WHERE bet_id="+current_task.bet_id+" AND player_id="+current_task.player_id; 
 	    
@@ -255,6 +255,7 @@ steamTrade.on('end', function(result, items) {
 	    
 	    // empty the task
 	    current_task = '';  
+	    time_lastping = '';
 	    keep_or_remove(client);
       }     
 });
@@ -284,34 +285,44 @@ process.on( 'SIGINT', function() {
   process.exit( )
 });
 
-
 function check_db(uid) {
   console.log('Checking for tasks related to ', uid);  
   // returns all bidders that are not OK, which means they are waiting
   // either for collection or awarding.
-  statement = "SELECT bidder.status,bet.amount, bet.rarity, player.uid, bidder.player_id, bet.id as bet_id FROM betting_bet as bet, betting_bidder as bidder, matchmaking_player as player WHERE player.uid="+uid+" AND player.id = bidder.player_id  AND bidder.status != 'OK'";
   
-  db.all(statement, function (err, rows) {
+  statement = "SELECT player.id as id FROM matchmaking_player as player WHERE player.uid="+uid;
+  player_id = 0;
+  
+  db.each(statement, function(err, row, player_id){
       if (err) throw err;
-	  
-      if (rows.length == 0) {
-	console.log('nothing has been found');
-	return;
-      }
-      else {
-	rows.forEach( function(row) {
-	  console.log('found', row);
-	  actions.push({"type":  row.status,
-			"amount": row.amount,
-			"rarity": row.rarity,
-			"uid":    row.uid,
-			"bet_id": row.bet_id,
-			"player_id": row.player_id
-		      });
-	}); // end for each row that we've found
-      } // end if found rows
-      keep_or_remove(uid);	
-  }); // end db.all
+      console.log(row.id);      
+      player_id = row.id; 
+
+      statement = "SELECT bidder.status, bet.amount, bet.rarity, bet.id as bet_id FROM betting_bidder as bidder, betting_bet as bet WHERE bidder.player_id="+player_id+" AND bet.id = bidder.bet_id AND bidder.status != 'OK'";
+      
+      console.log(statement);
+      db.all(statement, function (err, rows) {
+	  if (err) throw err;
+	      
+	  if (rows.length == 0) {
+	    console.log('nothing has been found');
+	    return;
+	  }
+	  else {
+	    rows.forEach( function(row) {
+	      console.log('found', row);
+	      actions.push({"type":  row.status,
+			    "amount": row.amount,
+			    "rarity": row.rarity,
+			    "uid":    uid,
+			    "bet_id": row.bet_id,
+			    "player_id": player_id
+			  });
+	    }); // end for each row that we've found
+	  } // end if found rows
+	  keep_or_remove(uid);	
+      }); // end db.all    
+  }); // end for each player_id row
 } // end check_db
 
 function keep_or_remove(uid) {
@@ -319,8 +330,9 @@ function keep_or_remove(uid) {
   // related to the provided user. In case if there are none, it 
   // removes the user from friend list.
   found_other_tasks = false;
-  for (var i=0; i<actions.length; i++) {
+  for (var i=0; i<actions.length; i++) {    
     action = actions[i];
+    console.log('Actionlist',i,action)
     if (action.uid == uid){
       found_other_tasks = true;
     } 
