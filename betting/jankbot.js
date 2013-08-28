@@ -320,7 +320,7 @@ function check_db(uid) {
 			  });
 	    }); // end for each row that we've found
 	  } // end if found rows
-	  keep_or_remove(uid);	
+      keep_or_remove(uid);	
       }); // end db.all    
   }); // end for each player_id row
 } // end check_db
