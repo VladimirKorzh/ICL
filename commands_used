@@ -38,12 +38,14 @@
   sudo add-apt-repository ppa:chris-lea/node.js
   sudo apt-get update
   sudo apt-get install nodejs
-  npm install sqlite3
+
   
 # in bot directory you will need node-steam-trade project aside of
 # others that are installed with the regular command
-  npm install
   npm install git://github.com/seishun/node-steam-trade.git
+  npm install sqlite3
+  npm install
+  
   
 ###########################################################  
   
