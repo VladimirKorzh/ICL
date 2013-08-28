@@ -251,7 +251,6 @@ bot.on('relationship', function(other, type){
 	bot.addFriend(other);
 	
 	check_db(other);
-	keep_or_remove(other);	
       }
 });
 
@@ -289,6 +288,7 @@ function check_db(uid) {
 		      });
 	}); // end for each row that we've found
       } // end if found rows
+      keep_or_remove(uid);	
   }); // end db.all
 } // end check_db
 
@@ -307,6 +307,7 @@ function keep_or_remove(uid) {
   if (!found_other_tasks) {
     console.log('tasks not found. Removing friend');
     bot.removeFriend(uid);     
+    return;
   } 
   console.log('more tasks found. Keeping this friend');
 } // end function
