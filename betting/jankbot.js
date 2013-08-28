@@ -77,17 +77,18 @@ bot.on('tradeProposed', function(tradeID, otherClient) {
 // Here we place items that award to the player
 bot.on('sessionStart', function(otherClient) {
   
+  // variable to hold other client info 
+  client = otherClient;   
+  
+  console.log('sessionStart with', otherClient);
+  
   msg = 'Hello, I am here to '+current_task.type+ ': '+current_task.amount+' '+current_task.item_rarity
   bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);  
-  
-  // variable to hold other client info 
-  client = otherClient; 
+  console.log(msg);
   
   // structure to hold items offered by trade partner
   trade_window_items = []  
   
-  console.log('sessionStart with', otherClient);
-
   steamTrade.open(otherClient, function(){		  
     if (current_task.type == 'award') {
       console.log('Awarding player');
