@@ -143,7 +143,7 @@ def decide_bet(request, bet_id, side, password):
       # if the provided information was correct and we have a winner side
       if res.result != '?':
 	# mark winners for awarding
-	for each in Bidder.objects.filter(bet_id__exact=bet_id, side__exact=res.result)
+	for each in Bidder.objects.filter(bet_id__exact=bet_id, side__exact=res.result):
 	  each.status = 'Award'
 	  each.save()
     

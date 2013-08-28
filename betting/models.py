@@ -12,8 +12,8 @@ class Bet(models.Model):
       # Open - Collecting - Ready - Awarding - Done
       status      = models.CharField(max_length=12)
             
-      sideapass   = models.PositiveSmallIntegerField()
-      sidebpass   = models.PositiveSmallIntegerField()
+      sideapass   = models.PositiveSmallIntegerField(default=0)
+      sidebpass   = models.PositiveSmallIntegerField(default=0)
       
       owner       = models.ForeignKey(Player)
 

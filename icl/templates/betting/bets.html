@@ -62,7 +62,7 @@
 			      </td>
 			      
 			      <td>
-				  {{bet.result}}{% if bet.status|stringformat:"s" != "OPEN"  %}
+				  {{bet.result}}{% if bet.status|stringformat:"s" == "Ready"  %}
 				  {% if bet.result|stringformat:"s" == "?" %}
 				    <br><a href="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
 				    <br><a href="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
