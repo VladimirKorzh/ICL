@@ -253,8 +253,13 @@ def mybets(request):
       for each in selection:
 	
 	# append bidders to each bet.
-	each.a = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A')
-	each.b = Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B')
+	each.a = []
+	for every in Bidder.objects.filter(bet_id__exact=each.id, side__exact ='A'):
+	  each.a.append((every.player.nickname, every.status));
+	
+	each.b = []
+	for every in Bidder.objects.filter(bet_id__exact=each.id, side__exact ='B'):
+	  each.b.append((every.player.nickname, every.status));
 	  
 	# mark the bet if the requester is its owner
 	if each.owner == Player.objects.get(id__exact=player_id):

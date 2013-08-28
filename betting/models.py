@@ -27,5 +27,4 @@ class Bidder(models.Model):
       bet     = models.ForeignKey(Bet)
       
       def __unicode__(self):
-	    string = str(self.player.nickname)
-	    return string	    
+	return u'%s %s' % (self.player.nickname, self.status)
