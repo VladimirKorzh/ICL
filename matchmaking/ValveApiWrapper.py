@@ -44,6 +44,9 @@ class ValveApi():
     time.sleep(1)	            
     return response
 
+    
+    
+  # returns current player-set in-game nickname
   def get_player_name_from_steamid(self, userid):
       steamid = '&steamids=' + str(userid)      
       response = self.query_api(self.apiurls['GetPlayerSummaries'], steamid)
@@ -52,6 +55,9 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
+      
+      
+ 
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
     amount_of_games[1] = 0
@@ -82,20 +88,36 @@ class ValveApi():
       if response is not None and response['result']['status'] == 1:
 	amount_of_games[skill] += response['result']['total_results']
       else:
-	#print 'Error:', response['result']['statusDetail'][:25]	
+	# user probably has his statistics closed to public
 	break
+	
+	
+
+	
       exp += amount_of_games[skill] * Q
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
     
-    if total_games != 0:
-      #self.writeCache()
-      pass
-      
+    
+    ## new experience calculation formula
+    #newexp = 0
+    #max_skill_games = max(amount_of_games[1],amount_of_games[2],amount_of_games[3])
+    
+    #if max_skill_games == amount_of_games[3]:
+      #newexp += 600 + max_skill_games/total_games*600
+    #else if max_skill_games == amount_of_games[2]:
+      #newexp += 300 + max_skill_games/total_games*300
+    #else if max_skill_games == amount_of_games[1]:
+      #newexp += 100 + max_skill_games/total_games*100
+    
+
     
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
     print 'get_player_exp_from_steamid', playerstats
     return playerstats
-            
+
+    
+    
+    
