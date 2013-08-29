@@ -33,7 +33,7 @@ var actions = [];
 var current_task  = '';
 var time_lastping = '';
 
-bot.on('debug', console.log);
+
 
 // Log in
 bot.logOn(params['accountName'],params['password'], params['shaSentryfile'], params['authCode']);
@@ -45,7 +45,7 @@ bot.on('loggedOn', function() {
 	bot.setPersonaState(Steam.EPersonaState.Online);
 	bot.setPersonaName(DISPLAY_NAME);
 });
-
+bot.on('debug', console.log);
 
 // Perform a web login and save session ID
 // which is used in trade APIs
@@ -318,10 +318,10 @@ function check_db(uid) {
 			    "bet_id": row.bet_id,
 			    "player_id": player_id
 			  });
+	      keep_or_remove(uid);
 	    }); // end for each row that we've found
-	  } // end if found rows
-      keep_or_remove(uid);	
-      }); // end db.all    
+	  } // end if found rows	
+      }); // end db.all                
   }); // end for each player_id row
 } // end check_db
 
@@ -364,13 +364,20 @@ function tick(){
       // just IDLE
       if (actions.length == 0) return;
       
-      // if we have some, then take the task
-      current_task = actions.pop();
-      bot.trade(current_task.uid);
-      console.log('Throwing trade request')
-      time_lastping = new Date().getTime() / 1000;
+      bot.webLogOn(function(cookies, current_task) {
+	  console.log('got a new cookie:', cookies);
+	  cookies.split(";").forEach(function(cookie) {
+	      steamTrade.setCookie(cookie);
+	  });
+	  
+	  // if we have some, then take the task
+	  current_task = actions.pop();
+	  bot.trade(current_task.uid);
+	  console.log('Throwing trade request to', current_task.uid)
+	  time_lastping = new Date().getTime() / 1000;	  
+	});
   }
 }
 
 // Setup speed of tick function.
-setInterval(tick, 1000);
+setInterval(tick, 5000);
