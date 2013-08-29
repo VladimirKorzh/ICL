@@ -12,10 +12,6 @@ class Player(models.Model):
 	    string = str(self.nickname)
 	    return string
 
-	    
-
-	    
-	    
 class ValveApiCounts(models.Model):
 	date    = models.DateField()
 	amount  = models.PositiveIntegerField()
@@ -23,16 +19,19 @@ class ValveApiCounts(models.Model):
 	def __unicode__(self):
 	    return u"%s %s" % (self.date, str(self.amount))
 		
-		
 
-#class Roles(models.Model):
-	#carry   = models.BooleanField(default=False)
-	#offlane = models.BooleanField(default=False)
-	#solomid = models.BooleanField(default=False)
-	#support = models.BooleanField(default=False)
-	#utility = models.BooleanField(default=False)
+class Stack(models.Model):
+	name    = models.CharField(max_length=20)
+	exp     = models.PositiveIntegerField(default=0)
+	channel = models.CharField(max_length=40)
 	
-	#def __unicode__(self):
-	  #string = '\n<Roles>\n1:'+str(self.carry)+'\n2:'+str(self.solomid)+'\n3:'+str(self.offlane)+'\n4:'+str(self.utility)+'\n5:'+str(self.support)
-	  #return string	  
+	carry   = models.ForeignKey(Player)
+	solomid = models.ForeignKey(Player)
+	offlane = models.ForeignKey(Player)
+	support1 = models.ForeignKey(Player)
+	support2 = models.ForeignKey(Player)
+		
+	def __unicode__(self):
+	  return str(self.name)
+  
       
