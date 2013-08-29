@@ -350,10 +350,10 @@ function keep_or_remove(uid) {
 function tick(){
   if (time_lastping != '' && current_task != '') {
       time_now = new Date().getTime() / 1000;      
-      if ((time_now - time_lastping) > 30) {
-	console.log('task takes too much time, reloading it');
+      if ((time_now - time_lastping) > 60) {
+	console.log('task takes too much time, cancelling it');
 	console.log(current_task);
-	actions.push(current_task);
+	bot.removeFriend(current_task.uid);
 	current_task = '';
       }
   }
