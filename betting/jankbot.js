@@ -352,6 +352,7 @@ function tick(){
       time_now = new Date().getTime() / 1000;      
       if ((time_now - time_lastping) > 30) {
 	console.log('task takes too much time, reloading it');
+	console.log(current_task);
 	actions.push(current_task);
 	current_task = '';
       }
