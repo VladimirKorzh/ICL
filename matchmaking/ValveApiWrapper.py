@@ -1,5 +1,5 @@
 
-import os
+import os, math
 import time, datetime, calendar
 import json, urllib2
 
@@ -44,6 +44,9 @@ class ValveApi():
     time.sleep(1)	            
     return response
 
+    
+    
+  # returns current player-set in-game nickname
   def get_player_name_from_steamid(self, userid):
       steamid = '&steamids=' + str(userid)      
       response = self.query_api(self.apiurls['GetPlayerSummaries'], steamid)
@@ -52,6 +55,9 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
+      
+      
+ 
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
     amount_of_games[1] = 0
@@ -67,13 +73,6 @@ class ValveApi():
     
     for skill in range(1,4):
       
-      if skill == 1:
-	Q = 1
-      if skill == 2:
-	Q = 3
-      if skill == 3:
-        Q = 6
-      
       conditions =  '&account_id=' + str(userid)
       conditions += '&skill='+str(skill)
       conditions += '&date_min='+str(timestamp) 
@@ -82,20 +81,32 @@ class ValveApi():
       if response is not None and response['result']['status'] == 1:
 	amount_of_games[skill] += response['result']['total_results']
       else:
-	#print 'Error:', response['result']['statusDetail'][:25]	
+	# user probably has his statistics closed to public
 	break
-      exp += amount_of_games[skill] * Q
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
+        
+    ## new experience calculation formula
     
-    if total_games != 0:
-      #self.writeCache()
-      pass
-      
+    vh_cent = float(amount_of_games[3]) / total_games
+    h_cent  = float(amount_of_games[2]) / total_games
+    n_cent  = float(amount_of_games[1]) / total_games
+    
+    nominal_games_amount = 150
+    
+    vh = nominal_games_amount * vh_cent
+    h  = nominal_games_amount * h_cent
+    n  = nominal_games_amount * n_cent
+
+    exp = vh*6 + h*3 + n*1
+    exp = int(math.floor(exp))
     
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
 		    'total': total_games}
     print 'get_player_exp_from_steamid', playerstats
     return playerstats
-            
+
+    
+    
+    
