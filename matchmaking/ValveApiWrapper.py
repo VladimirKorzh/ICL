@@ -73,13 +73,6 @@ class ValveApi():
     
     for skill in range(1,4):
       
-      if skill == 1:
-	Q = 1
-      if skill == 2:
-	Q = 3
-      if skill == 3:
-        Q = 6
-      
       conditions =  '&account_id=' + str(userid)
       conditions += '&skill='+str(skill)
       conditions += '&date_min='+str(timestamp) 
@@ -90,26 +83,22 @@ class ValveApi():
       else:
 	# user probably has his statistics closed to public
 	break
-	
-	
-
-	
-      exp += amount_of_games[skill] * Q
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
-    
-    
+        
     ## new experience calculation formula
-    #newexp = 0
-    #max_skill_games = max(amount_of_games[1],amount_of_games[2],amount_of_games[3])
     
-    #if max_skill_games == amount_of_games[3]:
-      #newexp += 600 + max_skill_games/total_games*600
-    #else if max_skill_games == amount_of_games[2]:
-      #newexp += 300 + max_skill_games/total_games*300
-    #else if max_skill_games == amount_of_games[1]:
-      #newexp += 100 + max_skill_games/total_games*100
+    vh_cent = amount_of_games[3] / total_games
+    h_cent  = amount_of_games[2] / total_games
+    n_cent  = amount_of_games[1] / total_games
     
+    nominal_games_amount = 150
+    
+    vh = nominal_games_amount/100 * vh_cent
+    h  = nominal_games_amount/100 * h_cent
+    n  = nominal_games_amount/100 * n_cent
+
+    exp = vh*6 + h*3 + n*1
 
     
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
