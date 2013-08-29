@@ -367,6 +367,7 @@ function tick(){
       // if we have some, then take the task
       current_task = actions.pop();
       bot.trade(current_task.uid);
+      console.log('Throwing trade request')
       time_lastping = new Date().getTime() / 1000;
   }
 }
