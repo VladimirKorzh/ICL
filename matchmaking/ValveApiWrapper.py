@@ -1,5 +1,5 @@
 
-import os
+import os, math
 import time, datetime, calendar
 import json, urllib2
 
@@ -88,18 +88,18 @@ class ValveApi():
         
     ## new experience calculation formula
     
-    vh_cent = amount_of_games[3] / total_games
-    h_cent  = amount_of_games[2] / total_games
-    n_cent  = amount_of_games[1] / total_games
+    vh_cent = float(amount_of_games[3]) / total_games
+    h_cent  = float(amount_of_games[2]) / total_games
+    n_cent  = float(amount_of_games[1]) / total_games
     
     nominal_games_amount = 150
     
-    vh = nominal_games_amount/100 * vh_cent
-    h  = nominal_games_amount/100 * h_cent
-    n  = nominal_games_amount/100 * n_cent
+    vh = nominal_games_amount * vh_cent
+    h  = nominal_games_amount * h_cent
+    n  = nominal_games_amount * n_cent
 
     exp = vh*6 + h*3 + n*1
-
+    exp = int(math.floor(exp))
     
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
