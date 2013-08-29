@@ -85,21 +85,25 @@ class ValveApi():
 	break
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
-        
-    ## new experience calculation formula
     
-    vh_cent = float(amount_of_games[3]) / total_games
-    h_cent  = float(amount_of_games[2]) / total_games
-    n_cent  = float(amount_of_games[1]) / total_games
-    
-    nominal_games_amount = 150
-    
-    vh = nominal_games_amount * vh_cent
-    h  = nominal_games_amount * h_cent
-    n  = nominal_games_amount * n_cent
+    if total_games != 0:
+      ## new experience calculation formula
+      
+      vh_cent = float(amount_of_games[3]) / total_games
+      h_cent  = float(amount_of_games[2]) / total_games
+      n_cent  = float(amount_of_games[1]) / total_games
+      
+      nominal_games_amount = 150
+      
+      vh = nominal_games_amount * vh_cent
+      h  = nominal_games_amount * h_cent
+      n  = nominal_games_amount * n_cent
 
-    exp = vh*6 + h*3 + n*1
-    exp = int(math.floor(exp))
+      exp = vh*6 + h*3 + n*1
+      exp = int(math.floor(exp))
+    else:
+      exp = 0
+   
     
     playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
 		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],

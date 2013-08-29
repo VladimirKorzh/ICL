@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 
 from matchmaking.models import Player
 
+from datetime import tzinfo, datetime
+
 import mm
 import MumbleWrapper
 
@@ -30,13 +32,12 @@ def stacks(request):
 	      'exp':       mm.getPlayerExp(request)}
       
       mumble              = MumbleWrapper.ICLMumble()
-      data['mumblelists'] = mumble.get_info()
-      mumble = None      
+      data['mumblelists'] = mumble.get_info()      
 
       return render(request, 'matchmaking/stacks.html', data)
 
            
-from datetime import tzinfo, timedelta, datetime
+
 @login_required 
 def ratings(request):
       data = {'username':request.user,

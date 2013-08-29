@@ -2,7 +2,8 @@
 
 import os, sys, string, random, json
 import urllib2
-import time, datetime, calendar
+
+from datetime import tzinfo, datetime
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -21,11 +22,8 @@ import ValveApiWrapper
 @login_required
 def getPlayerExp(request):      
     try:
-      exp = Player.objects.get(nickname=request.user).exp
-      
-      # auto update exp in case if user has zero
-      if exp == 0:
-	recalculateexp(request)
+      player = Player.objects.get(nickname=request.user)
+      exp = player.exp
 	
     except Player.DoesNotExist:
       print request.user, 'not found in db'
