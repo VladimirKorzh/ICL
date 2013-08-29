@@ -52,7 +52,7 @@ def ratings(request):
 	  
 	  if splits[0] != '0':
 	    pretty_time += splits[0] + ' hours '
-	    print splits[0]
+	    #print splits[0]
 	    
 	  if splits[1] != '0':
 	    pretty_time += splits[1]+' minutes ago.'
