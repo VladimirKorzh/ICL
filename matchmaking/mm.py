@@ -34,6 +34,7 @@ def getPlayerExp(request):
 
 @login_required    
 def updateUserInfo(request):
+    print 'updateUserInfo'
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')
     playerstats = valveapi.get_player_exp_from_steamid(steamid)
