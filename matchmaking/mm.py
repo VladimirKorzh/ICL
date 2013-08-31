@@ -17,55 +17,22 @@ import MumbleWrapper
 import ValveApiWrapper
 
 
-# used as a way to get whatever is stored in db
-# for that user. may return old value
-@login_required
-def getPlayerExp(request):      
-    try:
-      player = Player.objects.get(nickname=request.user)
-      exp = player.exp
+## used as a way to get whatever is stored in db
+## for that user. may return old value
+#@login_required
+#def getPlayerExp(request):      
+    #try:
+      #player = Player.objects.get(nickname=request.user)
+      #exp = player.exp
 	
-    except Player.DoesNotExist:
-      print request.user, 'not found in db'
-      updateUserInfo(request)
-      exp = 0
+    #except Player.DoesNotExist:
+      #print request.user, 'not found in db'
+      #updateUserInfo(request)
+      #exp = 0
       
-    return exp
-
-@login_required    
-def updateUserInfo(request):
-    print 'updateUserInfo'
-    social_auth = request.user.social_auth.get(provider='steam')
-    steamid     = social_auth.extra_data.get('steamid')
-    playerstats = valveapi.get_player_exp_from_steamid(steamid)
-    
-    try:
-      player = Player.objects.get(uid=steamid)
-    except Player.DoesNotExist:
-      player = Player()
-      
-    player.uid      = steamid
-    player.nickname = str(request.user)
-    player.avatar   = social_auth.extra_data.get('avatar')
-    player.profile  = "http://steamcommunity.com/profiles/"+steamid
-        
-    player.save()
-    print "Player logged in:", player.nickname, player.exp
+    #return exp
 
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
   
   
 #def getUserAvatarUrl(request):
