@@ -2,7 +2,7 @@
 <div class="grid_3" id="profile">
   
 <form action="/update_profile" method="POST">{% csrf_token %}
-  <div style="text-align:center;"><a onclick="JavaScript:recalculateexp(); return false;" href=""><img src="{{profile.avatar}}"/>{{profile.nickname}}<span class="exp" id="exp">{{profile.exp}}</span></a></div>
+  <div style="text-align:center;"><img src="{{profile.avatar}}"/>{{profile.nickname}}<span class="exp" id="exp">{{profile.exp}}</span></div>
 
   <br>
   <table>
