@@ -43,7 +43,7 @@ def login(request):
 @login_required
 def stacks(request):
       social_auth = request.user.social_auth.get(provider='steam')
-      
+      # TODO escape nicknames with special characters
       data = {'profile': Player.objects.get(nickname=request.user)}
       
       mumble              = MumbleWrapper.ICLMumble()
