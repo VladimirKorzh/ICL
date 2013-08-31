@@ -1,10 +1,7 @@
 
-{% include 'header.html' %}
+{% extends 'base.html' %}
 
-<div id="container" class="container_12">
-
-      {% include 'navigation.html' %}
-            
+{% block body %}
       <div class="grid_9">            
       {% for mumbleinfo in mumblelists %}               
       
@@ -45,7 +42,5 @@
 	    <div class="grid_12">&nbsp;</div>
 	    <div class="clear"></div>
       {% endfor %}
-
-</div> <!-- end of container_12 -->
-
+{% endblock body %}
 

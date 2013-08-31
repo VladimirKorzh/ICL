@@ -41,11 +41,9 @@ class ValveApi():
       print 'Amount of requests per day has been exceeded.'
       
     obj.save()
-    time.sleep(1)	            
+    time.sleep(1)           
     return response
 
-    
-    
   # returns current player-set in-game nickname
   def get_player_name_from_steamid(self, userid):
       steamid = '&steamids=' + str(userid)      
@@ -55,8 +53,6 @@ class ValveApi():
 	personaname = response['response']['players'][0]['personaname']
       return personaname
 
-      
-      
  
   def get_player_exp_from_steamid(self,userid):
     amount_of_games = {}
@@ -64,8 +60,6 @@ class ValveApi():
     amount_of_games[2] = 0
     amount_of_games[3] = 0
     
-    exp = 0
-
     past = datetime.datetime.now() - datetime.timedelta(weeks = 4)
     
     timestamp = calendar.timegm(past.utctimetuple())
@@ -86,9 +80,10 @@ class ValveApi():
     
     total_games = amount_of_games[3]+amount_of_games[2]+amount_of_games[1]
     
-    if total_games != 0:
-      ## new experience calculation formula
-      
+    pts = 0
+    exp = 0
+    
+    if total_games != 0:      
       vh_cent = float(amount_of_games[3]) / total_games
       h_cent  = float(amount_of_games[2]) / total_games
       n_cent  = float(amount_of_games[1]) / total_games
@@ -101,13 +96,18 @@ class ValveApi():
 
       exp = vh*6 + h*3 + n*1
       exp = int(math.floor(exp))
-    else:
-      exp = 0
-   
-    
-    playerstats = {'exp':exp,'name':self.get_player_name_from_steamid(userid),
-		    'n':amount_of_games[1], 'h':amount_of_games[2], 'vh':amount_of_games[3],
-		    'total': total_games}
+      
+      extra_games = total_games - nominal_games_amount
+      pts = extra_games*vh_cent*6 + extra_games*h_cent*3 + extra_games*n_cent*1
+
+    playerstats = {'exp':exp,
+		    'nickname':self.get_player_name_from_steamid(userid),
+		    'exp_n_games':amount_of_games[1],
+		    'exp_h_games':amount_of_games[2],
+		    'exp_vh_games':amount_of_games[3],
+		    'total_games': total_games,
+		    'extra_exp_pts': pts}
+		    
     print 'get_player_exp_from_steamid', playerstats
     return playerstats
 

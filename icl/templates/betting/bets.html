@@ -1,12 +1,8 @@
-
-{% include 'header.html' %}
-
+{% extends 'base.html' %}
+{% block body %}
 <div class="container_12">
-	{% include 'navigation.html' %}
-	
 	<div class="grid_4" id="create">
-	    <form action="/bets/create_new/" method="POST">
-		{% csrf_token %}	
+	    <form action="/bets/create_new/" method="POST">{% csrf_token %}
 		<table>
 		<tr><th><label for="rarity">Rarity</label></th><th><label for="amount">Amount</label></th><th>Actions</th></tr>
 		<tr><td>
@@ -110,3 +106,4 @@
 	
 	<div class="clear"></div>
 </div> <!-- end of container_12 -->
+{% endblock body %}

@@ -1,0 +1,17 @@
+{% include 'header.html' %}
+
+<body>
+  <div class="container_12" id="content_part">
+    {% include 'overlay.html' %}
+    
+    {% include 'navigation.html' %}
+    
+
+    <div class="grid_3">
+	{% include 'profile.html' %}
+    </div>
+    <div class="grid_9">
+	{% block body %}{% endblock %}
+    </div>
+  </div>
+</body>

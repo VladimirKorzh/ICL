@@ -1,0 +1,37 @@
+<!-- START OF PROFILE PANEL -->
+<div class="grid_3" id="profile">
+  
+<form action="/update_profile" method="POST">{% csrf_token %}
+  <div style="text-align:center;"><a onclick="JavaScript:recalculateexp(); return false;" href=""><img src="{{profile.avatar}}"/>{{profile.nickname}}<span class="exp" id="exp">{{profile.exp}}</span></a></div>
+
+  <br>
+  <table>
+  <tr><th>Skill</th><th>Value</th></tr>
+  <tr><td>Normal</td><td>{{ profile.exp_n_games }}</td></tr>
+  <tr><td>High</td><td>{{ profile.exp_h_games }}</td></tr>
+  <tr><td>Very high</td><td>{{ profile.exp_vh_games }}</td></tr>
+  <tr><td>Total</td><td>{{profile.exp_total_games}}</td></tr>
+  <tr><td>Extra pts</td><td>{{ profile.extra_exp_pts }}</td></tr>
+
+  
+  <tr><td>Pri. Role:</td><td>
+     <select name="pri_role">
+	<option value="Carry" {% if profile.pri_role|stringformat:"s" == "Carry"  %}  selected="selected" {% endif %}>Carry</option>
+	<option value="Solomid" {% if profile.pri_role|stringformat:"s" == "Solomid"  %}  selected="selected" {% endif %}>Solomid</option>
+	<option value="Offlane" {% if profile.pri_role|stringformat:"s" == "Offlane"  %}  selected="selected" {% endif %}>Offlane</option>
+	<option value="Support" {% if profile.pri_role|stringformat:"s" == "Support"  %}  selected="selected" {% endif %}>Support</option>
+    </select></td></tr>
+    
+  <tr><td>Alt. Role:</td><td>
+    <select name="alt_role">
+      <option value="Carry" {% if profile.alt_role|stringformat:"s" == "Carry"  %}  selected="selected" {% endif %}>Carry</option>
+      <option value="Solomid" {% if profile.alt_role|stringformat:"s" == "Solomid"  %}  selected="selected" {% endif %}>Solomid</option>
+      <option value="Offlane" {% if profile.alt_role|stringformat:"s" == "Offlane"  %}  selected="selected" {% endif %}>Offlane</option>
+      <option value="Support" {% if profile.alt_role|stringformat:"s" == "Support"  %}  selected="selected" {% endif %}>Support</option>
+  </select></td></tr>
+    
+  </table>    
+    <input type="submit" onclick='overlay()' value="Refresh Profile"></input>
+  </form>
+</div>
+<!-- END OF PROFILE PANEL -->
