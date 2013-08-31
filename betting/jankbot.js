@@ -33,7 +33,7 @@ var actions = [];
 var current_task  = '';
 var time_lastping = '';
 
-
+bot.on('debug', console.log);
 
 // Log in
 bot.logOn(params['accountName'],params['password'], params['shaSentryfile'], params['authCode']);
@@ -45,7 +45,7 @@ bot.on('loggedOn', function() {
 	bot.setPersonaState(Steam.EPersonaState.Online);
 	bot.setPersonaName(DISPLAY_NAME);
 });
-bot.on('debug', console.log);
+
 
 // Perform a web login and save session ID
 // which is used in trade APIs
@@ -285,6 +285,7 @@ process.on( 'SIGINT', function() {
   process.exit( )
 });
 
+
 function check_db(uid) {
   console.log('Checking for tasks related to ', uid);  
   // returns all bidders that are not OK, which means they are waiting
@@ -292,43 +293,47 @@ function check_db(uid) {
   
   statement = "SELECT player.id as id FROM matchmaking_player as player WHERE player.uid="+uid;
   player_id = 0;
+//   console.log('player_id',player_id)
   
   db.each(statement, function(err, row, player_id){
       if (err) throw err;
-//       console.log(row.id);      
+//    console.log(row.id);  
       player_id = row.id; 
 
       statement = "SELECT bidder.status, bet.amount, bet.rarity, bet.id as bet_id FROM betting_bidder as bidder, betting_bet as bet WHERE bidder.player_id="+player_id+" AND bet.id = bidder.bet_id AND bidder.status != 'OK'";
       
-//       console.log(statement);
+    console.log(statement);
       db.all(statement, function (err, rows) {
 	  if (err) throw err;
 	      
 	  if (rows.length == 0) {
 	    console.log('nothing has been found');
-	    return;
 	  }
 	  else {
 	    rows.forEach( function(row) {
-	      console.log('found', row);
-	      actions.push({"type":  row.status,
-			    "amount": row.amount,
-			    "rarity": row.rarity,
-			    "uid":    uid,
-			    "bet_id": row.bet_id,
-			    "player_id": player_id
-			  });
-	      keep_or_remove(uid);
-	    }); // end for each row that we've found
-	  } // end if found rows	
-      }); // end db.all                
+		  console.log('found', row);
+		  actions.push({"type":  row.status,
+				"amount": row.amount,
+				"rarity": row.rarity,
+				"uid":    uid,
+				"bet_id": row.bet_id,
+				"player_id": player_id
+			      });
+	    }); // end for each row that we've found    
+	  } // end if found rows 
+	  console.log('here',uid);
+	  keep_or_remove(uid);
+      }); // end db.all    
   }); // end for each player_id row
 } // end check_db
+
 
 function keep_or_remove(uid) {
   // this function is used to determine if there are any other tasks
   // related to the provided user. In case if there are none, it 
   // removes the user from friend list.
+  console.log('keep_or_remove', uid);
+  
   found_other_tasks = false;
   for (var i=0; i<actions.length; i++) {    
     action = actions[i];
@@ -350,10 +355,8 @@ function keep_or_remove(uid) {
 function tick(){
   if (time_lastping != '' && current_task != '') {
       time_now = new Date().getTime() / 1000;      
-      if ((time_now - time_lastping) > 60) {
+      if ((time_now - time_lastping) > 30) {
 	console.log('task takes too much time, cancelling it');
-	console.log(current_task);
-	bot.removeFriend(current_task.uid);
 	current_task = '';
       }
   }
@@ -364,20 +367,13 @@ function tick(){
       // just IDLE
       if (actions.length == 0) return;
       
-      bot.webLogOn(function(cookies, current_task) {
-	  console.log('got a new cookie:', cookies);
-	  cookies.split(";").forEach(function(cookie) {
-	      steamTrade.setCookie(cookie);
-	  });
-	  
-	  // if we have some, then take the task
-	  current_task = actions.pop();
-	  bot.trade(current_task.uid);
-	  console.log('Throwing trade request to', current_task.uid)
-	  time_lastping = new Date().getTime() / 1000;	  
-	});
+      // if we have some, then take the task
+      current_task = actions.pop();
+      console.log('current_task', current_task);
+      bot.trade(current_task.uid);
+      time_lastping = new Date().getTime() / 1000;
   }
 }
 
 // Setup speed of tick function.
-setInterval(tick, 5000);
+setInterval(tick, 1000);
