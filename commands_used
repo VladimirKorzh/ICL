@@ -38,7 +38,9 @@
   sudo add-apt-repository ppa:chris-lea/node.js
   sudo apt-get update
   sudo apt-get install nodejs
-
+  
+  
+<a href="steam://friends/add/76561198087841351"> add ICL.bot </a>
   
 # in bot directory you will need node-steam-trade project aside of
 # others that are installed with the regular command

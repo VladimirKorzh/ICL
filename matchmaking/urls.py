@@ -11,8 +11,5 @@ urlpatterns = patterns('',
     url(r'^login$',        views.login,      name='login'),     
     url(r'^stacks$',       views.stacks,     name='stacks'),
     url(r'^ratings$',      views.ratings,    name='ratings'),
-    
-    # Matchmaking APIs
-    url(r'^ajax/recalculateexp', mm.recalculateexp,  name='recalculateexp'),
-    #url(r'^matchmaking/getchannelsinfo$', mm.getchannelsinfo,   name='getchannelsinfo')
+    url(r'^update_profile$',     views.update_profile, name='profile_update'),
 )

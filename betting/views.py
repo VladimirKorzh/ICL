@@ -1,4 +1,4 @@
-
+ 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
@@ -204,8 +204,7 @@ def mybets(request):
       
       # data structure that will hold information that we pass on
       # to render call
-      data = {'username': request.user,
-	      'exp':       mm.getPlayerExp(request),
+      data = {'profile':    Player.objects.get(nickname=request.user),
 	      'results': []
 	      }  
       

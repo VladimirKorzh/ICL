@@ -32,35 +32,11 @@ def getPlayerExp(request):
       
     return exp
 
-@login_required
-def recalculateexp(request):
-    social_auth = request.user.social_auth.get(provider='steam')
-    steamid    = social_auth.extra_data.get('steamid')    
-    
-    
-    valveapi = ValveApiWrapper.ValveApi()        
-    playerstats = valveapi.get_player_exp_from_steamid(steamid)
-    
-    response = {'exp':playerstats['exp']}
-    json_data = json.dumps(response)
-    
-    try:
-      player_obj = Player.objects.get(nickname=request.user)
-    except Player.DoesNotExist: 
-      print 'recalculateexp player does not exist'      
-    
-    player_obj.exp = response['exp']
-    player_obj.save()
-    
-    return HttpResponse(json_data, mimetype="application/json") 
-
 @login_required    
 def updateUserInfo(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')
-    
-    #valveapi   = ValveApiWrapper.ValveApi()
-    #playerstats = valveapi.get_player_exp_from_steamid(steamid)
+    playerstats = valveapi.get_player_exp_from_steamid(steamid)
     
     try:
       player = Player.objects.get(uid=steamid)
@@ -70,22 +46,8 @@ def updateUserInfo(request):
     player.uid      = steamid
     player.nickname = str(request.user)
     player.avatar   = social_auth.extra_data.get('avatar')
-    #player.exp      = playerstats['exp']
-    
-  #try:
-    #afklobby = Lobby.objects.get(name='AFK')     
-  #except Lobby.DoesNotExist:
-    #afklobby = Lobby(name='AFK')
-    #afklobby.save()
-    
-  #player.lobby = None
-  
-  # create roles for user
-  #if player.roles == None:
-    #roles = Roles()
-    #roles.save()
-    #player.roles = roles    
-  
+    player.profile  = "http://steamcommunity.com/profiles/"+steamid
+        
     player.save()
     print "Player logged in:", player.nickname, player.exp
 
