@@ -22,10 +22,10 @@ def intro(request):
   
 @login_required  
 def login(request):
-    print 'updateUserInfo'
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')
-    playerstats = ValveApiWrapper.get_player_exp_from_steamid(steamid)
+    valveapi    = ValveApiWrapper.ValveApi()
+    playerstats = valveapi.get_player_exp_from_steamid(steamid)
     
     try:
       player = Player.objects.get(uid=steamid)
