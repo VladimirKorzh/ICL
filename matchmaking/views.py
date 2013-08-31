@@ -24,9 +24,7 @@ def intro(request):
 def login(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')
-    valveapi    = ValveApiWrapper.ValveApi()
-    playerstats = valveapi.get_player_exp_from_steamid(steamid)
-    
+
     try:
       player = Player.objects.get(uid=steamid)
     except Player.DoesNotExist:
@@ -38,7 +36,7 @@ def login(request):
     player.profile  = "http://steamcommunity.com/profiles/"+steamid
         
     player.save()
-    print "Player logged in:", player.nickname, player.exp
+    print "Player logged in:", player.nickname
     
     return redirect('/stacks')
   
