@@ -25,11 +25,11 @@ class Stack(models.Model):
 	exp     = models.PositiveIntegerField(default=0)
 	channel = models.CharField(max_length=40)
 	
-	carry   = models.ForeignKey(Player)
-	solomid = models.ForeignKey(Player)
-	offlane = models.ForeignKey(Player)
-	support1 = models.ForeignKey(Player)
-	support2 = models.ForeignKey(Player)
+	carry   = models.ForeignKey(Player, related_name="carry")
+	solomid = models.ForeignKey(Player, related_name="solomid")
+	offlane = models.ForeignKey(Player, related_name="offlane")
+	support1 = models.ForeignKey(Player, related_name="support1")
+	support2 = models.ForeignKey(Player, related_name="support2")
 		
 	def __unicode__(self):
 	  return str(self.name)
