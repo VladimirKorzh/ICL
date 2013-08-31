@@ -25,23 +25,23 @@ function overlay() {
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 }
 
-function recalculateexp(){
-	document.getElementById("exp").innerHTML = '?';
-	$.ajax({
-	    type: "GET",
-	    url: "/ajax/recalculateexp",
-
-	    async: true,    /* If set to non-async, browser shows page as "Loading.." */
-	    cache: false,
-	    timeout: 90000, /* Timeout in ms */
-	    dataType: 'json',
-	    
-	    success: function(data)
-	    {   
-		document.getElementById("exp").innerHTML = data.exp;
-	    }    
-	}); 
-}
+// function recalculateexp(){
+// 	document.getElementById("exp").innerHTML = '?';
+// 	$.ajax({
+// 	    type: "GET",
+// 	    url: "/ajax/recalculateexp",
+// 
+// 	    async: true,    /* If set to non-async, browser shows page as "Loading.." */
+// 	    cache: false,
+// 	    timeout: 90000, /* Timeout in ms */
+// 	    dataType: 'json',
+// 	    
+// 	    success: function(data)
+// 	    {   
+// 		document.getElementById("exp").innerHTML = data.exp;
+// 	    }    
+// 	}); 
+// }
 
 function timedRefresh(timeoutPeriod){
       setTimeout("location.reload(true);", timeoutPeriod);
