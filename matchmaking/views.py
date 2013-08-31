@@ -22,8 +22,25 @@ def intro(request):
   
 @login_required  
 def login(request):
-      mm.updateUserInfo(request)
-      return redirect('/stacks')
+    print 'updateUserInfo'
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')
+    playerstats = ValveApiWrapper.get_player_exp_from_steamid(steamid)
+    
+    try:
+      player = Player.objects.get(uid=steamid)
+    except Player.DoesNotExist:
+      player = Player()
+      
+    player.uid      = steamid
+    player.nickname = str(request.user)
+    player.avatar   = social_auth.extra_data.get('avatar')
+    player.profile  = "http://steamcommunity.com/profiles/"+steamid
+        
+    player.save()
+    print "Player logged in:", player.nickname, player.exp
+    
+    return redirect('/stacks')
   
 @login_required
 def stacks(request):
