@@ -20,6 +20,11 @@ function winnerside(side, bet_id) {
   }
 }
 
+function overlay() {
+	el = document.getElementById("overlay");
+	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
 function recalculateexp(){
 	document.getElementById("exp").innerHTML = '?';
 	$.ajax({
