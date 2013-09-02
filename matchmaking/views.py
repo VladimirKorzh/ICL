@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from matchmaking.models import Player
 
 from datetime import tzinfo, datetime
+from urllib import quote
 
 import mm
 import MumbleWrapper
@@ -15,11 +16,12 @@ def landing(request):
   if not request.user.is_authenticated():
       return redirect('/intro')
   else:
-      return redirect('/stacks')
+    # fix for people reloading page after update has been released.
+      login(request)
 
 def intro(request):
       return render(request, 'matchmaking/intro.html')  
-  
+
 @login_required  
 def login(request):
     social_auth = request.user.social_auth.get(provider='steam')
@@ -43,12 +45,14 @@ def login(request):
 @login_required
 def stacks(request):
       social_auth = request.user.social_auth.get(provider='steam')
-      # TODO escape nicknames with special characters
-      data = {'profile': Player.objects.get(nickname=request.user)}
+      steamid     = social_auth.extra_data.get('steamid')
+      mumble              = MumbleWrapper.ICLMumble()      
       
-      mumble              = MumbleWrapper.ICLMumble()
-      data['mumblelists'] = mumble.get_info()      
-
+      data = {'profile': Player.objects.get(uid=steamid),
+	      'mumble_username': quote(Player.objects.get(uid=steamid).nickname),
+	      'mumblelists': mumble.get_info()
+	      }
+      
       return render(request, 'matchmaking/stacks.html', data)
 
 
@@ -60,7 +64,7 @@ def update_profile(request):
     playerstats = valveapi.get_player_exp_from_steamid(steamid)
 
     try:
-      player_obj = Player.objects.get(nickname=request.user)
+      player_obj = Player.objects.get(uid=steamid)
     except Player.DoesNotExist: 
       print 'recalculateexp player does not exist'      
         
@@ -85,7 +89,10 @@ def update_profile(request):
     
 @login_required 
 def ratings(request):
-      data = {'profile':Player.objects.get(nickname=request.user)}
+      social_auth = request.user.social_auth.get(provider='steam')
+      steamid     = social_auth.extra_data.get('steamid')  
+      
+      data = {'profile':Player.objects.get(uid=steamid)}
       
       players = Player.objects.all()  
       data['playerslist'] = []

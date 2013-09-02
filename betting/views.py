@@ -7,13 +7,6 @@ from matchmaking.models import Player
 from matchmaking import mm
 
 from random import randint
-
-
-def get_player_id_in_internal_database(playername):
-    # performs a lookup of current login in internal db
-    # and returns the id. FIX for weird usernames
-    return Player.objects.get(nickname=playername).id
-
     
 def update_bet_status(bet_id):
   # function that allows bet to transition from one state to
@@ -47,14 +40,17 @@ def update_bet_status(bet_id):
     
 @login_required
 def close_bet(request, bet_id):  
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid') 
+    
     # find the bet that we are about to close
-    bet2close = Bet.objects.filter(id__exact=bet_id)[0]	    
+    bet2close = Bet.objects.filter(id__exact=bet_id)[0]  
     
     # only allow to close the Open bets
     if bet2close.status == 'Open':
       
       # only allow the owner of the bet to close it
-      if get_player_id_in_internal_database(request.user) == bet2close.owner.id:
+      if Player.objects.get(uid=steamid).id == bet2close.owner.id:
       
 	# find all the bidders on this bet
 	a = Bidder.objects.filter(bet_id__exact=bet_id, side__exact ='A')
@@ -83,13 +79,16 @@ def close_bet(request, bet_id):
     
 @login_required
 def remove_bet(request, bet_id):
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')
+    
     bet2delete = Bet.objects.filter(id__exact=bet_id)[0]
     
     # only allow users to remove open bets
     if bet2delete.status == 'Open':    
       # check if we are the owner of this bet
       # only owner can order a delete call.
-      if get_player_id_in_internal_database(request.user) == bet2delete.owner.id:    
+      if Player.objects.get(uid=steamid).id == bet2delete.owner.id:    
       
 	# remove its bidders as well
 	for each in Bidder.objects.filter(bet_id__exact=bet_id):
@@ -102,7 +101,10 @@ def remove_bet(request, bet_id):
     
 @login_required
 def cancel_bet(request, bet_id):
-    player_id = get_player_id_in_internal_database(request.user)  
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')  
+    
+    player_id = Player.objects.get(uid=steamid).id
   
     # only allow cancelling bets if the bet is open
     res = Bet.objects.filter(id__exact=bet_id)[0]  
@@ -118,7 +120,10 @@ def cancel_bet(request, bet_id):
 
 @login_required    
 def decide_bet(request, bet_id, side, password):
-    player_id = get_player_id_in_internal_database(request.user)
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')  
+    
+    player_id = Player.objects.get(uid=steamid).id
     
     # bet result can be decided by any person that provides the 
     # correct password. It is absolutely important to keep it 
@@ -156,7 +161,10 @@ def decide_bet(request, bet_id, side, password):
     
 @login_required
 def takeside_bet(request, bet_id, side):
-    player_id = get_player_id_in_internal_database(request.user)
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')  
+    
+    player_id = Player.objects.get(uid=steamid).id
     
     # only allow changing sides if the bet is open
     res = Bet.objects.filter(id__exact=bet_id)[0]
@@ -182,7 +190,10 @@ def takeside_bet(request, bet_id, side):
             
 @login_required
 def create_new(request):
-    player_id = get_player_id_in_internal_database(request.user)
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')  
+    
+    player_id = Player.objects.get(uid=steamid).id
   
     # only allow creation of new bets on POST requests
     # otherwise skip the whole thing.
@@ -200,11 +211,11 @@ def create_new(request):
     
 @login_required    
 def mybets(request):
-      player_id = get_player_id_in_internal_database(request.user)
+      player_id = Player.objects.get(uid=steamid).id
       
       # data structure that will hold information that we pass on
       # to render call
-      data = {'profile':    Player.objects.get(nickname=request.user),
+      data = {'profile':    Player.objects.get(id__exact=player_id),
 	      'results': []
 	      }  
       
