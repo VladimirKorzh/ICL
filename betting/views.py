@@ -211,6 +211,9 @@ def create_new(request):
     
 @login_required    
 def mybets(request):
+      social_auth = request.user.social_auth.get(provider='steam')
+      steamid     = social_auth.extra_data.get('steamid')  
+      
       player_id = Player.objects.get(uid=steamid).id
       
       # data structure that will hold information that we pass on

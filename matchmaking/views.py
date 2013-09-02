@@ -17,7 +17,7 @@ def landing(request):
       return redirect('/intro')
   else:
     # fix for people reloading page after update has been released.
-      login(request)
+      return login(request)
 
 def intro(request):
       return render(request, 'matchmaking/intro.html')  
