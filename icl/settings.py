@@ -1,10 +1,9 @@
 # Django settings for icl project.
-
 import os
 
-#TODO COMMENT THIS WHEN SWITCHING TO PRODUCTION
+# TODO COMMENT THIS WHEN SWITCHING TO PRODUCTION
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = True
 
 # this gives us the full path to the file
 # which resides in the base folder of the project
@@ -41,7 +40,14 @@ TIME_ZONE = 'America/Los_Angeles'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-US'
+#LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'ru'
+
+LANGUAGES = (
+	('ru', 'Russian'),
+	('en', 'English'),
+)
 
 SITE_ID = 1
 
@@ -91,6 +97,11 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+# directories where Django looks for translation files
+LOCALE_PATHS = (
+      "/home/vladimir/Documents/ui_phase/ICL/locale",
+)
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'ioq2+b^@vus3u$^202i@+)v5a0r2*7+256pu@3tb-=n7uo5d_!'
 
@@ -107,8 +118,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'icl.urls'
@@ -130,9 +141,13 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # stuff that I 100% use
+    'social_auth',    
     'matchmaking',
-    'betting',
-    'social_auth'
+    'bets',
+    'stacks',
+    'ratings',
 )
 
 ####################################################################
@@ -148,7 +163,8 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
   "social_auth.context_processors.social_auth_by_type_backends",
   "django.contrib.auth.context_processors.auth",
-  "django.core.context_processors.media"
+  "django.core.context_processors.media",
+  "django.core.context_processors.i18n",
 )
 
 SOCIAL_AUTH_ENABLED_BACKENDS = ('steam')

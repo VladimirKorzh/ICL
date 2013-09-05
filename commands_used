@@ -49,6 +49,12 @@
   npm install
   
   
+# gettext support for localization
+  sudo apt-get install gettext
+  
+# django nvd3 module for charts  
+  pip install django-nvd3
+  
 ###########################################################  
   
 # Steam add user url 

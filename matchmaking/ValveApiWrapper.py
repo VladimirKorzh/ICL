@@ -55,7 +55,7 @@ class ValveApi():
 
  
   def get_player_exp_from_steamid(self,userid):
-    amount_of_games = {}
+    amount_of_games    = {}
     amount_of_games[1] = 0
     amount_of_games[2] = 0
     amount_of_games[3] = 0
@@ -88,7 +88,7 @@ class ValveApi():
       h_cent  = float(amount_of_games[2]) / total_games
       n_cent  = float(amount_of_games[1]) / total_games
       
-      nominal_games_amount = 150
+      nominal_games_amount = 100
       
       vh = nominal_games_amount * vh_cent
       h  = nominal_games_amount * h_cent

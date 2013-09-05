@@ -34,6 +34,8 @@ class ICLMumble():
     self.channels = self.server.getChannels()
     self.users    = self.server.getUsers()
     
+    
+  def destroy(self):
     self.ice.destroy()
                                
   def getChannelObj(self, value):
@@ -57,7 +59,7 @@ class ICLMumble():
 	
     user = None    
     for usid in self.users:
-      if self.users[usid].name == value or self.users[usid].id == value:
+      if self.users[usid].name == value or self.users[usid].userid == value:
 	user = self.users[usid]
 	return user
     
@@ -65,50 +67,66 @@ class ICLMumble():
       print "Error: User not found."
       return None
 
-  def get_info(self):
-	result = []
+  def createNewChannel(self, parentchannelname, channelname):
+    parent = self.getChannelObj(parentchannelname)
+    self.server.addChannel(channelname, parent.id)      
+      
+  def deleteChannel(self, channelname):
+    ch = self.getChannelObj(channelname)
+    if ch:
+      self.server.removeChannel(ch.id)
+      
+      
+  def moveUser2Channel(self, username, channelname):
+    channel = self.getChannelObj(channelname)
+    user    = self.getUserObj(username)
+        
+    if channel and user:
+      user.channel = channel.id
+      self.server.setState(user)          
+      
+      
+      
+      
+      
+      
+      
+  #def get_info(self):
+	#result = []
 
-	for chid in self.channels:
-	  channelinfo = {}	
-	  channelinfo['name']     = self.channels[chid].name	    
-	  channelinfo['userlist'] = []	  
-	  if self.channels[chid].name != 'Root':
-	    result.append(channelinfo)
+	## find all created channels
+	#for chid in self.channels:
+	  #channelinfo = {}	
+	  #channelinfo['name']     = self.channels[chid].name	    
+	  #channelinfo['userlist'] = []
+	  #if self.channels[chid].name != 'Root':
+	    #result.append(channelinfo)
 	  
-	for usid in self.users:
-	  user_channel_id   = self.users[usid].channel
-	  user_channel_name = self.getChannelObj(user_channel_id).name
 	  
-	  for each in result:
-	    if each['name'] == user_channel_name:
-	      each['userlist'].append(self.users[usid].name)
+	## fill channells with users   
+	#for usid in self.users:
+	  #user_channel_id   = self.users[usid].channel
+	  #user_channel_name = self.getChannelObj(user_channel_id).name
+	  
+	  #for each in result:
+	    #if each['name'] == user_channel_name:
+	      #each['userlist'].append(self.users[usid].name)
 
-	for each in result:    
-	    while len(each['userlist']) < 5:
-	      each['userlist'].append('.')
+	## if we have less than five users in a stack append empty spaces      
+	##for each in result:    
+	    ##while len(each['userlist']) < 5:
+	      ##each['userlist'].append('.')
 	      
-	# split by 4 in a row
-	response = []
-	for each in grouper(result, 3):
-	  response.append(each)
+	## split by 3 in a row
+	#response = []
+	#for each in grouper(result, 3):
+	  #response.append(each)
 	  
-	#print 'Response',response
-	return response
-      
-      
-      
-      
-      
-  #def createNewChannel(self, parentchannelname, channelname):
-    #parent = self.getChannelIdFromName(parentchannelname)
-    #self.server.addChannel(channelname, parent.id)
-    
-  #def moveUser2Channel(self, username, channelname):
-    #channel = self.getChannelIdFromName(channelname)
-    #user    = self.getUserIdFromName(username)
-    
-    #user.channel = channel.id
-    #self.server.setState(user)    
+	##print 'Response',response
+	#return response
+        
+
+
     
   #def deleteChannelbyName(self, channelname):
     #channel = self.getChannelIdFromName(channelname)

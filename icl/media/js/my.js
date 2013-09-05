@@ -1,4 +1,20 @@
 
+// Allow tooltips on span classes
+jQuery(function ($) {
+    $("span").tooltip()
+});
+
+// Destroys modals as soon as they are hidden
+ $("[data-toggle=modal]").click(function(ev) {
+    ev.preventDefault();
+    // load the url and show modal on success
+    $( $(this).attr('data-target') + " .modal-body").load($(this).attr("href"), function() { 
+         $($(this).attr('data-target')).modal("show"); 
+    });
+});
+/*
+
+
 
 $( document ).ajaxStart(function() {
     $( "#loading" ).show(500);
@@ -10,7 +26,15 @@ $( document ).ajaxStop(function() {
     $( "#loading" ).hide(500);
     $( "#placeholder" ).show(500);
 });
+*/
 
+
+
+
+
+
+
+/*
 
 function winnerside(side, bet_id) {
   var pass=prompt("Enter password: ", "????"); 
@@ -23,7 +47,7 @@ function winnerside(side, bet_id) {
 function overlay() {
 	el = document.getElementById("overlay");
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
-}
+}*/
 
 // function recalculateexp(){
 // 	document.getElementById("exp").innerHTML = '?';
@@ -43,19 +67,9 @@ function overlay() {
 // 	}); 
 // }
 
-function timedRefresh(timeoutPeriod){
-      setTimeout("location.reload(true);", timeoutPeriod);
-}
-
-  
-$(function() {
-      /* For zebra striping */
-      $("table tr:nth-child(odd)").addClass("odd-row");
-      /* For cell text alignment */
-      $("table td:first-child, table th:first-child").addClass("first");
-      /* For removing the last border */
-      $("table td:last-child, table th:last-child").addClass("last");
-});
+// function timedRefresh(timeoutPeriod){
+//       setTimeout("location.reload(true);", timeoutPeriod);
+// }
 
 
 
