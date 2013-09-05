@@ -1,0 +1,45 @@
+<div class="span3">   
+    <table class="table table-striped table-condensed table-bordered">
+	  <tr><th> 
+	  {% include 'skill_template.html' with skill=stack.exp %}
+	  
+	  <div class="btn-group">
+	    <a class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
+	      <span class="caret"></span>
+	    </a>
+	    <ul class="dropdown-menu">	      
+	    
+<!-- 	      <li><a href="mumble://{{profile.mumble_nickname}}@icl.dyndns.org/{{stack.channel}}?version=1.2.0"><i class="icon-headphones"></i> Join Voice</a></li> -->
+	      <li><a href="stacks/voice/{{stack.channel}}"><i class="icon-headphones"></i> Join Voice</a></li>
+	      {% if profile == stack.carry %}
+	      <li class="divider"></li>
+	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>
+	      {% elif profile == stack.solomid %}
+	      <li class="divider"></li>
+	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>      
+	      {% elif profile == stack.offlane %}
+	      <li class="divider"></li>
+	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>         
+	      {% elif profile == stack.support1 %}
+	      <li class="divider"></li>
+	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>
+	      {% elif profile == stack.support2 %}
+	      <li class="divider"></li>
+	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>
+	      {% endif %}
+	    </ul>
+	  </div>	
+	  
+	    {{ stack.name }}
+	    </th></tr>
+		<tr><td>{% include 'player_template.html' with pl=stack.carry    role_short='C' role_long='Carry' role_num=1 stack_name=stack.name %}</tr></td>
+		
+		<tr><td>{% include 'player_template.html' with pl=stack.solomid  role_short='M' role_long='Mid' role_num=2 stack_name=stack.name %}</tr></td>
+		
+		<tr><td>{% include 'player_template.html' with pl=stack.offlane  role_short='O' role_long='Offlane' role_num=3 stack_name=stack.name %}</tr></td>
+		
+		<tr><td>{% include 'player_template.html' with pl=stack.support1 role_short='S' role_long='Support' role_num=4 stack_name=stack.name %}</tr></td>
+		
+		<tr><td>{% include 'player_template.html' with pl=stack.support2 role_short='S' role_long='Support' role_num=5 stack_name=stack.name %}</tr></td>
+    </table>
+</div>	

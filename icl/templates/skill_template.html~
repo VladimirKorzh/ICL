@@ -1,0 +1,9 @@
+{% if skill >= 500 %}
+    <span class="label label-important pull-right">{{ skill }}</span>
+{% elif skill >= 300 %}
+    <span class="label label-warning pull-right">{{ skill }}</span>
+{% elif skill >= 100 %}
+    <span class="label label-success pull-right">{{ skill }}</span>
+{% else %}
+    <span class="label label-inverse pull-right">{{ skill }}</span>
+{% endif %}

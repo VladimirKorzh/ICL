@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block actions %} 
+	  <li><a class="" href="/stacks"><i class="icon-list"></i> Show all</a></li>
+	  <li><a class="" href="/stacks/find"><i class="icon-search"></i> Show suitable</a></li>
+	  <li class="divider"></li>
+	  <li><a href="stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Flood Channel" %}</a></li>
+	  <!--<li><a class="" href="/stacks/createnew"><i class="icon-wrench"></i> Create new</a></li>
+	  <li><a class="" href="/stacls/remove"><i class="icon-remove-circle"></i> Delete</a></li>-->
+	  <li class="divider"></li>
+{% endblock %}
+<a >
+
+{% block body %} 
+
+<div class="span9">
+
+
+    {% for stack in stacks %}
+	{% include 'stack_template.html' with stack=stack %}
+    {% endfor %}
+
+    
+</div>        
+
+{% endblock body %}
+
+

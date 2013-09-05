@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block body %}
+  <p class="text-center">
+      This part of website is currently under redesign
+  </p>
+<!--<div class="container_12">
+	<div class="grid_4" id="create">
+	    <form action="/bets/create_new/" method="POST">{% csrf_token %}
+		<table>
+		<tr><th><label for="rarity">Rarity</label></th><th><label for="amount">Amount</label></th><th>Actions</th></tr>
+		<tr><td>
+		<select id="rarity" name="rarity">  
+		    <option value="Common">Common</option>  
+		    <option value="Uncommon">Uncommon</option>  
+		    <option value="Rare">Rare</option>  
+		</select></td>		    
+		<td><select id="amount" name="amount">  
+		    <option value="1">1</option>  
+		    <option value="2">2</option>  
+		    <option value="3">3</option>  
+		    <option value="4">4</option> 
+		</select></td>
+		<td>
+		<input type="submit" name="action" value="Create">
+		</td>
+		</tr>
+		</table>
+	    </form>
+	</div>
+	
+	<div class="grid_4" id="find">
+	    <form action="/bets" method="POST">
+		{% csrf_token %}
+		<table>
+		    <tr><th>Id</th><th>Actions</th></tr>
+		    <tr><td><input id="bet_id" type="text" name="bet_id"></td>
+		    <td><input type="submit" name="action" value="Find"></td></tr>		    
+		</table>
+	    </form>
+	</div>
+	
+	{% if results %}
+	    <div class="grid_12" id="results">
+	    &nbsp; 
+		    <table>
+			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Owner</th><th>Actions</th></tr>
+			{% for bet in results %}      
+			<tr>
+			      <td>{{bet.id}}</td>
+			      <td>{{bet.rarity}}</td>
+			      <td>{{bet.amount}}</td>
+			      
+			      <td>
+				  {{bet.status}}
+				  {% if bet.isowner %} 
+				      {% if bet.status|stringformat:"s" == "Open"  %} 
+					  <br><a href="bets/close_bet/{{bet.id}}">Close Betting</a>  
+					  <br><a href="bets/remove_bet/{{bet.id}}">DELETE BET</a>
+				      {% endif %}
+				  {% endif %}
+			      </td>
+			      
+			      <td>
+				  {{bet.result}}{% if bet.status|stringformat:"s" == "Ready"  %}
+				  {% if bet.result|stringformat:"s" == "?" %}
+				    <br><a href="JavaScript:winnerside('a',{{bet.id}}); return false;">Winner Side A</a>  
+				    <br><a href="JavaScript:winnerside('b',{{bet.id}}); return false;">Winner Side B</a>  
+				  {% endif %}{% endif %}
+			      </td>
+			      
+			      <td>
+				  {% for bidder in bet.a %}
+				      {{bidder.0}}
+				      {% if bidder.1|stringformat:"s" == "OK"  %}
+					  -> {{bidder.1}}
+				      {% endif %}				      
+				      <br>
+				  {% endfor %}
+			      </td>
+			      <td>
+				  {% for bidder in bet.b %}
+				      {{bidder.0}}
+				      {% if bidder.1|stringformat:"s" == "OK"  %}
+					  -> {{bidder.1}}
+				      {% endif %}				      
+				      <br>
+				  {% endfor %}
+			      </td>
+			      <td>{{bet.owner}}</td>
+			      
+			      <td>
+				  {% if bet.status|stringformat:"s" == "Open"  %}      
+				    <a href="bets/takeside_bet/{{bet.id}}/a/">Side A</a><br>
+				    <a href="bets/takeside_bet/{{bet.id}}/b/">Side B</a><br>
+				    <a href="bets/cancel_bet/{{bet.id}}/">Cancel my bet</a>
+				  {% endif %}
+				  {% if bet.status|stringformat:"s" == "Ready"  %}
+				    {% if bet.passwd %}
+					<br><b>pass:{{bet.passwd}}</b>
+				    {% endif %}
+				  {% endif %}
+			      </td>
+			      
+			</tr>
+			{% endfor %}
+		    </table>
+	    </div>	
+	{% endif %}
+	
+	<div class="clear"></div>
+</div> <!-- end of container_12 -->
+{% endblock body %}

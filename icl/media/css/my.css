@@ -1,0 +1,59 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
+    padding-bottom: 50px; /* 60px to make the container go all the way to the bottom of the topbar */    
+    height: 100%;
+}
+
+#logo {
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -170px;    
+    opacity:0.1;
+    z-index:-1;
+/*     z-index:1031;     */
+}
+
+#actionsmenu {  
+    min-height:100%;
+    width: inherit;
+    position: fixed;
+    margin-top:-15px;
+}
+
+#stack {
+    min-height:166px;
+}
+
+.modal-body {
+    max-height: 800px;
+    max-width: 600px;
+}
+
+
+.navbar-inverse .brand,
+.navbar-inverse .nav > li > a {
+  color: #CCCCCC;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Used by forms that need to be in html but should not
+   bother the user. Specifically this is for language selection. */
+
+.invisible {
+  display: none;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+table p{
+    margin-bottom: 0px;
+}

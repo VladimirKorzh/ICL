@@ -1,0 +1,4 @@
+{% load nvd3_tags %}
+{% include_nvd3jscss %}
+{% load_chart charttype chartdata "piechart_container" %}
+{% include_container "piechart_container" 200 400 %}

@@ -1,0 +1,106 @@
+<!-- START OF HEADER NAVIGATION PANEL -->
+{% load i18n %}
+
+<form class="invisible" name="setLangRussian" action="/i18n/setlang/" method="POST">{% csrf_token %}
+      <input name="next" type="hidden" value="/stacks" />
+      <input type="hidden" name="language" value="ru" />
+</form>
+
+<form class="invisible" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
+      <input name="next" type="hidden" value="/stacks" />
+      <input type="hidden" name="language" value="en" />
+</form>
+
+      <div class="navbar navbar-inverse navbar-fixed-top">	  
+	  <div class="navbar-inner">
+	      <div class="container">
+		  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		  </button>	      
+		  <a class="brand" href="#">&nbsp; International Crab League</a>
+		  <div class="nav-collapse collapse">
+		      <ul class="nav">
+			  <li class="divider-vertical"></li>
+			  <li><a class="" href="/bets"><i class="icon-hand-up icon-white"></i> {% trans "Bets" %}</a>
+			  </li>
+			  
+			  <li class="divider-vertical"></li>
+			  
+			  <li><a class="" href="/stacks"><i class="icon-th-list icon-white"></i> {% trans "Stacks" %}</a></li>
+			  
+			  <li class="divider-vertical"></li>
+			  
+			  <li><a class="" href="/ratings"><i class="icon-signal icon-white"></i> {% trans "Ratings" %}</a></li> 
+			  
+			  <li class="divider-vertical"></li>
+			  
+			  <li><a class="" href="/"><i class="icon-calendar icon-white"></i> {% trans "Tournaments" %}</a></li>
+			  
+			  <li class="divider-vertical"></li>
+			  
+			  <li class="dropdown">
+			      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<i class="icon-user icon-white"></i> {{profile.nickname}}
+				<b class="caret"></b>
+			      </a>
+			      <ul class="dropdown-menu">
+				  <li>
+				  <a data-toggle="modal" href="/profile/{{profile.id}}/" data-target="#modal"><i class="icon-user"></i> {% trans "Profile" %}</a></li> 
+				  <li>
+				  <a href="mumble://{{profile.mumble_nickname}}@icl.dyndns.org/AFK?version=1.2.0"><i class="icon-headphones"></i> {% trans "Mumble" %}</a></li> 				  
+				  <li><a href="/"><i class="icon-gift"></i> {% trans "Inventory" %}</a></li>
+				  <li class="divider"></li>  
+				  <li><a href="/logout"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
+			      </ul>
+			  </li>
+		      </ul>
+		  </div>
+	      </div>
+	  </div>
+      </div>
+      
+      <div class="navbar navbar-inverse navbar-fixed-bottom">
+	  <div class="navbar-inner">
+	      <div class="container">
+		  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		  </button>			  
+		  <div class="nav-collapse collapse">
+		      <ul class="nav">
+			  <li class="divider-vertical"></li>
+			  <li><a class="" href="#">FAQ</a></li>
+			  <li class="divider-vertical"></li>
+			  <li><a class="" href="#">Found a Bug?</a></li>   
+			  <li class="divider-vertical"></li>
+			  <li><a class="" href="#">Contact Information</a></li>      
+			  <li class="divider-vertical"></li>
+			  
+			  <li class="dropup">
+			      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<i class="icon-user icon-white"></i>{% trans "Language" %} 
+				<b class="caret"></b>
+			      </a>
+			      <ul class="dropdown-menu">
+
+				    <li>
+					<a href="#" onclick="document.setLangEnglish.submit();return false;">English</a> 
+				    </li>
+
+				    <li>
+					<a href="#" onclick="document.setLangRussian.submit();return false;">Russian</a>
+					  
+				    </li>
+				    
+			      </ul>
+			  </li>			  
+ 			  <li class="divider-vertical"></li>
+		      </ul>
+		  </div>
+	      </div>
+	  </div>
+      </div>      
+<!-- END OF HEADER NAVIGATION PANEL -->

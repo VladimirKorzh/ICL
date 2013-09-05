@@ -1,0 +1,7 @@
+{% load nvd3_tags %}
+
+{% include_nvd3jscss %}
+{% load_chart charttype chartdata "piechart_container" %}
+
+<h1>Skill rating</h1>
+{% include_container "piechart_container" 400 500 %}

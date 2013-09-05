@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <h3>
+      <img src="{{pl.avatar}}"/> {{ pl.nickname }}        
+  </h3>
+ </div>
+  <div class="modal-body" id="utility_body">
+
+	<table class="table table-condensed">
+	<tr><th></th>
+	<th><p class="text-center">Normal</p></th>
+	<th><p class="text-center">High</p></th>
+	<th><p class="text-center">Very High</p></th>
+	<th><p class="text-center">Total</p></th></tr>
+	<tr>
+	<td>Games</td>
+	<td><p class="text-center"><span class="label label-success">{{ pl.exp_n_games }}</span></p></td>
+	<td><p class="text-center"><span class="label label-warning">{{ pl.exp_h_games }}</span></p></td>
+	<td><p class="text-center"><span class="label label-important">{{ pl.exp_vh_games }}</span></p></td>
+	<td><p class="text-center"><span class="label label-inverse">{{ pl.exp_total_games }}</span></p></td>
+	</tr>
+
+	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	
+	<tr><th></th>
+	<th><p class="text-center">Primary</p></th>
+	<th><p class="text-center">Alternative</p></th>
+	<th></th>
+	<th></th></tr>	
+	<tr>
+	<td>Roles</td>
+	{% if pl == profile %}
+	<form method="POST" action="/profile/refresh">{% csrf_token %}
+	<td><p class="text-center"><select name="pri_role" class="input-small">
+	<option value="Carry" {% if profile.pri_role|stringformat:"s" == "Carry"  %}  selected="selected" {% endif %}>Carry</option>
+	<option value="Solomid" {% if profile.pri_role|stringformat:"s" == "Mid"  %}  selected="selected" {% endif %}>Mid</option>
+	<option value="Offlane" {% if profile.pri_role|stringformat:"s" == "Offlane"  %}  selected="selected" {% endif %}>Offlane</option>
+	<option value="Support" {% if profile.pri_role|stringformat:"s" == "Support"  %}  selected="selected" {% endif %}>Support</option>
+    </select></p></td>
+	<td><p class="text-center"> <select name="alt_role" class="input-small">
+      <option value="Carry" {% if profile.alt_role|stringformat:"s" == "Carry"  %}  selected="selected" {% endif %}>Carry</option>
+      <option value="Mid" {% if profile.alt_role|stringformat:"s" == "Mid"  %}  selected="selected" {% endif %}>Mid</option>
+      <option value="Offlane" {% if profile.alt_role|stringformat:"s" == "Offlane"  %}  selected="selected" {% endif %}>Offlane</option>
+      <option value="Support" {% if profile.alt_role|stringformat:"s" == "Support"  %}  selected="selected" {% endif %}>Support</option>
+  </select></p></td>	
+	<td><p class="text-center"><button type="submit" class="btn btn-small" type="button"><i class="icon-edit"></i> Save</input></p></td>
+	<td></td>
+	</form>
+	{% else %}
+	<td><p class="text-center"><span class="label label-info ">{{ pl.pri_role }}</span></p></td>
+	<td><p class="text-center"><span class="label label-info ">{{ pl.alt_role }}</span></p></td>
+	<td></td>
+	<td></td>
+	{% endif %}
+	</tr>
+	
+	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	
+	<tr>
+	<th></th>
+	<th><p class="text-center">Skill</p></th>
+	<th><p class="text-center">Extra Points</p></th>
+	<th></th>
+	<th></th>
+	</tr>
+	<tr>
+	<td>Rating</td>
+	<td><p class="text-center">{{ pl.exp }}</p></td>
+	<td><p class="text-center">{{ pl.extra_exp_pts }}</p></td>
+	{% if pl == profile %}
+	<td><p class="text-center"><a class="btn btn-small" href="/profile/refresh"><i class="icon-refresh"></i> Refresh</a></p></td>
+	<td></td>
+	{% else %}
+	<td></td>
+	<td></td>
+	{% endif %}	
+	</tr>
+	
+	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	
+	<tr>
+	<th></th>
+	<th><p class="text-center">Common</p></th>
+	<th><p class="text-center">Uncommon</p></th>
+	<th><p class="text-center">Rare</p></th>
+	<th></th>
+	</tr>
+	<tr>
+	<td>ICL Inventory</td>
+	<td><p class="text-center">0</p></td>
+	<td><p class="text-center">0</p></td>
+	<td><p class="text-center">0</p></td>
+	<td></td>
+	</tr>
+	
+	
+	</table>
+    </table>
+</div>

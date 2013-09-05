@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr "СУКА"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-02 12:10-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: icl/templates/navigation.html:3
+msgid "Change your locale"
+msgstr "ЕБАТЬ"
+
+#: icl/templates/navigation.html:12
+msgid "change"
+msgstr "СУКА"
+
+#: icl/templates/navigation.html:32
+msgid "Bets"
+msgstr "Ставки"
+
+#: icl/templates/navigation.html:37
+msgid "Stacks"
+msgstr "Стаки"
+
+#: icl/templates/navigation.html:41
+msgid "Ratings"
+msgstr "Рейтинг"
+
+#: icl/templates/navigation.html:45
+msgid "Tournaments"
+msgstr "Турниры"
+
+#: icl/templates/navigation.html:55
+msgid "Help"
+msgstr "ЧаВо"
+
+#: icl/templates/navigation.html:56
+msgid "Logout"
+msgstr "Выход"

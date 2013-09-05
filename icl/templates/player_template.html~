@@ -1,0 +1,20 @@
+{% if pl %}
+    <span class="label label-success">{{ role_short }}</span>
+    <span rel="tooltip" data-placement="right" title="{{ role_long }}">
+    <a data-toggle="modal" href="/profile/{{pl.id}}/" data-target="#modal">{{ pl.nickname }}</a></span> 
+       
+    {% include 'skill_template.html' with skill=pl.exp %}
+    
+{% else %}
+    <span class="label">{{ role_short }}</span>
+    <span rel="tooltip" data-placement="right" title="{{ role_long }}">
+    
+    {% if profile.pri_role == role_long %}     
+    <a href="/stacks/join/{{ stack_name }}/{{ role_num }}/"><i class="icon-share-alt"></i> Join Slot </a>
+    {% endif %}
+
+    {% if profile.alt_role == role_long %}     
+    <a href="/stacks/join/{{ stack_name }}/{{ role_num }}/"><i class="icon-share-alt"></i> Join Slot </a>
+    {% endif %}        
+    </span>
+{% endif %}
