@@ -1,33 +1,35 @@
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts               import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from matchmaking import MumbleWrapper
+from matchmaking        import MumbleWrapper
 from matchmaking.models import Player
-from stacks.models import Stack
+from stacks.models      import Stack
 
 from random import randint
 
 @login_required
 def main(request):
-      social_auth = request.user.social_auth.get(provider='steam')
-      steamid     = social_auth.extra_data.get('steamid')     
-      
-      data = {'profile': Player.objects.get(uid=steamid),
-	      'stacks' : Stack.objects.all(),
-	      }
-      for each in data['stacks']:
-	check_for_afk(each)
-	
-      return render(request, 'stacks.html', data)
-       
+  social_auth = request.user.social_auth.get(provider='steam')
+  steamid     = social_auth.extra_data.get('steamid')     
+  
+  data = {'profile': Player.objects.get(uid=steamid),
+	  'stacks' : Stack.objects.all(),
+	  }
+
+  for each in data['stacks']:
+    if each:
+      check_for_afk(each)
+
+  return render(request, 'stacks.html', data)
+
 def same_exp_range(player_exp, stack_exp):
-  if player_exp > stack_exp:    
+  if player_exp > stack_exp:
     return True
     
   if player_exp < stack_exp:
-    result = (stack_exp - player_exp) <= 75    
+    result = (stack_exp - player_exp) <= 75
     return result
        
 def recalc_stack_exp(stack):
@@ -80,7 +82,7 @@ def create_new_stack():
   newstack = Stack()
   newstack.name = "Temp"+str(randint(100,999))  
   newstack.save()
-  newstack.name = "Stack" + str(newstack.id)
+  newstack.name = "Stack"+str(newstack.id)
   
   mumble = MumbleWrapper.ICLMumble()
   mumble.createNewChannel("Root", newstack.name)

@@ -34,7 +34,7 @@ class ValveApi():
       obj.amount = 0
       
     if obj.amount < 100000:
-      print 'Api request', finalurl    	
+      #print 'Api request', finalurl    	
       response = json.load(urllib2.urlopen(finalurl))      
       obj.amount += 1
     else:
@@ -108,7 +108,7 @@ class ValveApi():
 		    'total_games': total_games,
 		    'extra_exp_pts': pts}
 		    
-    print 'get_player_exp_from_steamid', playerstats
+    print playerstats
     return playerstats
 
     

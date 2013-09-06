@@ -77,9 +77,10 @@ def refresh(request):
       player_obj.exp_vh_games    = playerstats['exp_vh_games']
       player_obj.exp_total_games = playerstats['total_games']
       player_obj.extra_exp_pts   = playerstats['extra_exp_pts']    
+      print 'Refreshing stats for player', player_obj.nickname
     
     if request.method == 'POST':
-      print request.POST['pri_role'], request.POST['alt_role']
+      print 'Setting new player roles', request.POST['pri_role'], request.POST['alt_role'], 'for player', player_obj.nickname
       player_obj.pri_role = request.POST['pri_role']
       player_obj.alt_role = request.POST['alt_role']
     
