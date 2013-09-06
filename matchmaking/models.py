@@ -3,11 +3,10 @@ from django.forms import ModelForm
 
 class Player(models.Model):
 	uid      = models.CharField(max_length=40)
-
 	nickname = models.CharField(max_length=40)
 	mumble_nickname = models.CharField(max_length=80)
+	
 	avatar   = models.CharField(max_length=120)
-	profile  = models.CharField(max_length=120)
 
 	exp_total_games = models.PositiveSmallIntegerField(default=0)
 	exp             = models.PositiveSmallIntegerField(default=0)

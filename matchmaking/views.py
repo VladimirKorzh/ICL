@@ -26,6 +26,7 @@ def intro(request):
 def login(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')
+    personaname = social_auth.extra_data.get('personaname')
 
     try:
       player = Player.objects.get(uid=steamid)
@@ -33,12 +34,11 @@ def login(request):
       player = Player()
       
     player.uid      = steamid
-    player.nickname = str(request.user)
+    player.nickname = personaname
     player.avatar   = social_auth.extra_data.get('avatar')
-    player.profile  = "http://steamcommunity.com/profiles/"+steamid
     # first we cast players name into utf to get a valid quote on their name
     # it produces %D0%AF%D0%99%D0%9A%D0%90 string which can be read by mubmle url protocol    
-    player.mumble_nickname = quote( str(request.user).encode('utf8') )
+    player.mumble_nickname = quote( str(personaname).encode('utf8') )
         
     player.save()
     print "Player logged in:", player.nickname
@@ -55,7 +55,7 @@ def profile(request, profile_id):
 	    'profile': Player.objects.get(uid=steamid)
 	    }
     
-    print 'looking profile', profile_id
+    print data['profile'].nickname,' is looking at profile ', data['pl'].nickname
     
     return render(request,'profile_modal.html', data)
       
@@ -65,10 +65,7 @@ def refresh(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')    
 
-    try:
-      player_obj = Player.objects.get(uid=steamid)
-    except Player.DoesNotExist: 
-      print 'recalculateexp player does not exist'  
+    player_obj = Player.objects.get(uid=steamid)
       
     if request.method != 'POST':        
       valveapi    = ValveApiWrapper.ValveApi()        
