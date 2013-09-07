@@ -120,7 +120,7 @@ def join(request, stack_name, role):
     else:
       message = 'Stack does not exist'
   else:
-    message = 'Leave your current stack first ('+stack_name+')'
+    message = 'Leave your current stack first ('+data['profile'].current_stack+')'
 
   return redirect('/stacks/msg/'+message)
 
@@ -144,41 +144,44 @@ def leave(request, stack_name, redirect=True):
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
     
-  print 'Stack exists', Stack.objects.filter(name__exact=stack_name).exists()
+  print 'Checking if stack exists'
+  if Stack.objects.filter(name__exact=stack_name).exists():
+    stack = Stack.objects.get(name__exact=stack_name)            
+    left = False
+    message = ''
     
-  stack = Stack.objects.get(name__exact=stack_name)            
-  left = False
-  message = ''
-  
-  if stack:
-    if stack.carry == player:
-      stack.carry = None
-      left = True
+    if stack:
+      if stack.carry == player:
+	stack.carry = None
+	left = True
 
-    if stack.solomid == player:
-      stack.solomid = None
-      left = True
+      if stack.solomid == player:
+	stack.solomid = None
+	left = True
 
-    if stack.offlane == player:
-      stack.offlane = None
-      left = True
+      if stack.offlane == player:
+	stack.offlane = None
+	left = True
 
-    if stack.support1 == player:
-      stack.support1 = None
-      left = True
+      if stack.support1 == player:
+	stack.support1 = None
+	left = True
 
-    if stack.support2 == player:
-      stack.support2 = None
-      left = True   
-      
-    if left:
-      stack.save()  
-      player.current_stack = ''
-      player.save()
-      recalc_stack_exp(stack)      
-      message = 'You have left the stack'
+      if stack.support2 == player:
+	stack.support2 = None
+	left = True   
+	
+      if left:
+	stack.save()  
+	recalc_stack_exp(stack)      
+	message = 'You have left the stack'
+      else:
+	message = 'Can not leave stack '+stack_name
     else:
-      message = 'Can not leave stack '+stack_name      
+      message = 'Stack not found, cleaned your record'
+      
+    player.current_stack = ''
+    player.save()
   else:
     message = 'Stack does not exist'
       
