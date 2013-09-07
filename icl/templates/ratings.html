@@ -5,12 +5,13 @@
 	    <div id="content">
 		<p>Player Skill Table</p>  
 		<table cellspacing="0" id="ratingtable" class="table table-striped table-condensed table-bordered"><tbody>
-		<tr><th>#</th><th>Nickname</th><th>Extra points</th><th>Last Updated</th></tr>
+		<tr><th>#</th><th>Nickname</th><th>Extra points</th><th>Rating</th><th>Last Updated</th></tr>
 		{% for player in playerslist %}
 		    <tr><td>{{forloop.counter}}</td>
 		    <td><a data-toggle="modal" href="/profile/{{player.id}}/" data-target="#modal">{{player.nickname}}</a>
 		    {% include 'skill_template.html' with skill=player.exp %}</td>
 		    <td>{{player.extra_exp_pts}}</td>
+		    <td>{{player.rating}}</td>
 		    <td>{{player.last_updated}}</td></tr>
 		{% endfor %}		
 		</tbody></table>
