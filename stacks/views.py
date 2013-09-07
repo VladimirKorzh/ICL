@@ -143,7 +143,7 @@ def leave(request, stack_name, redirect=True):
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
     
-  print Stack.objects.filter(name__exact=stack_name).exists()
+  print 'Stack exists', Stack.objects.filter(name__exact=stack_name).exists()
     
   stack = Stack.objects.get(name__exact=stack_name)            
   left = False
@@ -202,9 +202,11 @@ def delete_empty(request):
   
   for each in mumble.channels.values():
     if each.id not in mumble_used_channel_ids_list:
-      if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id: continue
-      print mumble.getChannelObj(each.id).name, 'is removed: no users'
+      if each.id == mumble.getChannelObj("Root").id
+	or each.id == mumble.getChannelObj("AFK").id
+	or each.id == mumble.getChannelObj("Flood").id: continue
       mumble.deleteChannel(each.id)  
+      print mumble.getChannelObj(each.id).name, 'is removed: no users'
          
   message = 'Deleted empty stacks and channels'  
   mumble.destroy()    
