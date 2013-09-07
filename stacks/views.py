@@ -139,7 +139,7 @@ def leave_current(request):
   return redirect('/stacks/msg/'+'Left the stack')
     
 @login_required
-def leave(request, stack_name, redirect=True):
+def leave(request, stack_name, redirect_after=True):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
@@ -186,7 +186,7 @@ def leave(request, stack_name, redirect=True):
   else:
     message = 'Stack does not exist'
       
-  if redirect:
+  if redirect_after:
     return redirect('/stacks/msg/'+str(message))
 
 @login_required    
