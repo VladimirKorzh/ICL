@@ -32,7 +32,7 @@ def main(request):
 	  data['playerslist'].append({'nickname':    each_player.nickname,
 				     'id': 	       each_player.id,
 				     'extra_exp_pts': each_player.extra_exp_pts,
-				     'rating':        each_player.exp-each_player.extra_exp_pts,
+				     'rating':        each_player.exp+each_player.extra_exp_pts,
 				     'uid':           each_player.uid,
 				     'exp':           each_player.exp,
 				     'last_updated':  get_time_elapsed(each_player)
