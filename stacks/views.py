@@ -172,10 +172,10 @@ def leave(request, stack_name):
 def delete_empty(request):
   mumble = MumbleWrapper.ICLMumble()  
   for each in Stack.objects.all():
+    check_for_afk(each)
     if each and check_stack_empty(each): 
       mumble.deleteChannel(each.name)  
       each.delete()
-      
       
   mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
   mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
@@ -227,11 +227,54 @@ def recalc_stack_exp(stack):
     stack.exp = 0
   stack.save()         
          
-         
-         
-         
+
+def check_in_mumble(mumble, player):
+  user = mumble.getUserObj(player.mumble_nickname)
+  if user == None:
+    # not in mumble -> kick that guy.
+    print 'kick', player.mumble_nickname
+    return False
+  else:
+    # in mumble, check which channel and kick if in AFK
+    ch = mumble.getChannelObj(user.channel)
+    
+    if user.selfMute and user.selfDeaf:
+      print 'kicking to afk'
+      mumble.moveUser2Channel(player.mumble_nickname, "AFK")
+      
+    if ch == mumble.getChannelObj("AFK"):
+      return False
+
+  return True
   
   
+def check_for_afk(stack):
+  print 'checking for afk'
+  mumble = MumbleWrapper.ICLMumble()  
+  
+  if stack.carry != None:
+    if not check_in_mumble(mumble, stack.carry):
+      stack.carry = None
+
+  if stack.solomid != None:
+    if not check_in_mumble(mumble, stack.solomid):
+      stack.solomid = None
+
+  if stack.offlane != None:
+    if not check_in_mumble(mumble, stack.offlane):
+      stack.offlane = None
+
+  if stack.support1 != None:
+    if not check_in_mumble(mumble, stack.support1):
+      stack.support1 = None
+
+  if stack.support2 != None:
+    if not check_in_mumble(mumble, stack.support2):
+      stack.support2 = None
+  
+  stack.save()      
+  mumble.destroy()
+         
   
   
   
@@ -276,48 +319,7 @@ def recalc_stack_exp(stack):
 
 
        
-#def check_in_mumble(mumble, player):
-  #user = mumble.getUserObj(player.mumble_nickname)
-  #if user == None:
-    ## not in mumble -> kick that guy.
-    #print 'kick', player.mumble_nickname
-    #return False
-  #else:
-    ## in mumble, check which channel and kick if in AFK
-    #ch = mumble.getChannelObj(user.channel)
-    #if ch == mumble.getChannelObj("AFK"):
-      #return False
 
-  #return True
-  
-#def check_for_afk(stack):
-  #mumble = MumbleWrapper.ICLMumble()  
-  
-  #if stack.carry != None:
-    #if not check_in_mumble(mumble, stack.carry):
-      #stack.carry = None
-
-  #if stack.solomid != None:
-    #if not check_in_mumble(mumble, stack.solomid):
-      #stack.solomid = None
-
-  #if stack.offlane != None:
-    #if not check_in_mumble(mumble, stack.offlane):
-      #stack.offlane = None
-
-  #if stack.support1 != None:
-    #if not check_in_mumble(mumble, stack.support1):
-      #stack.support1 = None
-
-  #if stack.support2 != None:
-    #if not check_in_mumble(mumble, stack.support2):
-      #stack.support2 = None
-  
-  #stack.save()
-  
-    
-  #mumble.destroy()
-       
 
        
 
