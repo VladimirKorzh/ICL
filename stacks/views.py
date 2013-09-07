@@ -184,8 +184,9 @@ def delete_empty(request):
   mumble = MumbleWrapper.ICLMumble()  
   for each in Stack.objects.all():
     if each and check_stack_empty(each): 
-      mumble.deleteChannel(each.name)  
-      each.delete()
+      if mumble.getChannelObj(each.name):
+	mumble.deleteChannel(each.name)  
+	each.delete()
       
   mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
   mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
