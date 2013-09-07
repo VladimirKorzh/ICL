@@ -218,10 +218,27 @@ def kick_afk(request):
 	if pl.current_stack != '':
 	  stack = Stack.objects.get(name__exact=pl.current_stack)
 	  if stack:
-	    for each in [stack.carry,stack.solomid,stack.offlane,stack.support1,stack.support2]:
-	      if each == pl: 
-		each = None
-		stack.save()
+	    if stack.carry == pl:
+	      stack.carry = None
+	      left = True
+
+	    if stack.solomid == pl:
+	      stack.solomid = None
+	      left = True
+
+	    if stack.offlane == pl:
+	      stack.offlane = None
+	      left = True
+
+	    if stack.support1 == pl:
+	      stack.support1 = None
+	      left = True
+
+	    if stack.support2 == pl:
+	      stack.support2 = None
+	      left = True 
+	    if left:
+	      stack.save()
 	    
 	pl.current_stack = ''
 	pl.save()
