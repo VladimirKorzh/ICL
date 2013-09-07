@@ -128,9 +128,10 @@ def join(request, stack_name, role):
 def leave_current(request):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
-  player = Player.objects.get(uid=steamid) 
+  player      = Player.objects.get(uid=steamid) 
   
   if player.current_stack != '':
+    print player.nickname, 'is leaving his current stack', player.current_stack
     leave(request, player.current_stack, False)
     
   player.current_stack = ''
