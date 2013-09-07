@@ -10,7 +10,7 @@
 	    <ul class="dropdown-menu">	      
 	    
 <!-- 	      <li><a href="mumble://{{profile.mumble_nickname}}@icl.dyndns.org/{{stack.channel}}?version=1.2.0"><i class="icon-headphones"></i> Join Voice</a></li> -->
-	      <li><a href="/stacks/voice/{{stack.channel}}"><i class="icon-headphones"></i> Join Voice</a></li>
+	      <li><a href="/stacks/voice/{{stack.name}}"><i class="icon-headphones"></i> Join Voice</a></li>
 	      {% if profile == stack.carry %}
 	      <li class="divider"></li>
 	      <li><a href="/stacks/leave/{{ stack.name }}/"><i class="icon-remove"></i> Leave Stack </a></li>
