@@ -182,7 +182,7 @@ def delete_empty(request):
   
   for each in mumble.channels.values():
     if each.id not in mumble_used_channel_ids_list:
-      if each.id == mumble.getChannelObj("Root").id: continue
+      if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id: continue
       print mumble.getChannelObj(each.id).name, 'is removed: no users'
       mumble.server.removeChannel(each.id)  
   
