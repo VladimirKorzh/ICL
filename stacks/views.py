@@ -134,6 +134,7 @@ def leave_current(request):
     leave(request, player.current_stack, False)
     
   player.current_stack = ''
+  player.save()
   return redirect('/stacks/msg/'+'Left the stack')
     
 @login_required
