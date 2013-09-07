@@ -191,10 +191,14 @@ def delete_empty(request):
     if each and check_stack_empty(each): 
 	mumble.deleteChannel(each.name)  
 	each.delete()
+	print 'Deleted stack and channel for it', each.name
       
   mumble.channels = mumble.server.getChannels()
   mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
   mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
+  
+  print 'Used channels', mumble_used_channel_ids_list
+  print 'Total channels', mumble_total_channel_ids_list
   
   for each in mumble.channels.values():
     if each.id not in mumble_used_channel_ids_list:
