@@ -143,12 +143,13 @@ def leave(request, stack_name, redirect=True):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
+  message = ''
     
   print 'Checking if stack exists'
   if Stack.objects.filter(name__exact=stack_name).exists():
     stack = Stack.objects.get(name__exact=stack_name)            
     left = False
-    message = ''
+
     
     if stack:
       if stack.carry == player:
