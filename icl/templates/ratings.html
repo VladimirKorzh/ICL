@@ -8,7 +8,7 @@
 		<tr><th>#</th><th>Nickname</th><th>Skill</th><th>Links</th><th>Last Updated</th></tr>
 		{% for player in playerslist %}
 		    <tr><td>{{forloop.counter}}</td>
-		    <td>{{player.nickname}}</td>
+		    <td><a data-toggle="modal" href="/profile/{{player.id}}/" data-target="#modal">{{player.nickname}}</a></td>
 		    <td>{{player.exp}}</td>
 		    <td><a href="http://steamcommunity.com/profiles/{{player.uid}}">profile</a></td><td>{{player.last_updated}}</td></tr>
 		{% endfor %}		
