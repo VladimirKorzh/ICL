@@ -186,6 +186,11 @@ def delete_empty(request):
       print mumble.getChannelObj(each.id).name, 'is removed: no users'
       mumble.server.removeChannel(each.id)  
   
+  
+  for each in mumble.users.values():
+    if each.selfDeaf and each.selfMute and each.channel != mumble.getChannelObj("AFK").id:
+      mumble.moveUser2Channel(user.name, "AFK")
+        
   message = 'Deleted empty stacks and channels'  
   mumble.destroy()    
   return redirect('/stacks/msg/'+message)  
