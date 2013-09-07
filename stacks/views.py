@@ -143,6 +143,7 @@ def leave(request, stack_name, redirect=True):
   player = Player.objects.get(uid=steamid)      
   stack = Stack.objects.get(name__exact=stack_name)            
   left = False
+  message = ''
   
   if stack:
     if stack.carry == player:
