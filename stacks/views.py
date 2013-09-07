@@ -189,6 +189,7 @@ def delete_empty(request):
 	mumble.deleteChannel(each.name)  
 	each.delete()
       
+  mumble.channels = mumble.server.getChannels()
   mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
   mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
   
