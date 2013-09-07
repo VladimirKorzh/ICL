@@ -204,6 +204,8 @@ def delete_empty(request):
 
 @login_required    
 def kick_afk(request):
+  return redirect('/stacks/')
+  
   mumble = MumbleWrapper.ICLMumble()  
   
   for each in Stack.objects.all():
