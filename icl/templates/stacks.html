@@ -2,7 +2,9 @@
 {% load i18n %}
 
 {% block actions %} 
+	  <li class="nav-header">Stacks:</li>
 	  <li><a class="" href="/stacks/create"><i class="icon-list"></i> Create new</a></li>  
+	  <li><a class="" href="/stacks/leave_current"><i class="icon-remove"></i> Leave current</a></li>  	  
 <!-- 	  <li><a class="" href="/stacks/find"><i class="icon-search"></i> Show suitable</a></li> -->
 	  <li class="divider"></li>
 	  <li class="nav-header">Mumble:</li>
@@ -12,7 +14,8 @@
 	  <li><a class="" href="/stacls/remove"><i class="icon-remove-circle"></i> Delete</a></li>-->
 	  <li class="divider">
 	  <li class="nav-header">Admin:</li>
-	  <li style="bottom: 0px;"><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty</a></li>  
+	  <li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty</a></li>  
+	  <li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk</a></li>  
 {% endblock %}
 <a >
 

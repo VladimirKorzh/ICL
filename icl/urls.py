@@ -21,6 +21,8 @@ urlpatterns = patterns('',
   
     # Stacks application
     url(r'^stacks$',          					stacks.main),
+    url(r'^stacks/leave_current$',				stacks.leave_current),
+    url(r'^stacks/kick_afk',					stacks.kick_afk),
     url(r'^stacks/msg/(?P<msg>.+)$',         			stacks.main),
     url(r'^stacks/create$',					stacks.create_new_stack),
     url(r'^stacks/delete_empty$',				stacks.delete_empty),

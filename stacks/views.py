@@ -123,11 +123,21 @@ def join(request, stack_name, role):
     message = 'Leave your current stack first ('+stack_name+')'
 
   return redirect('/stacks/msg/'+message)
+
+@login_required
+def leave_current(request):
+  social_auth = request.user.social_auth.get(provider='steam')
+  steamid     = social_auth.extra_data.get('steamid')
+  player = Player.objects.get(uid=steamid) 
+  
+  if player.current_stack != '':
+    leave(request, player.current_stack, False)
     
-    
+  player.current_stack = ''
+  return redirect('/stacks/msg/'+'Left the stack')
     
 @login_required
-def leave(request, stack_name):
+def leave(request, stack_name, redirect=True):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
@@ -166,13 +176,13 @@ def leave(request, stack_name):
   else:
     message = 'Stack does not exist'
       
-  return redirect('/stacks/msg/'+message)
+  if redirect:
+    return redirect('/stacks/msg/'+message)
 
 @login_required    
 def delete_empty(request):
   mumble = MumbleWrapper.ICLMumble()  
   for each in Stack.objects.all():
-    #check_for_afk(each)
     if each and check_stack_empty(each): 
       mumble.deleteChannel(each.name)  
       each.delete()
@@ -185,16 +195,41 @@ def delete_empty(request):
       if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id: continue
       print mumble.getChannelObj(each.id).name, 'is removed: no users'
       mumble.server.removeChannel(each.id)  
-    
-  #for each in mumble.users.values():
-    #if each.selfDeaf and each.selfMute and each.channel != mumble.getChannelObj("AFK").id:
-      #mumble.moveUser2Channel(each.name, "AFK")
-        
+         
   message = 'Deleted empty stacks and channels'  
   mumble.destroy()    
   return redirect('/stacks/msg/'+message)  
     
     
+
+@login_required    
+def kick_afk(request):
+  mumble = MumbleWrapper.ICLMumble()  
+  
+  for each in Stack.objects.all():
+    if each:
+      check_for_afk(each)
+  
+  for each in mumble.users.values():
+    if each.selfDeaf and each.selfMute and each.channel != mumble.getChannelObj("AFK").id:
+      mumble.moveUser2Channel(each.name, "AFK")      
+      pl = Player.objects.get(mumble_nickname__exact=each.name)
+      if pl:
+	if pl.current_stack != '':
+	  stack = Stack.objects.get(name__exact=pl.current_stack)
+	  if stack:
+	    for each in [stack.carry,stack.solomid,stack.offlane,stack.support1,stack.support2]:
+	      if each == pl: 
+		each = None
+		stack.save()
+	    
+	pl.current_stack = ''
+	pl.save()
+  
+  mumble.destroy()
+  message = 'Afk players were kicked'
+  return redirect('/stacks/msg/'+message) 
+  
     
     
 def check_stack_empty(stack):

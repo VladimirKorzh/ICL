@@ -21,6 +21,8 @@ urlpatterns = patterns('',
   
     # Stacks application
     url(r'^stacks$',          					stacks.main),
+    url(r'^stacks/leave_current$',				stacks.leave_current),
+    url(r'^stacks/kick_afk',					stacks.kick_afk),
     url(r'^stacks/msg/(?P<msg>.+)$',         			stacks.main),
     url(r'^stacks/create$',					stacks.create_new_stack),
     url(r'^stacks/delete_empty$',				stacks.delete_empty),
@@ -28,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^stacks/leave/(?P<stack_name>\w+)/$',		stacks.leave),
     url(r'^stacks/delete/(?P<stack_name>\w+)/$',		stacks.delete_stack),
     url(r'^stacks/voice/(?P<channel_name>.+)',                stacks.voice),
-    url(r'^stacks/voice/',                stacks.voice),
+    url(r'^stacks/voice/',             			   stacks.voice),
             
     # Ratings application
     url(r'^ratings$',          ratings.main,        		name='ratings'),
