@@ -73,6 +73,7 @@ class ICLMumble():
       
   def deleteChannel(self, channelname):
     ch = self.getChannelObj(channelname)
+    print ch
     if ch:
       self.server.removeChannel(ch.id)
       
