@@ -184,7 +184,6 @@ def delete_empty(request):
   mumble = MumbleWrapper.ICLMumble()  
   for each in Stack.objects.all():
     if each and check_stack_empty(each): 
-      if mumble.getChannelObj(each.name):
 	mumble.deleteChannel(each.name)  
 	each.delete()
       
@@ -195,7 +194,7 @@ def delete_empty(request):
     if each.id not in mumble_used_channel_ids_list:
       if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id: continue
       print mumble.getChannelObj(each.id).name, 'is removed: no users'
-      mumble.server.removeChannel(each.id)  
+      mumble.deleteChannel(each.id)  
          
   message = 'Deleted empty stacks and channels'  
   mumble.destroy()    
