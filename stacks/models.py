@@ -3,9 +3,8 @@ from django.db import models
 from matchmaking.models import Player
 
 class Stack(models.Model):
-	name    = models.CharField(max_length=20)
+	name    = models.CharField(max_length=40)
 	exp     = models.PositiveIntegerField(default=0, null=True)
-	channel = models.CharField(max_length=40,        null=True)
 
 	carry    = models.ForeignKey(Player, related_name="carry",    null=True)
 	solomid  = models.ForeignKey(Player, related_name="solomid",  null=True)

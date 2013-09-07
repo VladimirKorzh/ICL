@@ -21,10 +21,14 @@ urlpatterns = patterns('',
   
     # Stacks application
     url(r'^stacks$',          					stacks.main),
-    url(r'^stacks/find$',					stacks.find),
+    url(r'^stacks/msg/(?P<msg>.+)$',         			stacks.main),
+    url(r'^stacks/create$',					stacks.create_new_stack),
+    url(r'^stacks/delete_empty$',				stacks.delete_empty),
     url(r'^stacks/join/(?P<stack_name>\w+)/(?P<role>\d)/$',  stacks.join),
     url(r'^stacks/leave/(?P<stack_name>\w+)/$',		stacks.leave),
-    url(r'^stacks/voice/(?P<channel_name>.+)',                  stacks.voice),
+    url(r'^stacks/delete/(?P<stack_name>\w+)/$',		stacks.delete_stack),
+    url(r'^stacks/voice/(?P<channel_name>.+)',                stacks.voice),
+    url(r'^stacks/voice/',                stacks.voice),
             
     # Ratings application
     url(r'^ratings$',          ratings.main,        		name='ratings'),

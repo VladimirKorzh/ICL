@@ -10,53 +10,189 @@ from stacks.models      import Stack
 from random import randint
 
 @login_required
-def main(request):
+def main(request, msg=''):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')     
   
   data = {'profile': Player.objects.get(uid=steamid),
 	  'stacks' : Stack.objects.all(),
 	  }
-
-  for each in data['stacks']:
-    check_for_afk(each)
-
+	  
+  if msg != '':
+    data['message'] = msg
+    
   return render(request, 'stacks.html', data)
 
-def same_exp_range(player_exp, stack_exp):
-  if player_exp > stack_exp:
-    return True
+@login_required  
+def create_new_stack(request):
+  newstack = Stack()
+  
+  newstack.name = "Stack_"+str(randint(1000,9999))    
+  
+  while Stack.objects.filter(name__exact=newstack.name).exists():
+    newstack.name = "Stack_"+str(randint(1000,9999))      
+  
+  mumble = MumbleWrapper.ICLMumble()
+  mumble.createNewChannel("Root", newstack.name)
+  mumble.destroy()
+  newstack.save()
+  
+  message = 'Created stack: '+newstack.name
+  return redirect('/stacks/msg/'+message)
+  
+@login_required
+def delete_stack(request, stack_name): 
+  message = ''
+  stack = Stack.objects.get(name__exact=stack_name)
+  if stack:      
+    if check_stack_empty(stack):
+      mumble = MumbleWrapper.ICLMumble()
+      mumble.deleteChannel(stack.name)
+      mumble.destroy()  
+      name = stack.name
+      stack.delete()      
+      message = 'Deleted '+stack_name
+    else:    
+      message = stack_name + ' is not empty'
+  else:
+    message = 'Stack ' + stack_name + ' does not exist'
     
-  if player_exp < stack_exp:
-    result = (stack_exp - player_exp) <= 75
-    return result
-       
-def recalc_stack_exp(stack):
-  total_exp = 0
-  amount = 0
-  for each in [stack.carry,stack.solomid,stack.offlane,stack.support1,stack.support2]:
-    if each: 
-      amount +=1
-      total_exp += each.exp
-      
-  if amount != 0:
-    stack.exp = total_exp / amount
-  return stack
-       
-def has_slot_for_player(player, stack):
-  result = False
+  return redirect('/stacks/msg/'+message)
 
-  if (player.pri_role == 'Carry' or player.alt_role == 'Carry') and stack.carry == None:
-    result = True    
-  if (player.pri_role == 'Solo Mid' or player.alt_role == 'Solo Mid') and stack.solomid == None:
-    result = True
-  if (player.pri_role == 'Offlane' or player.alt_role == 'Offlane') and stack.offlane == None:
-    result = True    
-  if (player.pri_role == 'Support' or player.alt_role == 'Support') and (stack.support1 == None or stack.support2 == None):
-    result = True
     
-  return result
-       
+@login_required
+def voice(request, channel_name):
+  if channel_name != '':
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')  
+    username = Player.objects.get(uid=steamid).mumble_nickname
+    
+    mumble = MumbleWrapper.ICLMumble()
+    if mumble.getUserObj(username):
+      mumble.moveUser2Channel(username, channel_name)
+      message = 'Joined Voice Channel '+channel_name
+    else:
+      message = 'You need to launch mumble first'
+    mumble.destroy()    
+  else:
+    message = 'You are not in a stack'
+  return redirect('/stacks/msg/'+message)
+         
+         
+         
+@login_required       
+def join(request, stack_name, role):
+  social_auth = request.user.social_auth.get(provider='steam')
+  steamid     = social_auth.extra_data.get('steamid')
+  data = {'profile': Player.objects.get(uid=steamid)}    
+  
+  message = ''
+  
+  joined = False
+  
+  if data['profile'].current_stack == '':
+    newstack = Stack.objects.get(name__exact=stack_name)
+    if newstack:        
+      if role == '1' and newstack.carry == None: 
+	newstack.carry    = data['profile']
+	joined = True
+      if role == '2' and newstack.solomid == None: 
+	newstack.solomid  = data['profile']
+	joined = True
+      if role == '3' and newstack.offlane == None: 
+	newstack.offlane  = data['profile']
+	joined = True
+      if role == '4' and newstack.support1 == None: 
+	newstack.support1 = data['profile']
+	joined = True
+      if role == '5' and newstack.support2 == None: 
+	newstack.support2 = data['profile']
+	joined = True      
+	
+      if joined:
+	newstack.save()
+	recalc_stack_exp(newstack)
+	data['profile'].current_stack = newstack.name
+	data['profile'].save()	
+	message = 'Joined '+stack_name
+      else:
+	message = 'Can not join this slot in ' + stack_name
+    else:
+      message = 'Stack does not exist'
+  else:
+    message = 'Leave your current stack first ('+stack_name+')'
+
+  return redirect('/stacks/msg/'+message)
+    
+    
+    
+@login_required
+def leave(request, stack_name):
+  social_auth = request.user.social_auth.get(provider='steam')
+  steamid     = social_auth.extra_data.get('steamid')
+  player = Player.objects.get(uid=steamid)      
+  stack = Stack.objects.get(name__exact=stack_name)            
+  left = False
+  
+  if stack:
+    if stack.carry == player:
+      stack.carry = None
+      left = True
+
+    if stack.solomid == player:
+      stack.solomid = None
+      left = True
+
+    if stack.offlane == player:
+      stack.offlane = None
+      left = True
+
+    if stack.support1 == player:
+      stack.support1 = None
+      left = True
+
+    if stack.support2 == player:
+      stack.support2 = None
+      left = True   
+      
+    if left:
+      stack.save()  
+      player.current_stack = ''
+      player.save()
+      recalc_stack_exp(stack)      
+      message = 'You have left the stack'
+    else:
+      message = 'Can not leave stack '+stack_name      
+  else:
+    message = 'Stack does not exist'
+      
+  return redirect('/stacks/msg/'+message)
+
+@login_required    
+def delete_empty(request):
+  mumble = MumbleWrapper.ICLMumble()  
+  for each in Stack.objects.all():
+    if each and check_stack_empty(each): 
+      mumble.deleteChannel(each.name)  
+      each.delete()
+      
+      
+  mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
+  mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
+  
+  for each in mumble.channels.values():
+    if each.id not in mumble_used_channel_ids_list:
+      if each.id == mumble.getChannelObj("Root").id: continue
+      print mumble.getChannelObj(each.id).name, 'is removed: no users'
+      mumble.server.removeChannel(each.id)  
+  
+  message = 'Deleted empty stacks and channels'  
+  mumble.destroy()    
+  return redirect('/stacks/msg/'+message)  
+    
+    
+    
+    
 def check_stack_empty(stack):
   result = True
       
@@ -76,193 +212,144 @@ def check_stack_empty(stack):
     result = False
 
   return result
-       
-def create_new_stack():
-  newstack = Stack()
-  newstack.name = "Temp"+str(randint(100,999))  
-  newstack.save()
-  newstack.name = "Stack"+str(newstack.id)
-  
-  mumble = MumbleWrapper.ICLMumble()
-  mumble.createNewChannel("Root", newstack.name)
-  mumble.destroy()
-  newstack.channel = newstack.name
-  newstack.save()
-  return newstack
-       
-def delete_stack(stack):       
-  mumble = MumbleWrapper.ICLMumble()
-  mumble.deleteChannel(stack.name)
-  mumble.destroy()  
-  stack.delete()
-       
-def move_user_to_voice_channel(username, channelname):
-  mumble = MumbleWrapper.ICLMumble()
-  mumble.moveUser2Channel(username, channelname)
-  mumble.destroy()
-       
-       
-def check_in_mumble(mumble, player):
-  user = mumble.getUserObj(player.mumble_nickname)
-  if user == None:
-    # not in mumble -> kick that guy.
-    print 'kick', player.mumble_nickname
-    return False
+
+def recalc_stack_exp(stack):
+  total_exp = 0
+  amount = 0
+  for each in [stack.carry,stack.solomid,stack.offlane,stack.support1,stack.support2]:
+    if each: 
+      amount +=1
+      total_exp += each.exp
+      
+  if amount != 0:
+    stack.exp = total_exp / amount
   else:
-    # in mumble, check which channel and kick if in AFK
-    ch = mumble.getChannelObj(user.channel)
-    if ch == mumble.getChannelObj("AFK"):
-      return False
-
-  return True
+    stack.exp = 0
+  stack.save()         
+         
+         
+         
+         
   
-def check_for_afk(stack):
-  mumble = MumbleWrapper.ICLMumble()  
   
-  if stack.carry != None:
-    if not check_in_mumble(mumble, stack.carry):
-      stack.carry = None
-
-  if stack.solomid != None:
-    if not check_in_mumble(mumble, stack.solomid):
-      stack.solomid = None
-
-  if stack.offlane != None:
-    if not check_in_mumble(mumble, stack.offlane):
-      stack.offlane = None
-
-  if stack.support1 != None:
-    if not check_in_mumble(mumble, stack.support1):
-      stack.support1 = None
-
-  if stack.support2 != None:
-    if not check_in_mumble(mumble, stack.support2):
-      stack.support2 = None
   
-  stack.save()
   
-  #if check_stack_empty(stack) == True:
-    #delete_stack(stack)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+#def same_exp_range(player_exp, stack_exp):
+  #if player_exp > stack_exp:
+    #return True
     
-  mumble.destroy()
+  #if player_exp < stack_exp:
+    #result = (stack_exp - player_exp) <= 75
+    #return result
        
-@login_required
-def voice(request, channel_name):
-  social_auth = request.user.social_auth.get(provider='steam')
-  steamid     = social_auth.extra_data.get('steamid')  
-  username = Player.objects.get(uid=steamid).mumble_nickname
-  move_user_to_voice_channel(username, channel_name)
+
+
+       
+       
+       
+       
+       
+#def has_slot_for_player(player, stack):
+  #result = False
+
+  #if (player.pri_role == 'Carry' or player.alt_role == 'Carry') and stack.carry == None:
+    #result = True    
+  #if (player.pri_role == 'Solo Mid' or player.alt_role == 'Solo Mid') and stack.solomid == None:
+    #result = True
+  #if (player.pri_role == 'Offlane' or player.alt_role == 'Offlane') and stack.offlane == None:
+    #result = True    
+  #if (player.pri_role == 'Support' or player.alt_role == 'Support') and (stack.support1 == None or stack.support2 == None):
+    #result = True
+    
+  #return result
+       
+
+
+
+       
+#def check_in_mumble(mumble, player):
+  #user = mumble.getUserObj(player.mumble_nickname)
+  #if user == None:
+    ## not in mumble -> kick that guy.
+    #print 'kick', player.mumble_nickname
+    #return False
+  #else:
+    ## in mumble, check which channel and kick if in AFK
+    #ch = mumble.getChannelObj(user.channel)
+    #if ch == mumble.getChannelObj("AFK"):
+      #return False
+
+  #return True
   
-  return redirect('/stacks')
+#def check_for_afk(stack):
+  #mumble = MumbleWrapper.ICLMumble()  
+  
+  #if stack.carry != None:
+    #if not check_in_mumble(mumble, stack.carry):
+      #stack.carry = None
+
+  #if stack.solomid != None:
+    #if not check_in_mumble(mumble, stack.solomid):
+      #stack.solomid = None
+
+  #if stack.offlane != None:
+    #if not check_in_mumble(mumble, stack.offlane):
+      #stack.offlane = None
+
+  #if stack.support1 != None:
+    #if not check_in_mumble(mumble, stack.support1):
+      #stack.support1 = None
+
+  #if stack.support2 != None:
+    #if not check_in_mumble(mumble, stack.support2):
+      #stack.support2 = None
+  
+  #stack.save()
+  
+    
+  #mumble.destroy()
        
-@login_required       
-def join(request, stack_name, role):
-      social_auth = request.user.social_auth.get(provider='steam')
-      steamid     = social_auth.extra_data.get('steamid')
-      data = {'profile': Player.objects.get(uid=steamid)}    
-      
-      # make the player leave his current stack to prevent multiple entries
-      # if he is currently in one       
-      # don't delete the stack if he is switching roles within his stack
-      if data['profile'].current_stack != '' and stack_name == data['profile'].current_stack:
-	leave(request, data['profile'].current_stack, allow_delete=False)
-            
-      newstack = Stack.objects.get(name__exact=stack_name)
-      
-      if role == '1': 
-	newstack.carry    = data['profile']
-      if role == '2': 
-	newstack.solomid  = data['profile']
-      if role == '3': 
-	newstack.offlane  = data['profile']
-      if role == '4': 
-	newstack.support1 = data['profile']
-      if role == '5': 
-	newstack.support2 = data['profile']
-	
-      recalc_stack_exp(newstack)
-	
-      newstack.save()
-      data['profile'].current_stack = newstack.name
-      data['profile'].save()
-      
-      move_user_to_voice_channel(data['profile'].mumble_nickname, newstack.name)
-      
-      return redirect('/stacks')
 
-@login_required
-def leave(request, stack_name, allow_delete=True):
-      social_auth = request.user.social_auth.get(provider='steam')
-      steamid     = social_auth.extra_data.get('steamid')
-      player = Player.objects.get(uid=steamid)      
-      stack = Stack.objects.get(name__exact=stack_name)            
-      actually_left = False
-      
-      if stack.carry == player:
-	stack.carry = None
-	actually_left = True
-
-      if stack.solomid == player:
-	stack.solomid = None
-	actually_left = True
-
-      if stack.offlane == player:
-	stack.offlane = None
-	actually_left = True
-
-      if stack.support1 == player:
-	stack.support1 = None
-	actually_left = True
-
-      if stack.support2 == player:
-	stack.support2 = None
-	actually_left = True
-
-      recalc_stack_exp(stack)      
-      stack.save()
-      
-      if actually_left:
-	player.current_stack = ''
-	player.save()
-      
-      # if player has left the stack, kick him from voice channel
-      if allow_delete == True:
-	mumble = MumbleWrapper.ICLMumble()
-	mumble.moveUser2Channel(player.mumble_nickname, "AFK")
-	mumble.destroy()      
-      
-      # delete stack if there is no more people left in it
-      if check_stack_empty(stack) and actually_left and allow_delete:	
-	delete_stack(stack)
-
-      return redirect('/stacks')
        
-@login_required       
-def find(request):
-      social_auth = request.user.social_auth.get(provider='steam')
-      steamid     = social_auth.extra_data.get('steamid')   
-      data = {'profile': Player.objects.get(uid=steamid),
-	      'stacks' : Stack.objects.all(),
-	      }  
-      matched = []
+
+
+
+       
+#@login_required       
+#def find(request):
+      #social_auth = request.user.social_auth.get(provider='steam')
+      #steamid     = social_auth.extra_data.get('steamid')   
+      #data = {'profile': Player.objects.get(uid=steamid),
+	      #'stacks' : Stack.objects.all(),
+	      #}  
+      #matched = []
       
-      # find stacks 
-      for each in data['stacks']:
-	  print each
-	  # check if stack has slots for player
-	  # and check if that matches his experience range
-	  if same_exp_range(data['profile'].exp, each.exp) and has_slot_for_player(data['profile'], each):
-	    matched.append(each)
+      ## find stacks 
+      #for each in data['stacks']:
+	  #print each
+	  ## check if stack has slots for player
+	  ## and check if that matches his experience range
+	  #if same_exp_range(data['profile'].exp, each.exp) and has_slot_for_player(data['profile'], each):
+	    #matched.append(each)
             
-      if len(matched):
-	# we have stacks that match players experience,
-	# let the player choose for himself
-	data['stacks'] = matched
+      #if len(matched):
+	## we have stacks that match players experience,
+	## let the player choose for himself
+	#data['stacks'] = matched
  
-      else:
-	# we don't have any stacks that match players experience
-	# lets create a new one
-	matched.append(create_new_stack())
-	data['stacks'] = matched
+      #else:
+	## we don't have any stacks that match players experience
+	## lets create a new one
+	#matched.append(create_new_stack())
+	#data['stacks'] = matched
 	
-      return render(request, 'stacks.html', data) 
+      #return render(request, 'stacks.html', data) 
