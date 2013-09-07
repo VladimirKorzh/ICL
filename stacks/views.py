@@ -187,7 +187,7 @@ def leave(request, stack_name, redirect=True):
     message = 'Stack does not exist'
       
   if redirect:
-    return redirect('/stacks/msg/'+message)
+    return redirect('/stacks/msg/'+str(message))
 
 @login_required    
 def delete_empty(request):
