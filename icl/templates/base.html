@@ -28,7 +28,7 @@
 		    </ul>   
 		</div>
 		<div class="span10">
-		    {% if message != "" %}
+		    {% if message|stringformat:"s" != "" %}
 		    <div class="alert alert-info span9 alert-message" >		      
 			  {{ message }}
 		    </div>		
