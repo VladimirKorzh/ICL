@@ -1,47 +1,70 @@
 {% extends 'base.html' %}
 {% load i18n %}
   
+  
+{% block actions %}
+    <li><a class="" href="#statement"><i class="icon-list"></i> Welcome</a></li>  
+    <li><a class="" href="#whyicl"><i class="icon-list"></i> Why ICL</a></li>  
+    <li><a class="" href="#features"><i class="icon-list"></i> Features</a></li>  
+    <li><a class="" href="#setup"><i class="icon-list"></i> How to Join</a></li>  
+{% endblock %}
+  
 {% block body %} 
-<div class="span10">        
-	<h2> Welcome to the International Crab League </h2>
+<div class="span10" data-spy="scroll" data-target=".navbar">        
 	
-	<div class="span3">
-	  <div class="thumbnail">
+	<div id="statement">
+	    <h2 class="text-center"> Welcome to the International Crab League </h2>
+	    <div class="item">
 	      <img data-src="holder.js/300x200" alt="">
-	      <div class="caption">
-		<h3>Thumbnail label</h3>
+	      <div class="carousel-caption">
+		<h4>Second Thumbnail label</h4>
 		<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-		<p><a href="#" class="btn btn-primary">Action</a> <a href="#" class="btn">Action</a></p>
 	      </div>
-	  </div>
+	    </div>	    
 	</div>
-	<div class="span3">
-	  <div class="thumbnail">
-	      <img data-src="holder.js/300x200" alt="">
-	      <div class="caption">
-		<h3>Thumbnail label</h3>
-		<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-		<p><a href="#" class="btn btn-primary">Action</a> <a href="#" class="btn">Action</a></p>
-	      </div>
-	  </div>
+	
+	<div id="whyicl">
+	
 	</div>
-	<div class="span3">
-	  <div class="thumbnail">
-	      <img data-src="holder.js/300x200" alt="">
-	      <div class="caption">
-		<h3>Thumbnail label</h3>
-		<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-		<p><a href="#" class="btn btn-primary">Action</a> <a href="#" class="btn">Action</a></p>
+	
+	<div id="features">
+	    <div class="span3">
+	      <div class="thumbnail">
+		  <img data-src="holder.js/300x200" alt="">
+		  <div class="caption">
+		    <h3>Thumbnail label</h3>
+		    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+		  </div>
 	      </div>
-	  </div>
-	</div>	
+	    </div>
+	    <div class="span3">
+	      <div class="thumbnail">
+		  <img data-src="holder.js/300x200" alt="">
+		  <div class="caption">
+		    <h3>Thumbnail label</h3>
+		    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+		  </div>
+	      </div>
+	    </div>
+	    <div class="span3">
+	      <div class="thumbnail">
+		  <img data-src="holder.js/300x200" alt="">
+		  <div class="caption">
+		    <h3>Thumbnail label</h3>
+		    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+		  </div>
+	      </div>
+	    </div>
+	</div>
 	
-	
+	<div id="setup">
+	    <ul>
+		  <li> Install Mumble -> <a href="http://sourceforge.net/projects/mumble/files/Mumble/1.2.4/mumble-1.2.4.msi/download"><img src="{{MEDIA_URL}}images/mumble_logo.png"></a>
+		  <li> Login through Steam -> <a href="{% url 'socialauth_begin' 'steam' %}"><img src="{{MEDIA_URL}}images/steamlogin.png"></a>
+	    </ul>	
+	</div>
 	
 
-	<ul>
-	      <li> Install Mumble -> <a href="http://sourceforge.net/projects/mumble/files/Mumble/1.2.4/mumble-1.2.4.msi/download"><img src="{{MEDIA_URL}}images/mumble_logo.png"></a>
-	      <li> Login through Steam -> <a href="{% url 'socialauth_begin' 'steam' %}"><img src="{{MEDIA_URL}}images/steamlogin.png"></a>
-	</ul>
+
 </div>
 {% endblock %}
