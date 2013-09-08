@@ -91,6 +91,30 @@ table p{
 }
 
 
+.caption {  
+    background-color: rgba(0,0,0,0.8);  
+    position: absolute;  
+    color: #fff;  
+    z-index: 100;  
+    left: 0;  
+    
+    display: block;  
+    bottom: -30px;  
+    line-height: 25pt;  
+    text-align: center;      
+}  
+
+
+
+
+
+
+
+
+
+
+
+
 
 .bs-docs-sidenav > .active > a {
   position: relative;
