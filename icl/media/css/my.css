@@ -75,20 +75,23 @@ table p{
   border: 1px solid #e5e5e5;
 }
 
-
-
-
-
-.bs-docs-sidenav > li:first-child > a {
+.sidenav > li:first-child > a {
   -webkit-border-radius: 6px 6px 0 0;
      -moz-border-radius: 6px 6px 0 0;
           border-radius: 6px 6px 0 0;
 }
-.bs-docs-sidenav > li:last-child > a {
+.sidenav > li:last-child > a {
   -webkit-border-radius: 0 0 6px 6px;
      -moz-border-radius: 0 0 6px 6px;
           border-radius: 0 0 6px 6px;
 }
+
+.sidenav > li > a:hover {
+  background-color: #f5f5f5;
+}
+
+
+
 .bs-docs-sidenav > .active > a {
   position: relative;
   z-index: 2;
@@ -106,9 +109,7 @@ table p{
   margin-right: -6px;
   opacity: .25;
 }
-.bs-docs-sidenav > li > a:hover {
-  background-color: #f5f5f5;
-}
+
 .bs-docs-sidenav a:hover .icon-chevron-right {
   opacity: .5;
 }
