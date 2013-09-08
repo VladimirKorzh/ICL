@@ -26,7 +26,7 @@ def intro(request):
     steamid     = social_auth.extra_data.get('steamid')     
     data['profile'] = Player.objects.get(uid=steamid) 
   
-  print data['profile']
+  print 'WTF', data['profile']
   return render(request, 'intro.html', data)  
 
 @login_required  
