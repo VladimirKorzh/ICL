@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 
-<body>
+<body data-spy="scroll" data-target=".navbar">
     {% include 'navigation.html' %}
             
     <img id="logo" src="{{MEDIA_URL}}images/beta-ribbon.png"></img>
@@ -10,9 +10,7 @@
 	<div class="modal-body"></div>
     </div>
       
-    <div class="container">            
-	{% block body %}{% endblock %}
-    </div>
+    {% block body %}{% endblock %}
 	
 	
 {% include 'footer.html' %} 
