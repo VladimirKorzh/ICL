@@ -20,7 +20,7 @@ def landing(request):
       return login(request)
 
 def intro(request):
-      return render(request, 'intro.html', {"message":"Welcome to ICL. Please login to use our services.")  
+      return render(request, 'intro.html', {"message":"Welcome to ICL. Please login to use our services."})  
 
 @login_required  
 def login(request):
