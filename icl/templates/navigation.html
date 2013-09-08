@@ -56,7 +56,7 @@
 					  <li><a href="/logout"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
 				      </ul>				    
 			      {% else %}
-				      <a href="{% url 'socialauth_begin' 'steam' %}" class="dropdown-toggle" data-toggle="dropdown">
+				      <a href="{% url 'socialauth_begin' 'steam' %}">
 				      <i class="icon-user icon-white"></i> Steam Login</a> 				
 			      {% endif %}
 			  </li>
