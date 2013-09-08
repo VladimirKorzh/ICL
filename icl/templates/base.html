@@ -28,13 +28,11 @@
 		    </ul>   
 		</div>
 		<div class="span10">
-		    <div class="alert alert-info span9 alert-message" >
-		      {% if message %}
+		    {% if message != "" %}
+		    <div class="alert alert-info span9 alert-message" >		      
 			  {{ message }}
-		      {% else %}
-		      &nbsp;
-		      {% endif %}
 		    </div>		
+		    {% endif %}
 		    {% block body %}{% endblock %}
 		<div>
 	    </div>
