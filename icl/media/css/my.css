@@ -21,8 +21,7 @@ body {
 }
 
 #actionsmenu {  
-    min-height:100%;
-    margin-top:-15px;
+    top: 40px;
 }
 
 #stack {
