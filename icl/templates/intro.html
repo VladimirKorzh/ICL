@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     
-    <link   href="{{MEDIA_URL}}css/bootstrap.css"     rel="stylesheet" media="screen"> 
-    <link   href="{{MEDIA_URL}}css/my.css"            rel="stylesheet" media="screen">
-        
-    <title> International Crab League </title> 
-</head>
+{% extends 'base.html' %}
+{% load i18n %}
 
-<body>
+{% block actions %} 
+{% endblock %}
+
+{% block body %} 
+
               <div id="myCarousel" class="carousel slide">
                 <ol class="carousel-indicators">
                   <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -49,9 +45,4 @@
 	      <li> Install Mumble -> <a href="http://sourceforge.net/projects/mumble/files/Mumble/1.2.4/mumble-1.2.4.msi/download"><img src="{{MEDIA_URL}}images/mumble_logo.png"></a>
 	      <li> Login through Steam -> <a href="{% url 'socialauth_begin' 'steam' %}"><img src="{{MEDIA_URL}}images/steamlogin.png"></a>
 	</ul>
-
-
-	<script src="{{MEDIA_URL}}js/jquery.min.js"       type="text/javascript"></script>   
-	<script src="{{MEDIA_URL}}js/bootstrap.min.js"    type="text/javascript"></script>    
-	<script src="{{MEDIA_URL}}js/my.js"               type="text/javascript"></script>   	
-</body>
+{% endblock %}

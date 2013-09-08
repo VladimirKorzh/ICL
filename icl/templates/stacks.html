@@ -17,7 +17,6 @@
 	  <li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty</a></li>  
 	  <li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk</a></li>  
 {% endblock %}
-<a >
 
 {% block body %} 
 
@@ -25,8 +24,6 @@
     {% for stack in stacks %}
 	{% include 'stack_template.html' with stack=stack %}
     {% endfor %}
-
-    
 </div>        
 
 {% endblock body %}
