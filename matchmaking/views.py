@@ -21,12 +21,10 @@ def landing(request):
 
 def intro(request):
   data = {}
-  
-  if request.user.is_authenticated():
-    print 'authentificated intro call'
-    social_auth = request.user.social_auth.get(provider='steam')
-    steamid     = social_auth.extra_data.get('steamid')     
-    data['profile'] = Player.objects.get(uid=steamid) 
+
+  social_auth = request.user.social_auth.get(provider='steam')
+  steamid     = social_auth.extra_data.get('steamid')     
+  data['profile'] = Player.objects.get(uid=steamid) 
     
   return render(request, 'intro.html', data)  
 
