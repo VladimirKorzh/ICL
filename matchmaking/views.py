@@ -21,12 +21,11 @@ def landing(request):
 
 def intro(request):
   data = {}
+  
   if request.user.is_authenticated():
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')     
     data['profile'] = Player.objects.get(uid=steamid) 
-  else:
-    data = {"message":"Welcome to ICL. Please login to use our services."}
     
   return render(request, 'intro.html', data)  
 
