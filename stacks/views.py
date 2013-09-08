@@ -20,6 +20,7 @@ def main(request, msg=''):
 	  
   if msg != '':
     data['message'] = msg
+    print 'message appended', msg
     
   return render(request, 'stacks.html', data)
 

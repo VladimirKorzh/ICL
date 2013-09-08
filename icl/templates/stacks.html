@@ -15,9 +15,10 @@
  		<li class="divider"></li>
  		<li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk people</a></li>  
 		<li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty stacks</a></li>  		
-		{% if message %}
-		  <li class="divider"></li>
+		<li class="divider"></li>
+		{% if message %}  
 		  <li><div class="alert alert-info alert-message">      
+		  {{ message }}
 		  </div></li>
 		{% endif %}
 	    </ul>   
