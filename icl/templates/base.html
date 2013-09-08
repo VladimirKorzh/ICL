@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     
-    <link   href="{{MEDIA_URL}}css/bootstrap.css"     rel="stylesheet" media="screen"> 
-    <link   href="{{MEDIA_URL}}css/my.css"            rel="stylesheet" media="screen">
-        
-    <title> International Crab League </title> 
-</head>
+{% include 'header.html' %}
 
 <body>
-
-<img id="logo" src="{{MEDIA_URL}}images/beta-ribbon.png"></img>
+    {% include 'navigation.html' %}
+            
+    <img id="logo" src="{{MEDIA_URL}}images/beta-ribbon.png"></img>
 
 <!-- Modal for dialogs -->
     <div id="modal" class="modal hide fade in">
 	<div class="modal-body"></div>
     </div>
-    
-      {% include 'navigation.html' %}
+      
+    <div class="container">            
+	{% block body %}{% endblock %}
+    </div>
 	
-	<div class="container">      
+	
+{% include 'footer.html' %} 
+
+<!--	
 	    <div class="row">
 		<div class="span2">
 		    <ul id="actionsmenu" class="nav nav-list navbar well well-small">
@@ -36,11 +33,6 @@
 		    {% block body %}{% endblock %}
 		<div>
 	    </div>
-	</div>
+-->
 	
-	<script src="{{MEDIA_URL}}js/jquery.min.js"       type="text/javascript"></script>   
-	<script src="{{MEDIA_URL}}js/bootstrap.min.js"    type="text/javascript"></script>    
-	<script src="{{MEDIA_URL}}js/holder.js"           type="text/javascript"></script>
-	<script src="{{MEDIA_URL}}js/my.js"               type="text/javascript"></script>   
 	
-</body>

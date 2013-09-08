@@ -3,18 +3,25 @@
   
   
 {% block actions %}
-    <li><a class="" href="#statement"><i class="icon-list"></i> Welcome</a></li>  
-    <li><a class="" href="#whyicl"><i class="icon-list"></i> Why ICL</a></li>  
-    <li><a class="" href="#features"><i class="icon-list"></i> Features</a></li>  
-    <li><a class="" href="#setup"><i class="icon-list"></i> How to Join</a></li>  
+
 {% endblock %}
   
 {% block body %} 
 <div class="span10" data-spy="scroll" data-target=".navbar">        
 
+    <div class="span2">
+	<ul id="actionsmenu" class="nav nav-list navbar well well-small">
+	    <li><a href="#statement"><i class="icon-list"></i> Welcome</a></li>  
+	    <li><a href="#whyicl"><i class="icon-list"></i> Why ICL</a></li>  
+	    <li><a href="#features"><i class="icon-list"></i> Features</a></li>  
+	    <li><a href="#setup"><i class="icon-list"></i> How to Join</a></li>  	
+	</ul>
+    </div>
+
+    <div class="span10">
 
 	<div id="statement">
-	    <div class=" span9">
+	    <div class="span9">
 	      <div class="thumbnail">
 		  <img data-src="holder.js/870x200" alt="">
 		  <div class="caption">
@@ -90,8 +97,8 @@
 		<hr>
 		&nbsp;		
 	    </div>
-	</div>
-	
+	</div>	
+    </div>
 
 
 </div>
