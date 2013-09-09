@@ -1,7 +1,10 @@
 <div class="modal-header">
   <h3>
-      <img src="{{pl.avatar}}"/> {{ pl.nickname }}        
+     <img src="{{pl.avatar}}"/> {{ pl.nickname }}      
+      <small><a href="http://steamcommunity.com/profiles/{{pl.uid}}/">Steam</a></small>
+      <small><a href="http://dotabuff.com/search?utf8=%E2%9C%93&q={{pl.nickname}}">Dotabuff</a></small>     
   </h3>
+
  </div>
   <div class="modal-body" id="utility_body">
 
@@ -32,7 +35,7 @@
 	<form method="POST" action="/profile/refresh">{% csrf_token %}
 	<td><p class="text-center"><select name="pri_role" class="input-small">
 	<option value="Carry" {% if profile.pri_role|stringformat:"s" == "Carry"  %}  selected="selected" {% endif %}>Carry</option>
-	<option value="Solomid" {% if profile.pri_role|stringformat:"s" == "Mid"  %}  selected="selected" {% endif %}>Mid</option>
+	<option value="Mid" {% if profile.pri_role|stringformat:"s" == "Mid"  %}  selected="selected" {% endif %}>Mid</option>
 	<option value="Offlane" {% if profile.pri_role|stringformat:"s" == "Offlane"  %}  selected="selected" {% endif %}>Offlane</option>
 	<option value="Support" {% if profile.pri_role|stringformat:"s" == "Support"  %}  selected="selected" {% endif %}>Support</option>
     </select></p></td>
