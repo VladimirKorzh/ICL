@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    background: #dbdbdb;
+    
     padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
     padding-bottom: 50px; /* 60px to make the container go all the way to the bottom of the topbar */    
 }
@@ -86,16 +86,11 @@ table p{
 }
 
 .statement { 
-  padding: 10px;
-  background-color: #F5F5F5;
-  
-  -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-          border-radius: 0px;
-	  	  
-  -moz-box-shadow: 5px 5px rgba(0,0,0,0.5);
-  -webkit-box-shadow: 5px 5px rgba(0,0,0,0.5);
-  box-shadow: 5px 5px rgba(0,0,0,0.5);
+  height: 90px;
+}
+
+.statement h4 {
+  margin: 0px;
 }
 
 

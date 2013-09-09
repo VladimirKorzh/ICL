@@ -1,33 +1,36 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block actions %} 
-	  <li class="nav-header">Stacks:</li>
-	  <li><a class="" href="/stacks/create"><i class="icon-list"></i> Create new</a></li>  
-	  <li><a class="" href="/stacks/leave_current"><i class="icon-remove"></i> Leave current</a></li>  	  
-<!-- 	  <li><a class="" href="/stacks/find"><i class="icon-search"></i> Show suitable</a></li> -->
-	  <li class="divider"></li>
-	  <li class="nav-header">Mumble:</li>
-	  <li><a href="/stacks/voice/{{profile.current_stack}}"><i class="icon-headphones"></i> {% trans "My stack Channel" %}</a></li>
-	  <li><a href="/stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Flood Channel" %}</a></li>
-	  <!--<li><a class="" href="/stacks/createnew"><i class="icon-wrench"></i> Create new</a></li>
-	  <li><a class="" href="/stacls/remove"><i class="icon-remove-circle"></i> Delete</a></li>-->
-	  <li class="divider">
-	  <li class="nav-header">Admin:</li>
-	  <li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty</a></li>  
-<!-- 	  <li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk</a></li>   -->
-{% endblock %}
-<a >
-
 {% block body %} 
 
-<div class="span10">
-    {% for stack in stacks %}
-	{% include 'stack_template.html' with stack=stack %}
-    {% endfor %}
-
-    
-</div>        
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->
+      <div class="span3">
+	    <ul id="actionsmenu" class="nav nav-list affix sidenav">
+		<li><a class="" href="/stacks/create"><i class="icon-list"></i> Create new stack</a></li>  
+		<li><a class="" href="/stacks/leave_current"><i class="icon-remove"></i> Leave current stack</a></li>  	  
+		<li class=""> &nbsp;</li>
+		<li><a href="/stacks/voice/{{profile.current_stack}}"><i class="icon-headphones"></i> {% trans "Join my stack channel" %}</a></li>
+		<li><a href="/stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Join flood channel" %}</a></li>
+		<li class=""></li>
+ 		<li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk people</a></li>  
+		<li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty stacks</a></li>  		
+		<li class=""></li>
+		{% if message %}  
+		  <li><div class="alert alert-info alert-message">      
+		  {{ message }}
+		  </div></li>
+		{% endif %}
+	    </ul>   
+      </div>
+      
+      <div class="span9">
+	  {% for stack in stacks %}
+	      {% include 'stack_template.html' with stack=stack %}
+	  {% endfor %}      
+      </div>
+    </div> <!-- END ROW 12 -->
+</div> <!-- END CONTAINER -->        
 
 {% endblock body %}
 
