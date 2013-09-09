@@ -5,13 +5,8 @@
 
 <div class="container">            
     <div class="row"> <!-- ROW 12 START -->
-	<div class="span3">
-	      <ul class="nav nav-list affix sidenav">
-		  <li><a href="#mumble"><i class="icon-headphones"></i> Installing Mumble</a></li>
-		  <li><a href="#skill"><i class="icon-headphones"></i> Skill Calculation</a></li>
-		  <li><a href="#history"><i class="icon-headphones"></i> Opening match history</a></li>
-	      </ul>
-	</div>
+    
+	{% include 'help_sidebar.html' %}
 	
 	<div class="span9">
 	    <div class="row">
@@ -61,64 +56,14 @@
 		  </div>
 	    </div>	    
 	    <div class="row">
-    
 	      <div class="span9">
 		  <h4> How to Join? </h4>
 		  <p> In order to use the ICL you need to <a href="#mumble">download and install mumble</a>, which is used as communication software.
 		  After that you simply <a href="{% url 'socialauth_begin' 'steam' %}">login using steam</a> OpenID and you are good to go.</p>
 	      </div>
+	    </div>	      
+
 	      
-	      <section id="mumble" class="row">
-		<div class="span9">
-		  <h4> Downloading and Installing Mumble </h4>
-		  <p> 
-		  <ul>
-		    <li> Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.</li>
-		    <li> It works similarly to RaidCall, Teamspeak or Ventrilo.</li>
-		    <li> Client could be downloaded free of charge <a href="http://sourceforge.net/projects/mumble/files/Mumble/1.2.4/mumble-1.2.4.msi/download">here</a> (15mb). </li>
-		    <li> During the install process simply click on next button, you don't need any special settings</li>
-		    <li> After the install is complete, put a tick next to run mumble or run it manually afterwards.</li>
-		    <li> During the first launch of mumble it will run a sound setup wizard, which will guide you in setting up sound.</li>
-		    <li> If other users can't hear you in mumble, you should go to settings dialog. Place a tick next to 'Advanced' on the bottom of the screen and manually adjust your Audio Input.</li>
-		  </ul>
-		  </p>
-		</div>
-	      </section>
-	      
-	      <section id="skill" class="row">
-		<div class="span9">
-		  <h4> How do we calculate your skill? </h4>
-		  <p>
-		  <ul>
-		    <li>Games that you have lost do not affect your skill rating.</li>
-		    <li>Skill rating is not directly dependent on the amount of time you spend playing.</li>
-		    <li>If you play less than 100 games a month, your skill rating will be calculated as if you played 100. You will be penalized by extra skill rating points in ladder.</li>
-		    <li>If you play more than 100 games a month, your skill rating will be calculated as if you played 100. You will be awarded extra skill rating points in ladder.</li>
-		    <li>For each game you play you get a certain amount of points (depending on the game skill level) that influece your current skill rating.</li>
-		    <li>Minimum skill rating is 100</li>
-		    <li>Maximum skill rating is 600</li>
-		  </ul>
-		  </p>
-		</div>
-	      </section>
-	      
-	      
-	      <section id="history" class="row">
-		<div class="span9">
-		  <h4> How to open public match history </h4>
-		  <p>
-		   <ul>
-		      <li>Open the Dota 2 game client</li>
-		      <li> Click the Settings icon</li>
-		      <li> Navigate to "Game", then to "General"</li>
-		      <li> Set the "Share Match History" setting to "On"</li>
-		    </ul>
-		  </p>
-		</div>
-	      </section>
-	      
-	    </div>
-	    
 	</div> <!-- END SPAN 10 -->
 
 {% endblock %}

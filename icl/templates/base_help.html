@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+  
+{% block body %} 
+
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->
+    
+	{% include 'help_sidebar.html' %}
+	
+	{% block content %}{% endblock %}
+	
+    </div> <!-- END SPAN 10 -->
+</div>
+
+{% endblock body%}
+	

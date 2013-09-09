@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     url(r'^login$',	mm.login,      name='login'),  
     url(r'^logout$', 	'django.contrib.auth.views.logout', {'next_page': '/intro'}),    
         
+    url(r'^help/(?P<topic>.+)',	mm.help,      name='help_topics'),  
+        
     # user profile page modal dialog
     url(r'^profile/(?P<profile_id>\d+)/$', mm.profile,    name='show_profile'), 
     url(r'^profile/refresh$', mm.refresh, name='refresh'),

@@ -12,6 +12,24 @@ jQuery(function ($) {
          $($(this).attr('data-target')).modal("show"); 
     });
 });
+ 
+window.setTimeout(function() {
+    $(".alert-message").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });
+}, 5000); 
+ 
+function goToByScroll(id){
+      // Remove "link" from the ID
+    id = id.replace("link", "");
+      // Scroll
+    $('html,body').animate({
+        scrollTop: $("#"+id).offset().top},
+        'slow');
+} 
+
+
+
 /*
 
 

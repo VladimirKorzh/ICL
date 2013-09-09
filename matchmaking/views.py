@@ -28,6 +28,22 @@ def intro(request):
   
   return render(request, 'intro.html', data)  
 
+  
+def help(request, topic):
+  data = {}
+  if request.user.is_authenticated():
+    social_auth = request.user.social_auth.get(provider='steam')
+    steamid     = social_auth.extra_data.get('steamid')     
+    data['profile'] = Player.objects.get(uid=steamid) 
+    
+  filename = str(topic) + '.html'
+  return render(request, filename, data)
+  
+  
+  
+  
+  
+  
 @login_required  
 def login(request):
     social_auth = request.user.social_auth.get(provider='steam')
@@ -50,6 +66,7 @@ def login(request):
     print "Player logged in:", player.nickname
     
     return redirect('/stacks')
+ 
  
  
 @login_required

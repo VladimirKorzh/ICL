@@ -1,0 +1,20 @@
+{% extends 'base_help.html' %}
+{% load i18n %}
+
+{% block content %} 
+
+    <div class="span9">
+      <h4> How do we calculate your skill? </h4>
+      <p>
+      <ul>
+	<li>Games that you have lost do not affect your skill rating.</li>
+	<li>Skill rating is not directly dependent on the amount of time you spend playing.</li>
+	<li>If you play less than 100 games a month, your skill rating will be calculated as if you played 100. You will be penalized by extra skill rating points in ladder.</li>
+	<li>If you play more than 100 games a month, your skill rating will be calculated as if you played 100. You will be awarded extra skill rating points in ladder.</li>
+	<li>For each game you play you get a certain amount of points (depending on the game skill level) that influece your current skill rating.</li>
+	<li>Minimum skill rating is 100</li>
+	<li>Maximum skill rating is 600</li>
+      </ul>
+      </p>
+    </div>
+{% endblock %}    
