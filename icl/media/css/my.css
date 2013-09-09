@@ -6,17 +6,7 @@ html {
 body {
     padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
     padding-bottom: 50px; /* 60px to make the container go all the way to the bottom of the topbar */    
-}
-
-#logo {
-    position: fixed; 
-    top: 50%;
-    left: 50%;
-    margin-top: -200px;
-    margin-left: -170px;    
-    opacity:0.1;
-    z-index:-1;
-/*     z-index:1031;     */
+    background: rgba(196,89,30,0.65);
 }
 
 #stack {
@@ -95,6 +85,11 @@ table p{
   background-color: #f5f5f5;
 }
 
+.statement { 
+  -moz-border-radius: 10px; /*radius of 10px*/
+  -khtml-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
 
 
 
