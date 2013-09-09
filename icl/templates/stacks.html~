@@ -9,13 +9,13 @@
 	    <ul id="actionsmenu" class="nav nav-list affix sidenav">
 		<li><a class="" href="/stacks/create"><i class="icon-list"></i> Create new stack</a></li>  
 		<li><a class="" href="/stacks/leave_current"><i class="icon-remove"></i> Leave current stack</a></li>  	  
-		<li class=""> &nbsp;</li>
+		<li class="">&nbsp;</li>
 		<li><a href="/stacks/voice/{{profile.current_stack}}"><i class="icon-headphones"></i> {% trans "Join my stack channel" %}</a></li>
 		<li><a href="/stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Join flood channel" %}</a></li>
-		<li class=""></li>
+		<li class="">&nbsp;</li>
  		<li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk people</a></li>  
 		<li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty stacks</a></li>  		
-		<li class=""></li>
+		<li class="">&nbsp;</li>
 		{% if message %}  
 		  <li><div class="alert alert-info alert-message">      
 		  {{ message }}
