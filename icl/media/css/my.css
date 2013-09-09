@@ -86,14 +86,15 @@ table p{
 
 .statement { 
   padding: 10px;
-  background-color: #eee;  
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
+  background-color: #FEFEFE;
+  
+  -webkit-border-radius: 0px;
+     -moz-border-radius: 0px;
+          border-radius: 0px;
 	  	  
-  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
-     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
-          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+  -moz-box-shadow: 5px 5px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 5px 5px rgba(0,0,0,0.5);
+  box-shadow: 5px 5px rgba(0,0,0,0.5);
 }
 
 
