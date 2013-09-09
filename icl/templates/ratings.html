@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block body %}	
+
+{% block body %}
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->
+	<div class="span3">
+	 <ul id="actionsmenu" class="nav nav-list affix sidenav">
+	    <li><a class="" href="/stacks/create"><i class="icon-list"></i> Skill rating</a></li> 
+	    <li><a class="" href="/stacks/create"><i class="icon-list"></i> Global Ladder</a></li> 
+	 </ul>
+	</div>
 	<div class="span9">
 	    <div id="content">
 		<p>Player Skill Table</p>  
@@ -17,4 +26,7 @@
 		</tbody></table>
 	    </div>	
 	</div>
+    </div> <!-- END ROW 12 -->
+</div> <!-- END CONTAINER -->  	
 {% endblock body %}
+

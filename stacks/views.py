@@ -255,6 +255,7 @@ def kick_afk(request):
 	      left = True 
 	    if left:
 	      stack.save()
+	      recalc_stack_exp(stack)
 	    
 	pl.current_stack = ''
 	pl.save()

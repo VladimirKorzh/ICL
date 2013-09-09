@@ -20,6 +20,7 @@ def main(request, msg=''):
 	  
   if msg != '':
     data['message'] = msg
+    print 'message appended', msg
     
   return render(request, 'stacks.html', data)
 
@@ -120,7 +121,7 @@ def join(request, stack_name, role):
     else:
       message = 'Stack does not exist'
   else:
-    message = 'Leave your current stack first ('+stack_name+')'
+    message = 'Leave your current stack first ('+data['profile'].current_stack+')'
 
   return redirect('/stacks/msg/'+message)
 
@@ -128,57 +129,66 @@ def join(request, stack_name, role):
 def leave_current(request):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
-  player = Player.objects.get(uid=steamid) 
+  player      = Player.objects.get(uid=steamid) 
   
   if player.current_stack != '':
+    print player.nickname, 'is leaving his current stack', player.current_stack
     leave(request, player.current_stack, False)
     
   player.current_stack = ''
+  player.save()
   return redirect('/stacks/msg/'+'Left the stack')
     
 @login_required
-def leave(request, stack_name, redirect=True):
+def leave(request, stack_name, redirect_after=True):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
   player = Player.objects.get(uid=steamid)      
-  stack = Stack.objects.get(name__exact=stack_name)            
-  left = False
   message = ''
-  
-  if stack:
-    if stack.carry == player:
-      stack.carry = None
-      left = True
+    
+  print 'Checking if stack exists'
+  if Stack.objects.filter(name__exact=stack_name).exists():
+    stack = Stack.objects.get(name__exact=stack_name)            
+    left = False
 
-    if stack.solomid == player:
-      stack.solomid = None
-      left = True
+    
+    if stack:
+      if stack.carry == player:
+	stack.carry = None
+	left = True
 
-    if stack.offlane == player:
-      stack.offlane = None
-      left = True
+      if stack.solomid == player:
+	stack.solomid = None
+	left = True
 
-    if stack.support1 == player:
-      stack.support1 = None
-      left = True
+      if stack.offlane == player:
+	stack.offlane = None
+	left = True
 
-    if stack.support2 == player:
-      stack.support2 = None
-      left = True   
-      
-    if left:
-      stack.save()  
-      player.current_stack = ''
-      player.save()
-      recalc_stack_exp(stack)      
-      message = 'You have left the stack'
+      if stack.support1 == player:
+	stack.support1 = None
+	left = True
+
+      if stack.support2 == player:
+	stack.support2 = None
+	left = True   
+	
+      if left:
+	stack.save()  
+	recalc_stack_exp(stack)      
+	message = 'You have left the stack'
+      else:
+	message = 'Can not leave stack '+stack_name
     else:
-      message = 'Can not leave stack '+stack_name      
+      message = 'Stack not found, cleaned your record'
+      
+    player.current_stack = ''
+    player.save()
   else:
     message = 'Stack does not exist'
       
-  if redirect:
-    return redirect('/stacks/msg/'+message)
+  if redirect_after:
+    return redirect('/stacks/msg/'+str(message))
 
 @login_required    
 def delete_empty(request):
@@ -187,15 +197,20 @@ def delete_empty(request):
     if each and check_stack_empty(each): 
 	mumble.deleteChannel(each.name)  
 	each.delete()
+	print 'Deleted stack and channel for it', each.name
       
+  mumble.channels = mumble.server.getChannels()
   mumble_used_channel_ids_list = [mumble.users[i].channel for i in mumble.users]
   mumble_total_channel_ids_list = [i.id for i in mumble.channels.values()]
   
+  print 'Used channels', mumble_used_channel_ids_list
+  print 'Total channels', mumble_total_channel_ids_list
+  
   for each in mumble.channels.values():
     if each.id not in mumble_used_channel_ids_list:
-      if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id: continue
-      print mumble.getChannelObj(each.id).name, 'is removed: no users'
+      if each.id == mumble.getChannelObj("Root").id or each.id == mumble.getChannelObj("AFK").id or each.id == mumble.getChannelObj("Flood").id: continue
       mumble.deleteChannel(each.id)  
+      print mumble.getChannelObj(each.id).name, 'is removed: no users'
          
   message = 'Deleted empty stacks and channels'  
   mumble.destroy()    
@@ -240,6 +255,7 @@ def kick_afk(request):
 	      left = True 
 	    if left:
 	      stack.save()
+	      recalc_stack_exp(stack)
 	    
 	pl.current_stack = ''
 	pl.save()
