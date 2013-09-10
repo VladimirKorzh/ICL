@@ -39,6 +39,7 @@ urlpatterns = patterns('',
 
     # Betiings application
     url(r'^bets$',                             bets.mybets), 
+    url(r'^bets/find_bet$',                    bets.find_modal), 
     url(r'^bets/remove_bet/(?P<bet_id>\d+)/$', bets.remove_bet),
     url(r'^bets/cancel_bet/(?P<bet_id>\d+)/$', bets.cancel_bet),
     url(r'^bets/close_bet/(?P<bet_id>\d+)/$',  bets.close_bet),

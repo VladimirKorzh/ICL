@@ -11,8 +11,8 @@
 	    <div class="span3">
 		<ul id="actionsmenu" class="nav nav-list affix sidenav">
 		
-		    <li><a class="" href="/bets/create"><i class="icon-list"></i> Create new bet</a></li>  
-		    <li><a class="" href="/bets/find"><i class="icon-remove"></i> Find bet</a></li>  	  
+		    <li><a class="" href="/bets/create_new/" data-target="#modal" data-toggle="modal"><i class="icon-list"></i> Create new bet</a></li>  
+		    <li><a class="" href="/bets/find_bet" data-target="#modal" data-toggle="modal"><i class="icon-remove"></i> Find bet</a></li>  	  
 		    <li class="">&nbsp;</li>
 
 		    {% if message %}  
@@ -23,9 +23,8 @@
 		</ul>     
 	    </div>
 	    <div class="span9" id="results">
-		    &nbsp; 
 		{% if results %}
-		    <table>
+		    <table class="table table-striped table-condensed table-bordered">
 			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Owner</th><th>Actions</th></tr>
 			{% for bet in results %}      
 			<tr>

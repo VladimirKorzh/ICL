@@ -6,6 +6,11 @@ from bets.models import Bet, Bidder
 from matchmaking.models import Player
 
 from random import randint
+
+@login_required  
+def find_modal(request):  
+    return render(request,'bets_find_modal.html', {})
+    
     
 def update_bet_status(bet_id):
   # function that allows bet to transition from one state to
@@ -14,7 +19,7 @@ def update_bet_status(bet_id):
   
   # find the bet that we are dealing with
   bet = Bet.objects.filter(id__exact=bet_id)[0]
-    
+  
   if bet.status == 'Collecting' or bet.status == 'Awarding':
     print 'valid status:', bet.status
     # check if we have already collected\awarded all the items\players
@@ -204,8 +209,9 @@ def create_new(request):
 	bet.status      = 'Open'
 	bet.owner       = Player.objects.get(id__exact=player_id)
 	bet.save()
-	
-    return redirect('/bets')  
+	return redirect('/bets')
+
+    return render(request,'bets_create_modal.html', {}) 
     
     
 @login_required    
