@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h3>
+	Find existing bet
+  </h3>
+ </div>  
+
+<div class="modal-body" id="utility_body">
+	<form action="/bets" method="POST">
+	    {% csrf_token %}
+		<label for="bet_id">Bet id <input class="input-mini" type="text" id="bet_id" type="text" name="bet_id"></label>
+		<input type="submit" name="action" value="Find">
+	</form>
+</div>
