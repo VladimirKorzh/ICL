@@ -12,7 +12,7 @@
 		<li class="">&nbsp;</li>
 		<li><a href="/stacks/voice/{{profile.current_stack}}"><i class="icon-headphones"></i> {% trans "Join my stack channel" %}</a></li>
 		<li><a href="/stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Join flood channel" %}</a></li>
-		<li><a href="/stacks/voice/Flood"><i class="icon-headphones"></i> {% trans "Join AFK channel" %}</a></li>
+		<li><a href="/stacks/voice/AFK"><i class="icon-headphones"></i> {% trans "Join AFK channel" %}</a></li>
 		<li class="">&nbsp;</li>
  		<li><a class="" href="/stacks/kick_afk"><i class="icon-remove"></i> Kick afk people</a></li>  
 		<li><a class="" href="/stacks/delete_empty"><i class="icon-remove"></i> Delete empty stacks</a></li>  		

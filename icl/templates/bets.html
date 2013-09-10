@@ -1,48 +1,30 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block body %}
-  <p class="text-center">
-      This part of website is currently under redesign
-  </p>
-<!--<div class="container_12">
-	<div class="grid_4" id="create">
-	    <form action="/bets/create_new/" method="POST">{% csrf_token %}
-		<table>
-		<tr><th><label for="rarity">Rarity</label></th><th><label for="amount">Amount</label></th><th>Actions</th></tr>
-		<tr><td>
-		<select id="rarity" name="rarity">  
-		    <option value="Common">Common</option>  
-		    <option value="Uncommon">Uncommon</option>  
-		    <option value="Rare">Rare</option>  
-		</select></td>		    
-		<td><select id="amount" name="amount">  
-		    <option value="1">1</option>  
-		    <option value="2">2</option>  
-		    <option value="3">3</option>  
-		    <option value="4">4</option> 
-		</select></td>
-		<td>
-		<input type="submit" name="action" value="Create">
-		</td>
-		</tr>
-		</table>
-	    </form>
-	</div>
+
+  
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->  
+
 	
-	<div class="grid_4" id="find">
-	    <form action="/bets" method="POST">
-		{% csrf_token %}
-		<table>
-		    <tr><th>Id</th><th>Actions</th></tr>
-		    <tr><td><input id="bet_id" type="text" name="bet_id"></td>
-		    <td><input type="submit" name="action" value="Find"></td></tr>		    
-		</table>
-	    </form>
-	</div>
-	
-	{% if results %}
-	    <div class="grid_12" id="results">
-	    &nbsp; 
+	  <div class="row">
+	    <div class="span3">
+		<ul id="actionsmenu" class="nav nav-list affix sidenav">
+		
+		    <li><a class="" href="/bets/create"><i class="icon-list"></i> Create new bet</a></li>  
+		    <li><a class="" href="/bets/find"><i class="icon-remove"></i> Find bet</a></li>  	  
+		    <li class="">&nbsp;</li>
+
+		    {% if message %}  
+		      <li><div class="alert alert-info alert-message">      
+		      {{ message }}
+		      </div></li>
+		    {% endif %}
+		</ul>     
+	    </div>
+	    <div class="span9" id="results">
+		    &nbsp; 
+		{% if results %}
 		    <table>
 			  <tr><th>Id</th><th>Type</th><th>Amount</th><th>Status</th><th>Result</th><th>Side A</th><th>Side B</th><th>Owner</th><th>Actions</th></tr>
 			{% for bet in results %}      
@@ -105,9 +87,13 @@
 			</tr>
 			{% endfor %}
 		    </table>
-	    </div>	
-	{% endif %}
-	
-	<div class="clear"></div>
-</div> <!-- end of container_12 -->
+	      {% else %}
+		<p> Nothing to display here </p>
+	      {% endif %}
+
+	</div>	 
+      </div>      
+  </div> <!-- END ROW 12 -->
+</div> <!-- END CONTAINER -->    
+
 {% endblock body %}
