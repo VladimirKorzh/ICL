@@ -14,7 +14,7 @@ def main(request, msg=''):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')     
   
-  data = {'profile': Player.objects.get(uid=steamid),
+  data = {'profile': Player.objects.get(uid__exact=steamid),
 	  'stacks' : Stack.objects.all(),
 	  }
 	  
@@ -66,7 +66,7 @@ def voice(request, channel_name=''):
   if channel_name != '':
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')  
-    username = Player.objects.get(uid=steamid).mumble_nickname
+    username = Player.objects.get(uid__exact=steamid).mumble_nickname
     
     mumble = MumbleWrapper.ICLMumble()
     if mumble.getUserObj(username):
@@ -85,7 +85,7 @@ def voice(request, channel_name=''):
 def join(request, stack_name, role):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
-  data = {'profile': Player.objects.get(uid=steamid)}    
+  data = {'profile': Player.objects.get(uid__exact=steamid)}    
   
   message = ''
   
@@ -129,7 +129,7 @@ def join(request, stack_name, role):
 def leave_current(request):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
-  player      = Player.objects.get(uid=steamid) 
+  player      = Player.objects.get(uid__exact=steamid) 
   
   if player.current_stack != '':
     print player.nickname, 'is leaving his current stack', player.current_stack
@@ -143,7 +143,7 @@ def leave_current(request):
 def leave(request, stack_name, redirect_after=True):
   social_auth = request.user.social_auth.get(provider='steam')
   steamid     = social_auth.extra_data.get('steamid')
-  player = Player.objects.get(uid=steamid)      
+  player = Player.objects.get(uid__exact=steamid)      
   message = ''
     
   print 'Checking if stack exists'
