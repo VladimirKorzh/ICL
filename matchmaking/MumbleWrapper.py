@@ -85,13 +85,7 @@ class ICLMumble():
     if channel and user:
       user.channel = channel.id
       self.server.setState(user)          
-      
-      
-      
-      
-      
-      
-      
+
   #def get_info(self):
 	#result = []
 
