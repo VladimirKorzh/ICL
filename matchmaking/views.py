@@ -45,7 +45,7 @@ def help(request, topic):
 def escape_username(nickname):
     # escapes weird characters in player username and returns quoted string
     # it produces %D0%AF%D0%99%D0%9A%D0%90 string which can be read by mubmle url protocol                
-    # checked that is works for as weird nicknames as КФ!@#$%^&*()as
+    # checked that is works for as weird nicknames as Rus(K,F)!@#$%^&*()as
     escape = re.compile(ur'[^\w]',re.UNICODE)
     result = escape.sub('', unicode(nickname))
     return quote ( result.encode('utf8') )  
