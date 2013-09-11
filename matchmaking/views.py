@@ -62,7 +62,10 @@ def login(request):
     player.avatar   = social_auth.extra_data.get('avatar')
     # first we cast players name into utf to get a valid quote on their name
     # it produces %D0%AF%D0%99%D0%9A%D0%90 string which can be read by mubmle url protocol    
-    player.mumble_nickname = quote ( repr(personaname).replace("'","") .decode('utf-8').encode('utf-8') )
+    s = repr(personaname).replace("'","")
+    if s.startswith('u'):
+      s = s[1:]
+    player.mumble_nickname = quote ( s.decode('utf-8').encode('utf-8') )
 
         
     player.save()
