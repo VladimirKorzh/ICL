@@ -42,7 +42,13 @@ def help(request, topic):
   
   
   
-  
+def escape_username(nickname):
+    # escapes weird characters in player username and returns quoted string
+    # it produces %D0%AF%D0%99%D0%9A%D0%90 string which can be read by mubmle url protocol                
+    # checked that is works for as weird nicknames as КФ!@#$%^&*()as
+    escape = re.compile(ur'[^\w]',re.UNICODE)
+    result = escape.sub('', unicode(nickname))
+    return quote ( result.encode('utf8') )  
   
   
 @login_required  
@@ -58,18 +64,12 @@ def login(request):
       
     player.uid      = steamid
     player.nickname = personaname
-    
     player.avatar   = social_auth.extra_data.get('avatar')
-    # first we cast players name into utf to get a valid quote on their name
-    # it produces %D0%AF%D0%99%D0%9A%D0%90 string which can be read by mubmle url protocol    
-    s = repr(personaname).replace("'","")
-    if s.startswith('u'):
-      s = s[1:]
-    player.mumble_nickname = quote ( s.decode('utf-8').encode('utf-8') )
+    player.mumble_nickname = escape_username(personaname)
 
-        
     player.save()
     print "Player logged in:", player.nickname
+    print "Mumble nickname:", player.mumble_nickname
     
     return redirect('/stacks')
  
