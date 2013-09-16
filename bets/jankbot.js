@@ -161,9 +161,9 @@ bot.on('sessionStart', function(otherClient) {
             steamTrade.loadInventory(570, 2, function(inv) {      
               
             // find items that match 
-            rare = inv.filter(acceptable(item, "Rare"));   
-            common = inv.filter(acceptable(item, "Common"));
-            uncommon = inv.filter(acceptable(item, "Uncommon"));
+            rare = inv.filter(function(item){ return acceptable(item, "Rare") });   
+            common = inv.filter(function(item){ return acceptable(item, "Common") });
+            uncommon = inv.filter(function(item){ return acceptable(item, "Uncommon") });
             
             steamTrade.addItems(rare.slice(0, current_task.rare));
             steamTrade.addItems(common.slice(0, current_task.common));
@@ -257,7 +257,8 @@ steamTrade.on('ready', function() {
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
     console.log('End trade event', result);
-    if (result === 'complete') {	
+    if (result === 'complete') {
+      
       // marking the transaction in db
       statement = "UPDATE matchmaking_botrequest SET status=1 WHERE player_id="+current_task.player_id; 
       
@@ -266,20 +267,65 @@ steamTrade.on('end', function(result, items) {
       });
       console.log('db updated');
       
-      rare = trade_window_items.filter(acceptable(item, "Rare"));   
-      common = trade_window_items.filter(acceptable(item, "Common"));
-      uncommon = trade_window_items.filter(acceptable(item, "Uncommon"));      
+      if (current_task.action == 0) {
+          rare = trade_window_items.filter(function(item){ return acceptable(item, "Rare") });   
+          common = trade_window_items.filter(function(item){ return acceptable(item, "Common") });
+          uncommon = trade_window_items.filter(function(item){ return acceptable(item, "Uncommon") });      
+          
+          console.log('rare:', rare.length);
+          console.log('common:', common.length);
+          console.log('uncommon:', uncommon.length);
+          
+          
+          statement = "UPDATE matchmaking_playerinventory SET common = common+"+common.length+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+
+          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon+"+uncommon.length+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+                    
+          statement = "UPDATE matchmaking_playerinventory SET rare = rare+"+rare.length+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+                    
+          console.log('inventory values updated');
+      }
       
-      console.log('rare:', rare.length);
-      console.log('common:', common.length);
-      console.log('uncommon:', uncommon.length);
+      if (current_task.action == 1) {
+          statement = "UPDATE matchmaking_playerinventory SET common = common-"+current_task.common+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+
+          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon-"+current_task.uncommon+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+                    
+          statement = "UPDATE matchmaking_playerinventory SET rare = rare-"+current_task.rare+" WHERE id="+current_task.inv_id;
+          
+          db.run(statement, function(err){
+            if (err) throw err;
+          });          
+                    
+          console.log('inventory values updated');          
+      }
+      
         
+      keep_or_remove(current_task.uid)
       // empty the task
       current_task = '';  
       time_lastping = '';
     }     
-    
-    keep_or_remove(current_task.uid)
 });
 
 function check_request(uid){
@@ -292,23 +338,42 @@ function check_request(uid){
     db.each(statement, function(err, row){
         if (err) throw err;  
         player_id = row.id; 
-        statement = "SELECT player.id as player_id, inventory.common as common, inventory.uncommon as uncommon, inventory.rare as rare, request.action as action FROM matchmaking_botrequest as request, matchmaking_playerinventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.fullfilled = 0 AND inventory.id = player.inventory_id";
+        statement = "SELECT player.id as player_id, inventory.common as common, inventory.uncommon as uncommon, inventory.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_playerinventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
 
-        db.each(statement, function(err, request){
+        
+        db.all(statement, function (err, rows) {
             if (err) throw err;
-            console.log('Request found', request);
-            actions.push({         
-                        "uid":       uid,
-                        "player_id": request.player_id,
-                        "action":    request.action,
-                        "rare":      request.rare,
-                        "common":    request.common,
-                        "uncommon":  request.uncommon                         
-                        });          
 
-        }); // end db.each requests
-        // decide if we need to keep this guy
-        keep_or_remove(uid);
+            if (rows.length == 0) {
+                console.log('Request not found');
+            }
+            else {
+                rows.forEach( function(request) {
+                    console.log('Request found', request);
+                    actions.push({         
+                                "uid":       uid,
+                                "player_id": request.player_id,
+                                "inv_id":    request.inv_id,
+                                "action":    request.action,
+                                "rare":      request.rare,
+                                "common":    request.common,
+                                "uncommon":  request.uncommon                         
+                                });          
+              }); // end for each row that we've found    
+            } // end if found rows 
+            keep_or_remove(uid);
+        }); // end db.all           
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     }); // end for each player_id row  
 } // end check_request
 
@@ -345,6 +410,7 @@ function tick(){
       if ((time_now - time_lastping) > 30) {
           console.log('task takes too much time, cancelling it');
           keep_or_remove(current_task.uid);
+          steamTrade.cancel()
           current_task = '';
       }
   }
