@@ -129,16 +129,17 @@ function acceptable(item, rarity) {
           }
       });
       
+      is_tradable = item.tradable;
+      
       // return true tells filter funciton that this item
       // matches our needs.
-      if (correct_item == true && correct_rariry == true) {
+      if (correct_item == true && correct_rariry == true && is_tradable == true) {
           return true;
       }
       else {
           return false;
       }
 }
-
 
 // Gets called when trade window appears on the screen
 // Here we place items that award to the player
@@ -149,41 +150,38 @@ bot.on('sessionStart', function(otherClient) {
     console.log('sessionStart with', otherClient);
 
     // structure to hold items offered by trade partner
-    trade_window_items = [];  
-    
-    user_placed_common   = 0;
-    user_placed_uncommon = 0;
-    user_placed_rare     = 0;
+    their_offer = [];  
+    our_proposition = [];
     
     steamTrade.open(otherClient, function(){
         if (current_task.action == 1) {
             console.log('Giving items back to the player');
             steamTrade.loadInventory(570, 2, function(inv) {      
-              
-            // find items that match 
-            rare = inv.filter(function(item){ return acceptable(item, "Rare") });   
-            common = inv.filter(function(item){ return acceptable(item, "Common") });
-            uncommon = inv.filter(function(item){ return acceptable(item, "Uncommon") });
-            
-            steamTrade.addItems(rare.slice(0, current_task.rare));
-            steamTrade.addItems(common.slice(0, current_task.common));
-            steamTrade.addItems(uncommon.slice(0, current_task.uncommon));
-        });
-    }
-    
-    if (current_task.type == 0){
-        // if our task is to collect items than we simply wait for the user
-        // to place them in the trade window and react accordingly
-        console.log('Collecting items from player');
-    }
+                // find items that match 
+                rare     = inv.filter(function(item){ return acceptable(item, "Rare") });   
+                common   = inv.filter(function(item){ return acceptable(item, "Common") });
+                uncommon = inv.filter(function(item){ return acceptable(item, "Uncommon") });
+                
+                our_proposition = our_proposition.concat( rare.slice(0, current_task.rare) );
+                our_proposition = our_proposition.concat( uncommon.slice(0,current_task.uncommon) );
+                our_proposition = our_proposition.concat( common.slice(0, current_task.common) );
+                
+                steamTrade.addItems(our_proposition);
+            });
+        }   
+        
+        if (current_task.type == 0){
+            // if our task is to collect items than we simply wait for the user
+            // to place them in the trade window and react accordingly
+            console.log('Collecting items from player');
+        }
     });
+    
+    if ('undefined' === typeof current_task.player_id) {
+      steamTrade.cancel();
+      return;
+    }    
 });
-
-
-
-
-
-
 
 
 steamTrade.on('offerChanged', function(added, item) {
@@ -223,7 +221,7 @@ steamTrade.on('offerChanged', function(added, item) {
         
     // if the user has added a valid item. 
     if (added) {
-        trade_window_items.push(item);    	      
+        their_offer.push(item);    	      
         msg = message + ' is accepted.';
         console.log(msg);
         bot.sendMessage(client, msg, Steam.EChatEntryType.ChatMsg);
@@ -232,8 +230,8 @@ steamTrade.on('offerChanged', function(added, item) {
     // if the user has removed a valid item
     if (!added) {
         // find that item in our structure and remove it
-        var index = trade_window_items.indexOf(item);    
-        trade_window_items.splice(index, 1);
+        var index = their_offer.indexOf(item);    
+        their_offer.splice(index, 1);
     }
 });
 
@@ -241,10 +239,13 @@ steamTrade.on('offerChanged', function(added, item) {
 // This function gets called when the user presses the ready button
 // here we check that the deal is valid.
 steamTrade.on('ready', function() {      
+      time_lastping = new Date().getTime() / 1000;  
       steamTrade.ready(function() {
           console.log('confirming');
+          time_lastping = new Date().getTime() / 1000;
           steamTrade.confirm( function (){
               console.log("Pressing 'Make Trade' button.");	  
+              time_lastping = new Date().getTime() / 1000;
           });
       });            
 });
@@ -256,7 +257,9 @@ steamTrade.on('ready', function() {
 // result variable is supposed to hold the string representing
 // the status of the trade.
 steamTrade.on('end', function(result, items) {
+    time_lastping = new Date().getTime() / 1000;
     console.log('End trade event', result);
+       
     if (result === 'complete') {
       
       // marking the transaction in db
@@ -268,9 +271,9 @@ steamTrade.on('end', function(result, items) {
       console.log('db updated');
       
       if (current_task.action == 0) {
-          rare = trade_window_items.filter(function(item){ return acceptable(item, "Rare") });   
-          common = trade_window_items.filter(function(item){ return acceptable(item, "Common") });
-          uncommon = trade_window_items.filter(function(item){ return acceptable(item, "Uncommon") });      
+          rare     = their_offer.filter(function(item){ return acceptable(item, "Rare") });   
+          common   = their_offer.filter(function(item){ return acceptable(item, "Common") });
+          uncommon = their_offer.filter(function(item){ return acceptable(item, "Uncommon") });      
           
           console.log('rare:', rare.length);
           console.log('common:', common.length);
@@ -299,19 +302,27 @@ steamTrade.on('end', function(result, items) {
       }
       
       if (current_task.action == 1) {
-          statement = "UPDATE matchmaking_playerinventory SET common = common-"+current_task.common+" WHERE id="+current_task.inv_id;
+          rare     = our_proposition.filter(function(item){ return acceptable(item, "Rare") });   
+          common   = our_proposition.filter(function(item){ return acceptable(item, "Common") });
+          uncommon = our_proposition.filter(function(item){ return acceptable(item, "Uncommon") });      
+          
+          console.log('rare:', rare.length);
+          console.log('common:', common.length);
+          console.log('uncommon:', uncommon.length);        
+        
+          statement = "UPDATE matchmaking_playerinventory SET common = common-"+common.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
 
-          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon-"+current_task.uncommon+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon-"+uncommon.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
                     
-          statement = "UPDATE matchmaking_playerinventory SET rare = rare-"+current_task.rare+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_playerinventory SET rare = rare-"+rare.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
@@ -338,7 +349,7 @@ function check_request(uid){
     db.each(statement, function(err, row){
         if (err) throw err;  
         player_id = row.id; 
-        statement = "SELECT player.id as player_id, inventory.common as common, inventory.uncommon as uncommon, inventory.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_playerinventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
+        statement = "SELECT player.id as player_id, request.common as common, request.uncommon as uncommon, request.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_playerinventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
 
         
         db.all(statement, function (err, rows) {
@@ -363,16 +374,6 @@ function check_request(uid){
             } // end if found rows 
             keep_or_remove(uid);
         }); // end db.all           
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
     }); // end for each player_id row  
 } // end check_request
@@ -409,8 +410,8 @@ function tick(){
       time_now = new Date().getTime() / 1000;      
       if ((time_now - time_lastping) > 30) {
           console.log('task takes too much time, cancelling it');
+          steamTrade.cancel();
           keep_or_remove(current_task.uid);
-          steamTrade.cancel()
           current_task = '';
       }
   }

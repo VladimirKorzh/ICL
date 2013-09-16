@@ -28,7 +28,7 @@ class PlayerRating(models.Model):
     matches_pts = models.PositiveSmallIntegerField(default=0)
     
     # last time when this table was refreshed
-    last_updated = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now=True)        
     
 class Player(models.Model):
     # general player information that we get from valve
@@ -50,16 +50,6 @@ class Player(models.Model):
     rating    = models.ForeignKey(PlayerRating)
 
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 class BotRequest(models.Model):
     # player that requested interraction
     player = models.ForeignKey(Player)
@@ -69,6 +59,11 @@ class BotRequest(models.Model):
     
     # Are we done? 
     status = models.BooleanField(default=False)
+    
+    # how many items does the person want to cash
+    common = models.PositiveSmallIntegerField(default=0)
+    uncommon = models.PositiveSmallIntegerField(default=0)
+    rare = models.PositiveSmallIntegerField(default=0)
     
     # when was that request finished
     last_updated = models.DateTimeField(auto_now=True)
