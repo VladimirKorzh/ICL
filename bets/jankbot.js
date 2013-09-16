@@ -273,7 +273,7 @@ steamTrade.on('end', function(result, items) {
       console.log('rare:', rare.length);
       console.log('common:', common.length);
       console.log('uncommon:', uncommon.length);
-      
+        
       // empty the task
       current_task = '';  
       time_lastping = '';

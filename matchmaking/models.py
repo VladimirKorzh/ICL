@@ -2,9 +2,9 @@ from django.db import models
 
 class PlayerInventory(models.Model):
     # used to store items for betting and tournaments
-    common   = models.DecimalField(max_digits=5, decimal_places=2)
-    uncommon = models.DecimalField(max_digits=5, decimal_places=2)
-    rare     = models.DecimalField(max_digits=5, decimal_places=2)
+    common   = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    uncommon = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    rare     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
 class PlayerRating(models.Model):
     # total games on this account

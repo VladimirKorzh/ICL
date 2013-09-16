@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from matchmaking.models import Player
+from matchmaking.models import Player, PlayerInventory, PlayerRating
 
 
 from urllib import quote
@@ -58,9 +58,15 @@ def login(request):
     personaname = social_auth.extra_data.get('personaname')
 
     try:
-      player = Player.objects.get(uid=steamid)
+        player = Player.objects.get(uid=steamid)
     except Player.DoesNotExist:
-      player = Player()
+        player = Player()
+        inv = PlayerInventory()
+        inv.save()
+        rating = PlayerRating()
+        rating.save()
+        player.inventory = inv
+        player.rating    = rating
       
     player.uid      = steamid
     player.nickname = personaname
@@ -68,8 +74,7 @@ def login(request):
     player.mumble_nickname = escape_username(personaname)
 
     player.save()
-    print "Player logged in:", player.nickname
-    print "Mumble nickname:", player.mumble_nickname
+    print "Player logged in:", player.nickname, "Mumble nickname:", player.mumble_nickname
     
     return redirect('/stacks')
  
@@ -81,7 +86,7 @@ def profile(request, profile_id):
     steamid     = social_auth.extra_data.get('steamid')  
     
     data = {'pl': Player.objects.get(id__exact=profile_id),
-	    'profile': Player.objects.get(uid=steamid)
+            'profile': Player.objects.get(uid=steamid)
 	    }
     
     print data['profile'].nickname,' is looking at profile ', data['pl'].nickname
@@ -94,26 +99,32 @@ def refresh(request):
     social_auth = request.user.social_auth.get(provider='steam')
     steamid     = social_auth.extra_data.get('steamid')    
 
-    player_obj = Player.objects.get(uid=steamid)
+    player_obj    = Player.objects.get(uid=steamid)
+    player_rating = player_obj.rating
       
     if request.method != 'POST':        
-      valveapi    = ValveApiWrapper.ValveApi()        
-      playerstats = valveapi.get_player_exp_from_steamid(steamid)    
-      player_obj.exp             = playerstats['exp']
-      player_obj.nickname        = playerstats['nickname']
-      player_obj.exp_n_games     = playerstats['exp_n_games']
-      player_obj.exp_h_games     = playerstats['exp_h_games']
-      player_obj.exp_vh_games    = playerstats['exp_vh_games']
-      player_obj.exp_total_games = playerstats['total_games']
-      player_obj.extra_exp_pts   = playerstats['extra_exp_pts']    
-      print 'Refreshing stats for player', player_obj.nickname
+        valveapi    = ValveApiWrapper.ValveApi()        
+        playerstats = valveapi.get_player_exp_from_steamid(steamid)    
+        player_obj.nickname        = playerstats['nickname']
+        
+        player_rating.skillrating = playerstats['exp']
+        player_rating.normal      = playerstats['exp_n_games']
+        player_rating.high        = playerstats['exp_h_games']
+        player_rating.veryhigh    = playerstats['exp_vh_games']
+        player_rating.month_games = playerstats['total_games']
+        
+        player_rating.extra_pts   = playerstats['extra_exp_pts']    
+        
+        print 'Refreshed stats for player', player_obj.nickname
+        player_rating.save()
+        player_obj.save()
     
     if request.method == 'POST':
-      print 'Setting new player roles', request.POST['pri_role'], request.POST['alt_role'], 'for player', player_obj.nickname
-      player_obj.pri_role = request.POST['pri_role']
-      player_obj.alt_role = request.POST['alt_role']
+        print 'Setting new player roles', request.POST['pri_role'], request.POST['alt_role'], 'for player', player_obj.nickname
+        player_obj.pri_role = request.POST['pri_role']
+        player_obj.alt_role = request.POST['alt_role']    
+        player_obj.save()
     
-    player_obj.save()
     
     return redirect('/stacks') 
     
