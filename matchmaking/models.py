@@ -1,23 +1,10 @@
 from django.db import models
 
-class Player(models.Model):
-    # general player information that we get from valve
-    uid      = models.CharField(max_length=40)
-    nickname = models.CharField(max_length=80)
-    
-    # a nickname that could be used in mumble
-    mumble_nickname = models.CharField(max_length=80)
-    avatar          = models.CharField(max_length=120)
-
-    # player defined roles   # 0 - Not set
-    # 1 - Carry      # 2 - SoloMid
-    # 3 - Offlane    # 4,5 - Support
-    pri_role = models.PositiveSmallIntegerField(default=0)
-    alt_role = models.PositiveSmallIntegerField(default=0)
-
-    # pointers to various information structures
-    inventory = models.ForeignKey(PlayerInventory)
-    rating    = models.ForeignKey(PlayerRating)
+class PlayerInventory(models.Model):
+    # used to store items for betting and tournaments
+    common   = models.DecimalField(max_digits=5, decimal_places=2)
+    uncommon = models.DecimalField(max_digits=5, decimal_places=2)
+    rare     = models.DecimalField(max_digits=5, decimal_places=2)
 
 class PlayerRating(models.Model):
     # total games on this account
@@ -43,12 +30,36 @@ class PlayerRating(models.Model):
     # last time when this table was refreshed
     last_updated = models.DateTimeField(auto_now=True)
     
-class PlayerInventory(models.Model):
-    # used to store items for betting and tournaments
-    common   = models.DecimalField(max_digits=5, decimal_places=2)
-    uncommon = models.DecimalField(max_digits=5, decimal_places=2)
-    rare     = models.DecimalField(max_digits=5, decimal_places=2)
+class Player(models.Model):
+    # general player information that we get from valve
+    uid      = models.CharField(max_length=40)
+    nickname = models.CharField(max_length=80)
+    
+    # a nickname that could be used in mumble
+    mumble_nickname = models.CharField(max_length=80)
+    avatar          = models.CharField(max_length=120)
 
+    # player defined roles   # 0 - Not set
+    # 1 - Carry      # 2 - SoloMid
+    # 3 - Offlane    # 4,5 - Support
+    pri_role = models.PositiveSmallIntegerField(default=0)
+    alt_role = models.PositiveSmallIntegerField(default=0)
+
+    # pointers to various information structures
+    inventory = models.ForeignKey(PlayerInventory)
+    rating    = models.ForeignKey(PlayerRating)
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 class BotRequest(models.Model):
     # player that requested interraction
     player = models.ForeignKey(Player)
@@ -57,7 +68,7 @@ class BotRequest(models.Model):
     action = models.PositiveSmallIntegerField(default=0)
     
     # Are we done? 
-    fullfilled = models.BooleanField(default=False)
+    status = models.BooleanField(default=False)
     
     # when was that request finished
     last_updated = models.DateTimeField(auto_now=True)
@@ -70,83 +81,87 @@ class ValveApiCounts(models.Model):
 
 
 
+    
+    
+#class Tournament(models.Model):
+    ## a model that represents a tournament in db.
+    ## it holds all the information about the tournament,
+    ## its type and other meta information. 
+    
+    ## date\time of tournament start
+    #datetime = models.DateTimeField()
+
+    ## is the tournament free to enter
+    #entrycommon   = models.PositiveSmallIntegerField(default=0)
+    #entryuncommon = models.PositiveSmallIntegerField(default=0)
+    #entryrare     = models.PositiveSmallIntegerField(default=0)    
+    
+#class TournamentTeam(models.Model):
+    ## temporary team for the tournament
+    #tournament = models.ForeignKey(Tournament)
 
 
-class Tournament(models.Model):
-    # a model that represents a tournament in db.
-    # it holds all the information about the tournament,
-    # its type and other meta information. 
+ 
+#class PlayerParticipant(models.Model):
+    ## holds the information about the player-tournament relationships
+    ## basically holds all the registered players for tournament.
+    #player = models.ForeignKey(Player)  
+    #tournament = models.ForeignKey(Tournament)
     
-    # date\time of tournament start
-    datetime = models.DateTimeField()
+    ## auto created team for this player or a set of players
+    ## for this particular tournament
+    #team = models.ForeignKey(TournamentTeam)
+    
+    ## registration date\time
+    #last_updated = models.DateTimeField(auto_now=True)  
+ 
 
-    # is the tournament free to enter
-    entrycommon   = models.PositiveSmallIntegerField(default=0)
-    entryuncommon = models.PositiveSmallIntegerField(default=0)
-    entryrare     = models.PositiveSmallIntegerField(default=0)
  
-class PlayerParticipant(models.Model):
-    # holds the information about the player-tournament relationships
-    # basically holds all the registered players for tournament.
-    player = models.ForeignKey(Player)  
-    tournament = models.ForeignKey(Tournament)
+#class Match(models.Model):
+    ## a model that represents a match
+    ## it is responsible for holding passwords and pointers
+    ## to the teams.
     
-    # auto created team for this player or a set of players
-    # for this particular tournament
-    team = models.ForeignKey(TournamentTeam)
+    ## which tournament does this match belong to
+    #tournament = models.ForeignKey(Tournament, null=True)
     
-    # registration date\time
-    last_updated = models.DateTimeField(auto_now=True)  
- 
-class TournamentTeam(models.Model):
-    # temporary team for the tournament
-    tournament = models.ForeignKey(Tournament)
- 
-class Match(models.Model):
-    # a model that represents a match
-    # it is responsible for holding passwords and pointers
-    # to the teams.
-    
-    # which tournament does this match belong to
-    tournament = models.ForeignKey(Tournament, null=True)
-    
-    # round this match belongs to
-    round = models.PositiveSmallIntegerField(default=0)
+    ## round this match belongs to
+    #round = models.PositiveSmallIntegerField(default=0)
       
-    # who won the match # 0 - Not decided
-    # 1 - Side A won the match # 2 - Side B won the match
-    result = models.PositiveSmallIntegerField(default=0)
+    ## who won the match # 0 - Not decided
+    ## 1 - Side A won the match # 2 - Side B won the match
+    #result = models.PositiveSmallIntegerField(default=0)
         
-    # which teams participate in this match
-    sidea = models.ForeignKey(TournamentTeam)
-    sideb = models.ForeignKey(TournamentTeam)
+    ## which teams participate in this match
+    #sidea = models.ForeignKey(TournamentTeam)
+    #sideb = models.ForeignKey(TournamentTeam)
     
-    # started?
-    started = models.BooleanField(default=False)
+    ## started?
+    #started = models.BooleanField(default=False)
     
-    # lobby password
-    lobbypass = models.PositiveSmallIntegerField(default=0)
+    ## lobby password
+    #lobbypass = models.PositiveSmallIntegerField(default=0)
     
-    # passwords for both sides
-    sideapass = models.PositiveSmallIntegerField(default=0)
-    sidebpass = models.PositiveSmallIntegerField(default=0)  
+    ## passwords for both sides
+    #sideapass = models.PositiveSmallIntegerField(default=0)
+    #sidebpass = models.PositiveSmallIntegerField(default=0)  
     
-    # time this record was last modified, for rating purposes
-    last_updated = models.DateTimeField(auto_now=True)
+    ## time this record was last modified, for rating purposes
+    #last_updated = models.DateTimeField(auto_now=True)
     
-    # description for Show matches etc. if manually created
-    description = models.CharField(max_length=140,default="")
+    ## description for Show matches etc. if manually created
+    #description = models.CharField(max_length=140,default="")
  
- class PlayerBet(models.Model):
-    # which player made the bet
-    player = models.ForeignKey(Player)
+#class PlayerBet(models.Model):
+    ## which player made the bet
+    #player = models.ForeignKey(Player)
     
-    # which match is he betting on
-    match = models.ForeignKey(Match)
+    ## which match is he betting on
+    #match = models.ForeignKey(Match)
       
-    common   = models.PositiveSmallIntegerField(default=0)
-    uncommon = models.PositiveSmallIntegerField(default=0)
-    rare     = models.PositiveSmallIntegerField(default=0)
+    #common   = models.PositiveSmallIntegerField(default=0)
+    #uncommon = models.PositiveSmallIntegerField(default=0)
+    #rare     = models.PositiveSmallIntegerField(default=0)
 
  
  
