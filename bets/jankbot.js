@@ -10,7 +10,6 @@ var sqlite3    = require("sqlite3").verbose();
 var USERNAME = 'korzhkorzhkorzh'
 var PASSWORD = '228121389'
 var DISPLAY_NAME = 'ICL.bot'
-var DICTIONARY_FILE = 'english.json'
 
 // create instances of bot and trade APIs 
 // setup db connection as well
@@ -284,6 +283,26 @@ process.on( 'SIGINT', function() {
   db.close();
   process.exit( )
 });
+
+function check_request(uid){
+  console.log('Checking for user request', uid);
+  
+  // find this player in database
+  statement = "SELECT player.id as id FROM matchmaking_player as player WHERE player.uid="+uid;
+  player_id = 0;
+  
+  db.each(statement, function(err, row){
+      if (err) throw err;  
+      player_id = row.id; 
+      statement = "SELECT request.action as action FROM matchmaking_BotRequest AS request WHERE request.player_id="+player_id+" AND fullfilled = 0";
+
+      db.all(statement, function(err, rows){
+        if (rows.length == 0) {
+          console.log('No requests from this user has been found');
+        }    
+      }
+}
+
 
 
 function check_db(uid) {

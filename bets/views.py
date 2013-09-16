@@ -76,7 +76,7 @@ def close_bet(request, bet_id):
 	  
 	  # Generate passwords for both sides
 	  bet2close.sideapass = randint(1000, 9999)
-	  bet2close.sidebpass = randint(1000, 9999)	
+	  bet2close.sidebpass = randint(1000, 9999)
 	  bet2close.save()
 	
     return redirect('/bets')	
@@ -202,14 +202,14 @@ def create_new(request):
     # only allow creation of new bets on POST requests
     # otherwise skip the whole thing.
     if request.method == 'POST':
-	bet = Bet()
-	bet.amount      = request.POST['amount']
-	bet.rarity      = request.POST['rarity']
-	bet.result      = '?'
-	bet.status      = 'Open'
-	bet.owner       = Player.objects.get(id__exact=player_id)
-	bet.save()
-	return redirect('/bets')
+      bet = Bet()
+      bet.amount      = request.POST['amount']
+      bet.rarity      = request.POST['rarity']
+      bet.result      = '?'
+      bet.status      = 'Open'
+      bet.owner       = Player.objects.get(id__exact=player_id)
+      bet.save()
+      return redirect('/bets')
 
     return render(request,'bets_create_modal.html', {}) 
     
