@@ -2,7 +2,6 @@
 // Import modules that we are using
 var fs         = require('fs');
 var Steam      = require('steam');
-var minimap    = require('minimap');
 var SteamTrade = require('steam-trade'); 
 var sqlite3    = require("sqlite3").verbose();
 
@@ -259,11 +258,16 @@ steamTrade.on('ready', function() {
 steamTrade.on('end', function(result, items) {
     time_lastping = new Date().getTime() / 1000;
     console.log('End trade event', result);
-       
+    if (result === 'cancelled'){
+      statement = "UPDATE matchmaking_botrequest SET status=2 WHERE id="+current_task.request_id+" AND player_id="+current_task.player_id; 
+      db.run(statement, function(err){
+        if (err) throw err;
+      });      
+    }
     if (result === 'complete') {
       
       // marking the transaction in db
-      statement = "UPDATE matchmaking_botrequest SET status=1 WHERE player_id="+current_task.player_id; 
+      statement = "UPDATE matchmaking_botrequest SET status=1 WHERE id="+current_task.request_id+" AND player_id="+current_task.player_id; 
       
       db.run(statement, function(err){
         if (err) throw err;
@@ -349,7 +353,7 @@ function check_request(uid){
     db.each(statement, function(err, row){
         if (err) throw err;  
         player_id = row.id; 
-        statement = "SELECT player.id as player_id, request.common as common, request.uncommon as uncommon, request.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_inventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
+        statement = "SELECT player.id as player_id, request.id as request_id, request.common as common, request.uncommon as uncommon, request.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_inventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
 
         
         db.all(statement, function (err, rows) {
@@ -363,6 +367,7 @@ function check_request(uid){
                     console.log('Request found', request);
                     actions.push({         
                                 "uid":       uid,
+                                "request_id": request.request_id,
                                 "player_id": request.player_id,
                                 "inv_id":    request.inv_id,
                                 "action":    request.action,
