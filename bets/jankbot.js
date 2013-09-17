@@ -280,19 +280,19 @@ steamTrade.on('end', function(result, items) {
           console.log('uncommon:', uncommon.length);
           
           
-          statement = "UPDATE matchmaking_playerinventory SET common = common+"+common.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET common = common+"+common.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
 
-          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon+"+uncommon.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET uncommon = uncommon+"+uncommon.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
                     
-          statement = "UPDATE matchmaking_playerinventory SET rare = rare+"+rare.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET rare = rare+"+rare.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
@@ -310,19 +310,19 @@ steamTrade.on('end', function(result, items) {
           console.log('common:', common.length);
           console.log('uncommon:', uncommon.length);        
         
-          statement = "UPDATE matchmaking_playerinventory SET common = common-"+common.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET common = common-"+common.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
 
-          statement = "UPDATE matchmaking_playerinventory SET uncommon = uncommon-"+uncommon.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET uncommon = uncommon-"+uncommon.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
           });          
                     
-          statement = "UPDATE matchmaking_playerinventory SET rare = rare-"+rare.length+" WHERE id="+current_task.inv_id;
+          statement = "UPDATE matchmaking_inventory SET rare = rare-"+rare.length+" WHERE id="+current_task.inv_id;
           
           db.run(statement, function(err){
             if (err) throw err;
@@ -349,7 +349,7 @@ function check_request(uid){
     db.each(statement, function(err, row){
         if (err) throw err;  
         player_id = row.id; 
-        statement = "SELECT player.id as player_id, request.common as common, request.uncommon as uncommon, request.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_playerinventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
+        statement = "SELECT player.id as player_id, request.common as common, request.uncommon as uncommon, request.rare as rare, request.action as action, inventory.id as inv_id FROM matchmaking_botrequest as request, matchmaking_inventory AS inventory, matchmaking_player as player WHERE request.player_id="+player_id+" AND player.id="+player_id+" AND request.status = 0 AND inventory.id = player.inventory_id";
 
         
         db.all(statement, function (err, rows) {

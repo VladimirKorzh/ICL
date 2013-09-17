@@ -14,16 +14,11 @@ class ValveApi():
     self.apiurls   = {}
     self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
+    self.apiurls['GetHeroList'] = 'https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?'
     
   def query_api(self, api2query, conditions):
     apiurl =  api2query       
-    finalurl = apiurl+self.apikey+conditions    
-    
-    cachekey = datetime.date.today().isoformat() + apiurl + conditions
-    
-    if '&date_min=' in cachekey:
-      cachekey = cachekey[:-len('date_min=1374442863')]
-
+    finalurl = apiurl+self.apikey+conditions        
     response = None
 
     try:
@@ -34,7 +29,6 @@ class ValveApi():
       obj.amount = 0
       
     if obj.amount < 100000:
-      #print 'Api request', finalurl    	
       response = json.load(urllib2.urlopen(finalurl))      
       obj.amount += 1
     else:
@@ -49,11 +43,22 @@ class ValveApi():
       steamid = '&steamids=' + str(userid)      
       response = self.query_api(self.apiurls['GetPlayerSummaries'], steamid)
       personaname = None
+      
       if response != None:
-	personaname = response['response']['players'][0]['personaname']
+          personaname = response['response']['players'][0]['personaname']
+          
       return personaname
 
- 
+  def get_hero_list(self):
+    conditions = '&language=en_us'
+    response = self.query_api(self.apiurls['GetMatchHistory'], conditions)
+    hero_list = []
+    
+    for each in response['result']['heroes']:
+        hero_list.append(each['localized_name'])
+      
+    return hero_list  
+    
   def get_player_exp_from_steamid(self,userid):
     amount_of_games    = {}
     amount_of_games[1] = 0
@@ -108,7 +113,7 @@ class ValveApi():
 		    'total_games': total_games,
 		    'extra_exp_pts': pts}
 		    
-    print playerstats
+    #print playerstats
     return playerstats
 
     

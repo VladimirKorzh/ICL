@@ -4,43 +4,36 @@ from django.contrib.auth.decorators import login_required
 
 from matchmaking.models import Player, PlayerInventory, PlayerRating
 
-
 from urllib import quote
 import re
 
-import mm
-
-import ValveApiWrapper
-
+import ValveApiWrapper, mm
 
 def landing(request):
-  if not request.user.is_authenticated():
-      return redirect('/intro')
-  else:
-      # fix for people reloading page after update has been released.
-      return login(request)
+    if not request.user.is_authenticated():
+        return redirect('/intro')
+    else:
+        # fix for people reloading page after update has been released.
+        return login(request)
 
 def intro(request):
-  data = {}
-  if request.user.is_authenticated():
-    social_auth = request.user.social_auth.get(provider='steam')
-    steamid     = social_auth.extra_data.get('steamid')     
-    data['profile'] = Player.objects.get(uid=steamid) 
-  
-  return render(request, 'intro.html', data)  
-
-  
-def help(request, topic):
-  data = {}
-  if request.user.is_authenticated():
-    social_auth = request.user.social_auth.get(provider='steam')
-    steamid     = social_auth.extra_data.get('steamid')     
-    data['profile'] = Player.objects.get(uid=steamid) 
+    data = {}
+    if request.user.is_authenticated():
+      social_auth = request.user.social_auth.get(provider='steam')
+      steamid     = social_auth.extra_data.get('steamid')     
+      data['profile'] = Player.objects.get(uid=steamid) 
     
-  filename = str(topic) + '.html'
-  return render(request, filename, data)
-  
-  
+    return render(request, 'intro.html', data)  
+
+def help(request, topic):
+    data = {}
+    if request.user.is_authenticated():
+      social_auth = request.user.social_auth.get(provider='steam')
+      steamid     = social_auth.extra_data.get('steamid')     
+      data['profile'] = Player.objects.get(uid=steamid) 
+      
+    filename = str(topic) + '.html'
+    return render(request, filename, data)
   
 def escape_username(nickname):
     # escapes weird characters in player username and returns quoted string
@@ -49,7 +42,6 @@ def escape_username(nickname):
     escape = re.compile(ur'[^\w]',re.UNICODE)
     result = escape.sub('', unicode(nickname))
     return quote ( result.encode('utf8') )  
-  
   
 @login_required  
 def login(request):
@@ -78,8 +70,6 @@ def login(request):
     
     return redirect('/stacks')
  
- 
- 
 @login_required
 def profile(request, profile_id):
     social_auth = request.user.social_auth.get(provider='steam')
@@ -93,7 +83,6 @@ def profile(request, profile_id):
     
     return render(request,'profile_modal.html', data)
       
- 
 @login_required
 def refresh(request):
     social_auth = request.user.social_auth.get(provider='steam')
@@ -124,8 +113,7 @@ def refresh(request):
         player_obj.pri_role = request.POST['pri_role']
         player_obj.alt_role = request.POST['alt_role']    
         player_obj.save()
-    
-    
+      
     return redirect('/stacks') 
     
     
