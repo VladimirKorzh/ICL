@@ -82,7 +82,7 @@ class BotRequest(models.Model):
 class MatchInfo(models.Model):
     # related inventory that holds bet information
     bet_size = models.ForeignKey(Inventory)
-  
+      
     # lobby password
     lobbypass = models.PositiveSmallIntegerField(default=0)
     
@@ -99,16 +99,31 @@ class Match1v1(models.Model):
     # time this record was last modified, for rating purposes
     last_updated = models.DateTimeField(auto_now=True)
     
+    # information about that match
+    info = models.ForeignKey(MatchInfo)
+    
     # which teams participate in this match
     sidea = models.ForeignKey(Player, null=True, related_name="side1")
     sideb = models.ForeignKey(Player, null=True, related_name="side2")
-    
-    # other information about that match
-    info = models.ForeignKey(MatchInfo)
-
+   
     # Handshake between opponents
     sideaready = models.BooleanField(default=False)
     sidebready = models.BooleanField(default=False)
+    
+    # heroes that players have chosen
+    sideahero1 = models.ForeignKey(Hero, null=True)
+    sideahero2 = models.ForeignKey(Hero, null=True)
+    sidebhero1 = models.ForeignKey(Hero, null=True)
+    sidebhero2 = models.ForeignKey(Hero, null=True)
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
   
 class Bet(models.Model):
