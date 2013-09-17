@@ -4,6 +4,8 @@ import ValveApiWrapper
 from datetime import timedelta
 from django.utils import timezone
 
+DEBUG = True
+
 def db_create_player(steamid):
     player = Player()
     inv = Inventory()
@@ -25,11 +27,13 @@ def db_player_inventory_action(player_id, action, inv_id):
         player.inventory.common   += inv.common
         player.inventory.uncommon += inv.uncommon
         player.inventory.rare     += inv.rare
+        if DEBUG: print "OK. Items given"
       
     if action == 1:
         player.inventory.common   -= inv.common
         player.inventory.uncommon -= inv.uncommon
         player.inventory.rare     -= inv.rare
+        if DEBUG: print "OK. Items taken"
       
     player.inventory.save()
       
@@ -72,14 +76,19 @@ def action_refresh_user_stats(steamid):
         player = Player.objects.get(uid=steamid)
     except Player.DoesNotExist:
         player = db_create_player(steamid)
+        if DEBUG: print "New player created"
   
     # Unless the user has zero rating
     if player.rating.skillrating == 0:
         db_refresh_player_rating(steamid)
+        if DEBUG: print "OK"
     else:  
         # Ratings could only be updated once a day
         if player.rating.last_updated<=timezone.now()-timedelta(days=1):
           db_refresh_player_rating(steamid)
+          if DEBUG: print "OK"
+        else:
+          if DEBUG: print "Refreshing only allowed once a day"
         
 def action_inventory_add_items(steamid):
     # User wants to put new items in his inventory
@@ -92,7 +101,10 @@ def action_inventory_take_items(steamid, common, uncommon, rare):
     
     # You can only perform one take items action a day
     if BotRequest.objects.filter(last_updated__gte=timezone.now()-timedelta(days=1), player__id__exact=player_id, action__exact=1).count() == 0:
-      db_create_botrequest(player_id, 1, common, uncommon, rare)    
+      db_create_botrequest(player_id, 1, common, uncommon, rare)
+      if DEBUG: print "OK"
+    else:
+      if DEBUG: print "You can only take back items once a day"
     
 
     
