@@ -15,7 +15,24 @@ def db_create_player(steamid):
     player.uid = steamid
     player.save()    
     return player
+
     
+def db_player_inventory_action(player_id, action, inv_id):
+    player = Player.objects.get(id__exact=player_id)
+    inv    = Inventory.objects.get(id__exact=inv_id)
+    
+    if action == 0:
+        player.inventory.common   += inv.common
+        player.inventory.uncommon += inv.uncommon
+        player.inventory.rare     += inv.rare
+      
+    if action == 1:
+        player.inventory.common   -= inv.common
+        player.inventory.uncommon -= inv.uncommon
+        player.inventory.rare     -= inv.rare
+      
+    player.inventory.save()
+      
 def db_refresh_player_rating(steamid):
     vapi = ValveApiWrapper.ValveApi()
     player_obj    = Player.objects.get(uid=steamid)
@@ -77,5 +94,5 @@ def action_inventory_take_items(steamid, common, uncommon, rare):
     if BotRequest.objects.filter(last_updated__gte=timezone.now()-timedelta(days=1), player__id__exact=player_id, action__exact=1).count() == 0:
       db_create_botrequest(player_id, 1, common, uncommon, rare)    
     
-    
+
     

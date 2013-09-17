@@ -111,10 +111,10 @@ class Match1v1(models.Model):
     sidebready = models.BooleanField(default=False)
     
     # heroes that players have chosen
-    sideahero1 = models.ForeignKey(Hero, null=True)
-    sideahero2 = models.ForeignKey(Hero, null=True)
-    sidebhero1 = models.ForeignKey(Hero, null=True)
-    sidebhero2 = models.ForeignKey(Hero, null=True)
+    sideahero1 = models.ForeignKey(Hero, null=True, related_name="side1hero1")
+    sideahero2 = models.ForeignKey(Hero, null=True, related_name="side1hero2")
+    sidebhero1 = models.ForeignKey(Hero, null=True, related_name="side2hero1")
+    sidebhero2 = models.ForeignKey(Hero, null=True, related_name="side2hero2")
     
     
     
