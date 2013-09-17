@@ -1,7 +1,7 @@
 
 // Allow tooltips on span classes
 jQuery(function ($) {
-    $("span").tooltip()
+    $("span").tooltip();
 });
 
 // Destroys modals as soon as they are hidden

@@ -4,6 +4,8 @@ import ValveApiWrapper
 from datetime import timedelta
 from django.utils import timezone
 
+import snippets
+
 DEBUG = True
 
 def db_create_player(steamid):
@@ -66,39 +68,76 @@ def db_create_botrequest(player_id, action, common=0, uncommon=0, rare=0):
     request.save()
     return request
     
-def action_refresh_user_stats(steamid):
+    
+def action_what_is_user_skill(steamid):
+    vapi = ValveApiWrapper.ValveApi()  
+    return vapi.get_player_exp_from_steamid(steamid) 
+    
+def action_refresh_user(data):
     # user wants to know his friends skill level
     # or skill of any user that has never been to ICL
     # it automatically registers user in Database    
         
     # check if player is on ICL already.    
     try: 
-        player = Player.objects.get(uid=steamid)
+        player = Player.objects.get(uid=data['steamid'])
     except Player.DoesNotExist:
-        player = db_create_player(steamid)
+        player = db_create_player(data['steamid'])            
         if DEBUG: print "New player created"
   
+    player.uid      = data['steamid']
+    player.nickname = data['personaname']
+    player.avatar   = data['social_auth'].extra_data.get('avatar')
+    player.mumble_nickname = snippets.escape_username(data['personaname'])
+    player.save()
+ 
+ 
+def action_refresh_user_rating(data):
+    player = Player.objects.get(uid=data['steamid'])
     # Unless the user has zero rating
     if player.rating.skillrating == 0:
-        db_refresh_player_rating(steamid)
+        db_refresh_player_rating(data['steamid'])
         if DEBUG: print "OK"
     else:  
         # Ratings could only be updated once a day
         if player.rating.last_updated<=timezone.now()-timedelta(days=1):
-          db_refresh_player_rating(steamid)
+          db_refresh_player_rating(data['steamid'])
           if DEBUG: print "OK"
         else:
           if DEBUG: print "Refreshing only allowed once a day"
+        
+        
         
 def action_inventory_add_items(steamid):
     # User wants to put new items in his inventory
     player_id = Player.objects.get(uid=steamid).id
     db_create_botrequest(player_id, 0)
     
-def action_inventory_take_items(steamid, common, uncommon, rare):
+def action_inventory_take_items(steamid):
     # User wants to take some items from his inventory
-    player_id = Player.objects.get(uid=steamid).id
+    player = Player.objects.get(uid=steamid)
+    player_id = player.id
     
+    common   = 0
+    uncommon = 0
+    rare     = 0
+    
+    # Only give 30 items max per day
+    if player.inventory.rare >= 10:
+        rare = 10
+    else:
+        rare = player.inventory.rare
+        
+    if player.inventory.uncommon >= 10:
+        uncommon = 10
+    else:
+        uncommon = player.inventory.uncommon        
+        
+    if player.inventory.common >= 10:
+        common = 10    
+    else:
+        common = player.inventory.common
+        
     # You can only perform one take items action a day
     if BotRequest.objects.filter(last_updated__gte=timezone.now()-timedelta(days=1), player__id__exact=player_id, action__exact=1).count() == 0:
       db_create_botrequest(player_id, 1, common, uncommon, rare)

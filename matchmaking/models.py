@@ -18,9 +18,6 @@ class Inventory(models.Model):
     rare     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
 class Rating(models.Model):
-    # total games on this account
-    total_games = models.PositiveSmallIntegerField(default=0)
-    
     # total amount of games for the past 28 days
     month_games = models.PositiveSmallIntegerField(default=0)
     

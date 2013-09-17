@@ -1,7 +1,7 @@
 
 // Allow tooltips on span classes
 jQuery(function ($) {
-    $("span").tooltip()
+    $("span").tooltip();
 });
 
 // Destroys modals as soon as they are hidden
@@ -18,17 +18,6 @@ window.setTimeout(function() {
         $(this).remove(); 
     });
 }, 5000); 
- 
-function goToByScroll(id){
-      // Remove "link" from the ID
-    id = id.replace("link", "");
-      // Scroll
-    $('html,body').animate({
-        scrollTop: $("#"+id).offset().top},
-        'slow');
-} 
-
-
 
 /*
 

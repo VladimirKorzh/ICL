@@ -160,7 +160,7 @@ bot.on('sessionStart', function(otherClient) {
                 rare     = inv.filter(function(item){ return acceptable(item, "Rare") });   
                 common   = inv.filter(function(item){ return acceptable(item, "Common") });
                 uncommon = inv.filter(function(item){ return acceptable(item, "Uncommon") });
-                
+                                
                 our_proposition = our_proposition.concat( rare.slice(0, current_task.rare) );
                 our_proposition = our_proposition.concat( uncommon.slice(0,current_task.uncommon) );
                 our_proposition = our_proposition.concat( common.slice(0, current_task.common) );
