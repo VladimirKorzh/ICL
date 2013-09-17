@@ -51,7 +51,7 @@ class ValveApi():
 
   def get_hero_list(self):
     conditions = '&language=en_us'
-    response = self.query_api(self.apiurls['GetMatchHistory'], conditions)
+    response = self.query_api(self.apiurls['GetHeroList'], conditions)
     hero_list = []
     
     for each in response['result']['heroes']:

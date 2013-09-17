@@ -145,7 +145,6 @@ INSTALLED_APPS = (
     # stuff that I 100% use
     'social_auth',    
     'matchmaking',
-    'bets',
     'stacks',
     'ratings',
 )

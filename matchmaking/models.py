@@ -1,12 +1,23 @@
 from django.db import models
-
+ 
+class Hero(models.Model):
+    # table that holds information about all
+    # currently available heroes
+    name = models.CharField(max_length=40)
+    
+class ValveApiCounts(models.Model):
+    # A class that holds the information about the amount
+    # of api calls that the application has made each day
+    date    = models.DateField()
+    amount  = models.PositiveIntegerField()
+    
 class Inventory(models.Model):
     # used to store items for betting and tournaments
     common   = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     uncommon = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     rare     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
-class PlayerRating(models.Model):
+class Rating(models.Model):
     # total games on this account
     total_games = models.PositiveSmallIntegerField(default=0)
     
@@ -47,7 +58,7 @@ class Player(models.Model):
 
     # pointers to various information structures
     inventory = models.ForeignKey(Inventory)
-    rating    = models.ForeignKey(PlayerRating)
+    rating    = models.ForeignKey(Rating)
 
 class BotRequest(models.Model):
     # player that requested interraction
@@ -56,8 +67,8 @@ class BotRequest(models.Model):
     # Interraction type # 1 - Reward  # 0 - Collect
     action = models.PositiveSmallIntegerField(default=0)
     
-    # Are we done? # TODO
-    status = models.BooleanField(default=False)
+    # Are we done? Yes\No\Cancelled
+    status = models.PositiveSmallIntegerField(default=0)
     
     # how many items does the person want to cash
     common = models.PositiveSmallIntegerField(default=0)
@@ -68,13 +79,69 @@ class BotRequest(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
      
      
+class MatchInfo(models.Model):
+    # related inventory that holds bet information
+    bet_size = models.ForeignKey(Inventory)
+  
+    # lobby password
+    lobbypass = models.PositiveSmallIntegerField(default=0)
+    
+    # passwords for both sides
+    sideapass = models.PositiveSmallIntegerField(default=0)
+    sidebpass = models.PositiveSmallIntegerField(default=0)  
+
+    # 0 - Not decided
+    # 1 - Side A won the match  # 2 - Side B won the match
+    # 3 - Cancelled             # 4 - In progress
+    result = models.PositiveSmallIntegerField(default=0)                
+ 
+class Match1v1(models.Model):
+    # time this record was last modified, for rating purposes
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    # which teams participate in this match
+    sidea = models.ForeignKey(Player, null=True, related_name="side1")
+    sideb = models.ForeignKey(Player, null=True, related_name="side2")
+    
+    # other information about that match
+    info = models.ForeignKey(MatchInfo)
+
+    # Handshake between opponents
+    sideaready = models.BooleanField(default=False)
+    sidebready = models.BooleanField(default=False)
+    
+  
+class Bet(models.Model):
+    # which player made the bet
+    player = models.ForeignKey(Player)
+    
+    # which match is he betting on
+    match1v1 = models.ForeignKey(Match1v1)
+    #match5v5 = models.ForeignKey(Match5v5)
+      
+    common   = models.PositiveSmallIntegerField(default=0)
+    uncommon = models.PositiveSmallIntegerField(default=0)
+    rare     = models.PositiveSmallIntegerField(default=0)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
      
-     
-class ValveApiCounts(models.Model):
-    # A class that holds the information about the amount
-    # of api calls that the application has made each day
-    date    = models.DateField()
-    amount  = models.PositiveIntegerField()
+
 
 class Tournament(models.Model):
     # a model that represents a tournament in db.
@@ -108,60 +175,6 @@ class PlayerParticipant(models.Model):
     last_updated = models.DateTimeField(auto_now=True)  
  
  
- 
-class Hero(models.Model):
-    # table that holds information about all
-    # currently available heroes
-    name = models.CharField(max_length=40)
 
- 
- 
-class MatchInfo(models.Model):
-    # lobby password
-    lobbypass = models.PositiveSmallIntegerField(default=0)
-    
-    # passwords for both sides
-    sideapass = models.PositiveSmallIntegerField(default=0)
-    sidebpass = models.PositiveSmallIntegerField(default=0)  
 
-    # 0 - Not decided
-    # 1 - Side A won the match 
-    # 2 - Side B won the match
-    result = models.PositiveSmallIntegerField(default=0)        
- 
-class Match1v1(models.Model):
-    # a model that represents a match
-    # time this record was last modified, for rating purposes
-    last_updated = models.DateTimeField(auto_now=True)
-    
-    # which teams participate in this match
-    sidea = models.ForeignKey(Player, null=True)
-    sideb = models.ForeignKey(Player, null=True)
-    
-    # other information about that match
-    info = models.ForeignKey(MatchInfo)
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
- 
- 
-class PlayerBet(models.Model):
-    # which player made the bet
-    player = models.ForeignKey(Player)
-    
-    # which match is he betting on
-    match = models.ForeignKey(Match)
-      
-    common   = models.PositiveSmallIntegerField(default=0)
-    uncommon = models.PositiveSmallIntegerField(default=0)
-    rare     = models.PositiveSmallIntegerField(default=0)
- 
       
