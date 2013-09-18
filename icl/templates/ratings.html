@@ -12,16 +12,24 @@
 	</div>
 	<div class="span9">
 	    <div id="content">
-		<p>Player Skill Table</p>  
+        
+
+<form class="form-search" method="POST" action="/profile/check_skill">{% csrf_token %}
+  <label class="control-label" for="steamid">Check friends skill by id</label>
+  <input name="steamid" type="text" class="input-medium search-query">
+  <button type="submit" class="btn">Check</button>
+</form>                
+        
+        <p>Player Skill Table</p>  
 		<table cellspacing="0" id="ratingtable" class="table table-striped table-condensed table-bordered"><tbody>
 		<tr><th>#</th><th>Nickname</th><th>Extra points</th><th>Rating</th><th>Last Updated</th></tr>
 		{% for player in playerslist %}
 		    <tr><td>{{forloop.counter}}</td>
 		    <td><a data-toggle="modal" href="/profile/{{player.id}}/" data-target="#modal">{{player.nickname}}</a>
 		    {% include 'skill_template.html' with skill=player.exp %}</td>
-		    <td>{{player.extra_exp_pts}}</td>
+		    <td>{{player.extra_pts}}</td>
 		    <td>{{player.rating}}</td>
-		    <td>{{player.last_updated}}</td></tr>
+		    <td></td></tr>
 		{% endfor %}		
 		</tbody></table>
 	    </div>	

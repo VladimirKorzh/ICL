@@ -19,11 +19,11 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<profile_id>\d+)/$', mm.profile,   name='show_profile'), 
     url(r'^profile/refresh_roles$',   mm.refresh_roles,  name='refresh'),
     url(r'^profile/refresh_rating$',  mm.refresh_rating, name='refresh'),
+    url(r'^profile/check_skill',      mm.check_skill, name='refresh'),
     
     url(r'^profile/inventory/take$',  mm.take_items, name='refresh'),
     url(r'^profile/inventory/add$',   mm.add_items,  name='refresh'),
     
-  
     # Stacks application
     url(r'^stacks$',          				    stacks.main),
     url(r'^stacks/leave_current$',			    stacks.leave_current),
@@ -37,8 +37,8 @@ urlpatterns = patterns('',
     url(r'^stacks/voice/(?P<channel_name>.+)',                stacks.voice),
     url(r'^stacks/voice/',             			   stacks.voice),
             
-    # Ratings application
-    url(r'^ratings$',          ratings.main,        		name='ratings'),
+    # Ratings
+    url(r'^ratings$',          mm.global_rating,        		name='ratings'),
     
     # Steam authentification
     url(r'',                  include('social_auth.urls')),

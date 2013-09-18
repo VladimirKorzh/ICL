@@ -4,18 +4,7 @@ from django.contrib.auth.decorators import login_required
 from matchmaking.models import Player
 from datetime import tzinfo, datetime
 
-def get_time_elapsed(player):
-      time_since_last_seen = datetime.utcnow() - player.last_updated.replace(tzinfo=None)
-      splits = str(time_since_last_seen).split(':')
-      pretty_time = ''
-      
-      if splits[0] != '0':
-        pretty_time += splits[0] + ' hours '
-        
-      if splits[1] != '0':
-        pretty_time += splits[1] + ' minutes ago.'
 
-      return pretty_time
 
 
 @login_required 

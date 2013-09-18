@@ -46,7 +46,8 @@ def db_refresh_player_rating(steamid):
     
     playerstats = vapi.get_player_exp_from_steamid(steamid)  
     
-    player_obj.nickname       = playerstats['nickname']    
+    player_obj.nickname        = playerstats['nickname']
+    player_obj.mumble_nickname = snippets.escape_username(playerstats['nickname'])
     player_rating.skillrating = playerstats['exp']
     player_rating.normal      = playerstats['exp_n_games']
     player_rating.high        = playerstats['exp_h_games']
@@ -69,26 +70,30 @@ def db_create_botrequest(player_id, action, common=0, uncommon=0, rare=0):
     return request
     
     
-def action_what_is_user_skill(steamid):
+def action_check_user_skill(steamid):
+    # check your friends rating. It automatically creates
+    # a new Database record for this guy.
     vapi = ValveApiWrapper.ValveApi()  
-    return vapi.get_player_exp_from_steamid(steamid) 
+    try: 
+        player = Player.objects.get(uid=steamid)
+    except Player.DoesNotExist:
+        player = db_create_player(steamid)                
+    action_refresh_user_rating({'steamid':steamid})
     
-def action_refresh_user(data):
-    # user wants to know his friends skill level
-    # or skill of any user that has never been to ICL
-    # it automatically registers user in Database    
-        
+    
+def action_login(data):        
     # check if player is on ICL already.    
+    # otherwise create a new record
     try: 
         player = Player.objects.get(uid=data['steamid'])
     except Player.DoesNotExist:
         player = db_create_player(data['steamid'])            
         if DEBUG: print "New player created"
-  
-    player.uid      = data['steamid']
-    player.nickname = data['personaname']
-    player.avatar   = data['social_auth'].extra_data.get('avatar')
-    player.mumble_nickname = snippets.escape_username(data['personaname'])
+        player.uid      = data['steamid']
+        player.nickname = data['personaname']
+        player.avatar   = data['social_auth'].extra_data.get('avatar')
+        player.mumble_nickname = snippets.escape_username(data['personaname'])
+        
     player.save()
  
  
@@ -105,6 +110,13 @@ def action_refresh_user_rating(data):
           if DEBUG: print "OK"
         else:
           if DEBUG: print "Refreshing only allowed once a day"
+        
+        
+        
+        
+        
+        
+        
         
         
         

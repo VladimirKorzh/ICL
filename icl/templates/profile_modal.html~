@@ -69,7 +69,7 @@
     </select></p></td>
     <td></td>
     <td>
-        <p class="text-center"><a class="btn btn-small" href="/profile/refresh_roles"><i class="icon-check"></i></a></p>
+        <p class="text-center"><button type="submit"class="btn btn-small"><i class="icon-check"></i></button></p>
     </td>
     
 	</form>
