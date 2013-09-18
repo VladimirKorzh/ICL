@@ -21,7 +21,7 @@
 		  </button>	      
 		  <a class="brand" href="/intro"> International Crab League</a>
 		  <div class="nav-collapse collapse">
-		      <ul class="nav">			  
+		      <ul class="nav pull-right">			  
 			  <li class="divider-vertical"></li>
 			  
 			  <li><a class="" href="/stacks"><i class="icon-th-list icon-white"></i> {% trans "Stacks" %}</a></li>
@@ -32,7 +32,7 @@
 			  
 			  <li class="divider-vertical"></li>
 			  
-			  <li><a class="" href="/"><i class="icon-calendar icon-white"></i> {% trans "Tournaments" %}</a></li>
+			  <li><a class="" href="/matches"><i class="icon-calendar icon-white"></i> {% trans "Matches" %}</a></li>
 			  
 			  <li class="divider-vertical"></li>
 			  

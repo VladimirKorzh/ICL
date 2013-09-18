@@ -16,23 +16,25 @@ urlpatterns = patterns('',
     url(r'^help/(?P<topic>.+)',	mm.help,      name='help_topics'),  
         
     # user profile page modal dialog
-    url(r'^profile/(?P<profile_id>\d+)/$', mm.profile,   name='show_profile'), 
-    url(r'^profile/refresh_roles$',   mm.refresh_roles,  name='refresh'),
-    url(r'^profile/refresh_rating$',  mm.refresh_rating, name='refresh'),
-    url(r'^profile/check_skill',      mm.check_skill, name='refresh'),
+    url(r'^profile/(?P<profile_id>\d+)/$', mm.profile), 
+    url(r'^profile/refresh_roles$',        mm.refresh_roles),
+    url(r'^profile/refresh_rating$',       mm.refresh_rating),
+    url(r'^profile/check_skill$',          mm.check_skill),
+    url(r'^profile/search/(?P<query>.+)$', mm.profile_search),
+    url(r'^profile/inventory/take$',       mm.take_items),
+    url(r'^profile/inventory/add$',        mm.add_items),
     
-    url(r'^profile/inventory/take$',  mm.take_items, name='refresh'),
-    url(r'^profile/inventory/add$',   mm.add_items,  name='refresh'),
-    
-    url(r'^match$',   mm.match,  name='match'),
+    url(r'^matches$',                      mm.matches),
+    url(r'^matches/1v1/(?P<id>\d+)$', mm.match1v1),
+    url(r'^matches/1v1/(?P<id>\d+)/(?P<msg>.+)$', mm.match1v1),
     
     
     # Stacks application
     url(r'^stacks$',          				    stacks.main),
     url(r'^stacks/leave_current$',			    stacks.leave_current),
     url(r'^stacks/kick_afk',			        stacks.kick_afk),
-    url(r'^stacks/msg/(?P<msg>.+)$',          stacks.main),
-    url(r'^stacks/create$',				    stacks.create_new_stack),
+    url(r'^stacks/msg/(?P<msg>.+)$',            stacks.main),
+    url(r'^stacks/create$',				        stacks.create_new_stack),
     url(r'^stacks/delete_empty$',			    stacks.delete_empty),
     url(r'^stacks/join/(?P<stack_name>\w+)/(?P<role>\d)/$',  stacks.join),
     url(r'^stacks/leave/(?P<stack_name>\w+)/$',		stacks.leave),

@@ -1,3 +1,10 @@
+$('.typeahead').typeahead({
+    source: function (query, process) {
+        return $.get('/profile/search/'+query, function (data) {
+            return process(data.userlist);
+        });
+    }
+});
 
 // Allow tooltips on span classes
 jQuery(function ($) {

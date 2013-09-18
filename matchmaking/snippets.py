@@ -49,7 +49,11 @@ def get_session_info(request):
             pass
     return data
         
-        
+
+
+  
+  
+  
 #def get_time_elapsed(player):
       #time_since_last_seen = datetime.utcnow() - player.last_updated.replace(tzinfo=None)
       #splits = str(time_since_last_seen).split(':')

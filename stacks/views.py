@@ -15,9 +15,9 @@ def main(request, msg=''):
   steamid     = social_auth.extra_data.get('steamid')     
   
   data = {'profile': Player.objects.get(uid__exact=steamid),
-	  'stacks' : Stack.objects.all(),
-	  }
-	  
+          'stacks' : Stack.objects.all(),
+  }
+
   if msg != '':
     data['message'] = msg
     print 'message appended', msg
