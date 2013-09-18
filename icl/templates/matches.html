@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block body %}
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->
+    <div class="span3">
+    <legend>Matches</legend>    
+        {% include 'matches_sidebar.html' %}
+    </div>
+    <div class="span9">
+        <div id="content">
+            <legend>Main</legend>  
+            {% for match in matches %}
+                <p>
+                    {{ match.sidea.nickname }}                  
+                    {% if match.info.result == 0 %} vs {% endif %}
+                    {% if match.info.result == 1 %} > {% endif %}
+                    {% if match.info.result == 2 %} < {% endif %}
+                    {{ match.sideb.nickname }}
+                    <a href="/matches/1v1/{{match.id}}"> show</a>
+                </p>                
+            {% endfor %}
+        </div> <!-- END SPAN 9 -->
+      </div><!-- END CONTENT -->
+    </div> <!-- END ROW 12 -->
+</div> <!-- END CONTAINER -->   
+{% endblock body %}
+

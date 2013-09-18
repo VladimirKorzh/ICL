@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block body %}
+<div class="container">            
+    <div class="row"> <!-- ROW 12 START -->
+    <div class="span3">
+    <legend>1v1 Match</legend>    
+        {% include 'matches_sidebar.html' %}
+    </div>
+    <div class="span9">
+        <div id="content">     
+            <legend> {% if match %} Match ID: {{ match.id }} {{match.info.result}} {% else %} Create new {% endif %} </legend>                            
+            
+                <form class="form form-horizontal" method="POST" action="/matches/1v1/{% if match %}{{match.id}}{% else %}0{% endif %}">{% csrf_token %}
+                {% if match %}<input type='hidden' value="{{match.id}}" name="match_id">{% endif %}            
+                    {{match.sideaready}}
+                    <input name="sidea" class="typeahead input-medium" type="text" autocomplete="off" {% if match %} value="{{ match.sidea.nickname }}" disabled {% else %} placeholder="Side A" {% endif %}>
+                    {{match.sidebready}}
+                    <input name="sideb" class="typeahead input-medium" type="text" autocomplete="off" {% if match %} value="{{ match.sideb.nickname }}" disabled {% else %} placeholder="Side B" {% endif %}>
+                
+                    <label>Rare
+                        <select id="Rare" name="Rare" class="input-mini">
+                          <option value=0 {% if match.info.bet_size.rare == 0  %} selected="selected" {% endif %}>0</option>
+                          <option value=1 {% if match.info.bet_size.rare == 1  %} selected="selected" {% endif %}>1</option>
+                          <option value=2 {% if match.info.bet_size.rare == 2  %} selected="selected" {% endif %}>2</option>
+                          <option value=3 {% if match.info.bet_size.rare == 3  %} selected="selected" {% endif %}>3</option>
+                          <option value=4 {% if match.info.bet_size.rare == 4  %} selected="selected" {% endif %}>4</option>
+                          <option value=5 {% if match.info.bet_size.rare == 5  %} selected="selected" {% endif %}>5</option>
+                        </select>
+                    </label>
+                
+                    <label>Uncommon
+                        <select id="Uncommon" name="Uncommon" class="input-mini">
+                          <option value=0 {% if match.info.bet_size.uncommon == 0  %} selected="selected" {% endif %}>0</option>
+                          <option value=1 {% if match.info.bet_size.uncommon == 1  %} selected="selected" {% endif %}>1</option>
+                          <option value=2 {% if match.info.bet_size.uncommon == 2  %} selected="selected" {% endif %}>2</option>
+                          <option value=3 {% if match.info.bet_size.uncommon == 3  %} selected="selected" {% endif %}>3</option>
+                          <option value=4 {% if match.info.bet_size.uncommon == 4  %} selected="selected" {% endif %}>4</option>
+                          <option value=5 {% if match.info.bet_size.uncommon == 5  %} selected="selected" {% endif %}>5</option>
+                        </select>
+                    </label>
+                    
+                    <label>Common
+                        <select id="Common" name="Common" class="input-mini">
+                          <option value=0 {% if match.info.bet_size.common == 0  %} selected="selected" {% endif %}>0</option>
+                          <option value=1 {% if match.info.bet_size.common == 1  %} selected="selected" {% endif %}>1</option>
+                          <option value=2 {% if match.info.bet_size.common == 2  %} selected="selected" {% endif %}>2</option>
+                          <option value=3 {% if match.info.bet_size.common == 3  %} selected="selected" {% endif %}>3</option>
+                          <option value=4 {% if match.info.bet_size.common == 4  %} selected="selected" {% endif %}>4</option>
+                          <option value=5 {% if match.info.bet_size.common == 5  %} selected="selected" {% endif %}>5</option>
+                        </select>
+                    </label>   
+                    
+                    {% if match %}
+                      {% if profile == match.sidea or profile == match.sideb %}
+                          {% if match.info.result == 0 %}
+                            <button type="submit" name="action" value="refresh" class="btn">Refresh</button>
+                            <button type="submit" name="action" value="ready" class="btn">Ready</button>
+                            <button type="submit" name="action" value="update" class="btn">Update bet</button>
+                            <button type="submit" name="action" value="cancel" class="btn">Cancel match</button>
+                          {% endif %}
+                     
+                          {% if match.info.result == 4 %}
+                                {% if profile == match.sidea %}
+                                    password {{ match.info.sideapass }}
+                                {% endif%}
+                                {% if profile == match.sideb %}
+                                    password {{ match.info.sidebpass }}
+                                {% endif%}                               
+                              <input type="text" autocomplete="off" name="pass" class="input-mini">
+                              <button type="submit" name="action" value="winnerA" class="btn">Winner {{match.sidea.nickname}}</button>
+                              <button type="submit" name="action" value="winnerB" class="btn">Winner {{match.sideb.nickname}}</button>
+                          {% endif %}
+                      {% endif %}
+                    {% else %}
+                        <button type="submit" name="action" value="create" class="btn">Create</button>
+                    {% endif %}
+                    {% if message %} 
+                    <div class="alert alert-info alert-message">      
+                        {{ message }}
+                    </div>
+                    {% endif %}
+          </form>
+        </div> <!-- END SPAN 9 -->
+      </div><!-- END CONTENT -->
+    </div> <!-- END ROW 12 -->
+</div> <!-- END CONTAINER -->   
+{% endblock body %}
+
