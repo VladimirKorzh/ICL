@@ -93,23 +93,27 @@ def add_items(request):
 
 @login_required 
 def global_rating(request):
-      social_auth = request.user.social_auth.get(provider='steam')
-      steamid     = social_auth.extra_data.get('steamid')  
-      
-      data = {'profile':Player.objects.get(uid=steamid)}
-      
-      players = Player.objects.all()  
-      data['playerslist'] = []
-      
-      for each_player in players:
-          data['playerslist'].append({'nickname':    each_player.nickname,
-                                      'id':            each_player.id,
-                                      'extra_exp_pts': each_player.rating.extra_pts,
-                                      'rating':        each_player.rating.skillrating+each_player.rating.extra_pts,
-                                      'uid':           each_player.uid,
-                                      'exp':           each_player.rating.skillrating,
-                                        })
-            
-      data['playerslist'] = sorted(data['playerslist'], key=lambda pl:pl['exp'], reverse=True)
+    data = snippets.get_session_info(request)
+    data['profile'] = Player.objects.get(uid=steamid)
     
-      return render(request, 'ratings.html', data)
+    players = Player.objects.all()  
+    data['playerslist'] = []
+    
+    for each_player in players:
+        data['playerslist'].append({'nickname':    each_player.nickname,
+                                    'id':            each_player.id,
+                                    'extra_exp_pts': each_player.rating.extra_pts,
+                                    'rating':        each_player.rating.skillrating+each_player.rating.extra_pts,
+                                    'uid':           each_player.uid,
+                                    'exp':           each_player.rating.skillrating,
+                                      })
+          
+    data['playerslist'] = sorted(data['playerslist'], key=lambda pl:pl['exp'], reverse=True)
+  
+    return render(request, 'ratings.html', data)
+    
+@login_required  
+def match(request):
+    data = snippets.get_session_info(request)    
+    return render(request, 'match.html', data)
+      

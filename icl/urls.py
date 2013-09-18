@@ -24,6 +24,9 @@ urlpatterns = patterns('',
     url(r'^profile/inventory/take$',  mm.take_items, name='refresh'),
     url(r'^profile/inventory/add$',   mm.add_items,  name='refresh'),
     
+    url(r'^match$',   mm.match,  name='match'),
+    
+    
     # Stacks application
     url(r'^stacks$',          				    stacks.main),
     url(r'^stacks/leave_current$',			    stacks.leave_current),

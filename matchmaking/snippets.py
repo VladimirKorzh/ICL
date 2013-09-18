@@ -42,6 +42,11 @@ def get_session_info(request):
         data['social_auth'] = request.user.social_auth.get(provider='steam')
         data['steamid']     = data['social_auth'].extra_data.get('steamid')     
         data['personaname'] = data['social_auth'].extra_data.get('personaname')
+        
+        try: 
+            data['profile'] = Player.objects.get(uid=data['steamid'])
+        except Player.DoesNotExist:
+            pass
     return data
         
         
