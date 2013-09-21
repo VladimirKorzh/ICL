@@ -15,17 +15,13 @@ urlpatterns = patterns('',
         
     url(r'^help/(?P<topic>.+)',	mm.help,      name='help_topics'),  
         
-    # user profile page modal dialog
-    url(r'^profile/(?P<profile_id>\d+)/$', mm.profile), 
-    url(r'^profile/refresh_roles$',        mm.refresh_roles),
-    url(r'^profile/refresh_rating$',       mm.refresh_rating),
+    # user profile page 
+    url(r'^profile/(?P<profile_id>\d+)$',  mm.profile), 
     url(r'^profile/check_skill$',          mm.check_skill),
     url(r'^profile/search/(?P<query>.+)$', mm.profile_search),
-    url(r'^profile/inventory/take$',       mm.take_items),
-    url(r'^profile/inventory/add$',        mm.add_items),
     
-    url(r'^matches$',                      mm.matches),
-    url(r'^matches/1v1/(?P<id>\d+)$', mm.match1v1),
+    url(r'^matches$',                             mm.matches),
+    url(r'^matches/1v1/(?P<id>\d+)$',             mm.match1v1),
     url(r'^matches/1v1/(?P<id>\d+)/(?P<msg>.+)$', mm.match1v1),
     
     

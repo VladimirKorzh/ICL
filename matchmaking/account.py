@@ -74,11 +74,14 @@ def action_check_user_skill(steamid):
     # check your friends rating. It automatically creates
     # a new Database record for this guy.
     vapi = ValveApiWrapper.ValveApi()  
-    try: 
-        player = Player.objects.get(uid=steamid)
-    except Player.DoesNotExist:
-        player = db_create_player(steamid)                
-    action_refresh_user_rating({'steamid':steamid})
+    
+    # check that the user-provided id is valid
+    if vapi.get_player_name_from_steamid(steamid):
+        try: 
+            player = Player.objects.get(uid=steamid)
+        except Player.DoesNotExist:
+            player = db_create_player(steamid)                
+        action_refresh_user_rating({'steamid':steamid})
     
     
 def action_login(data):        

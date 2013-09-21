@@ -4,26 +4,38 @@
 {% block body %}
 <div class="container">            
     <div class="row"> <!-- ROW 12 START -->
-    <div class="span3">
-    <legend>Matches</legend>    
-        {% include 'matches_sidebar.html' %}
-    </div>
-    <div class="span9">
-        <div id="content">
-            <legend>Main</legend>  
-            {% for match in matches %}
-                <p>
-                    {{ match.sidea.nickname }}                  
-                    {% if match.info.result == 0 %} vs {% endif %}
-                    {% if match.info.result == 1 %} > {% endif %}
-                    {% if match.info.result == 2 %} < {% endif %}
-                    {{ match.sideb.nickname }}
-                    <a href="/matches/1v1/{{match.id}}"> show</a>
-                </p>                
-            {% endfor %}
+    <div class="span12">
+        <div id="content">     
+              <table id="myTable" class="tablesorter ">
+                <thead>
+                <tr><th>Id</th><th>Side A</th><th>Side B</th><th>Result</th><th>Link</th></tr>
+                </thead>
+                <tbody>
+                  {% for match in matches %}                       
+                    <tr><td>{{match.id}}</td>
+                    <td>{{ match.sidea.nickname }}</td>
+                    <td>{{ match.sideb.nickname }}</td>                            
+                    <td>
+                      {% if match.info.result == 0 %} Not Decided {% endif %}
+                      {% if match.info.result == 1 %} Winner A {% endif %}
+                      {% if match.info.result == 2 %} Winner B {% endif %}
+                      {% if match.info.result == 3 %} Match Cancelled {% endif %}
+                      {% if match.info.result == 4 %} In progress {% endif %}
+                    </td>                                                        
+                    <td><a href="/matches/1v1/{{match.id}}">
+                    show</a></td></tr>        
+                  {% endfor %}
+                </tbody>
+              </table>
+              <legend>Mathes</legend>
+<ul id="actionsmenu" class="nav nav-list affix sidenav">
+  <li><a class="" href="/matches"><i class="icon-list"></i> Browse All</a></li> 
+  <li class="">&nbsp;</li>
+  <li><a class="" href="/matches/1v1/0"><i class="icon-list"></i> Create 1v1 Match</a></li> 
+</ul>   
         </div> <!-- END SPAN 9 -->
-      </div><!-- END CONTENT -->
+      </div><!-- END CONTENT -->      
     </div> <!-- END ROW 12 -->
-</div> <!-- END CONTAINER -->   
+</div> <!-- END CONTAINER -->  
 {% endblock body %}
 

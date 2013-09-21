@@ -1,14 +1,7 @@
 {% include 'header.html' %}
 
-<body>
-    {% include 'navigation.html' %}
+{% include 'navigation.html' %}
             
-<!-- Modal for dialogs -->
-    <div id="modal" class="modal hide fade in">
-	<div class="modal-body"></div>
-    </div>
-      
-    {% block body %}{% endblock %}
-	
-	
+{% block body %}{% endblock %}
+
 {% include 'footer.html' %} 

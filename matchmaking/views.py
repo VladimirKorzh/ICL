@@ -35,40 +35,39 @@ def login(request):
     print "Player logged in:", data['personaname']
     return redirect('/stacks')
  
-@login_required
-def profile(request, profile_id):
-    data = snippets.get_session_info(request)  
-    data['me'] = Player.objects.get(uid=data['steamid'])
-    data['pl'] = Player.objects.get(id__exact=profile_id)
-    data['rt'] = data['pl'].rating
-    data['inv']= data['pl'].inventory
-    
-    print data['personaname'],' is looking at profile ', data['pl'].nickname    
-    return render(request,'profile_modal.html', data)
-
-@login_required
-def refresh_roles(request):
-    data = snippets.get_session_info(request)      
-    
-    player_obj    = Player.objects.get(uid=data['steamid'])
-    if request.method == 'POST':
-        print 'Setting new player roles', request.POST['pri_role'], request.POST['alt_role'], 'for player', player_obj.nickname
-        player_obj.pri_role = request.POST['pri_role']
-        player_obj.alt_role = request.POST['alt_role']    
-        player_obj.save()
-        
+ 
+@login_required    
+def profile(request, profile_id):    
+    data = snippets.get_session_info(request)       
+     
     if request.method != 'POST':
-      account.action_refresh_user_rating(data)
+      data['me'] = data['profile']
       
-    return redirect('/stacks') 
-    
-@login_required
-def refresh_rating(request):
-    data = snippets.get_session_info(request)          
-    account.action_refresh_user_rating(data)
+      data['pl'] = Player.objects.get(id__exact=profile_id)      
+      data['rt'] = data['pl'].rating
+      data['inv']= data['pl'].inventory    
+      print data['personaname'],' is looking at profile ', data['pl'].nickname        
+      return render(request, 'profile.html', data)
       
-    return redirect('/stacks')     
-    
+    if request.method == 'POST':
+        if request.POST['action'] == 'refresh_roles':
+            player_obj = data['profile']
+            print 'Setting new player roles', request.POST['pri_role'], request.POST['alt_role'], 'for player', player_obj.nickname
+            player_obj.pri_role = request.POST['pri_role']
+            player_obj.alt_role = request.POST['alt_role']    
+            player_obj.save()    
+        if request.POST['action'] == 'refresh_rating':
+          account.action_refresh_user_rating(data)
+        
+        if request.POST['action'] == 'take_items':
+          account.action_inventory_take_items(data['steamid'])
+          
+        if request.POST['action'] == 'add_items':          
+          account.action_inventory_add_items(data['steamid'])
+          
+    return redirect('/profile/'+str(profile_id))
+
+
 @login_required    
 def check_skill(request):
     data = snippets.get_session_info(request)      
@@ -80,20 +79,8 @@ def check_skill(request):
         
     return redirect('/ratings')         
     
-@login_required    
-def take_items(request):
-    data = snippets.get_session_info(request)
-    account.action_inventory_take_items(data['steamid'])
-    
-    return redirect('/stacks') 
 
-@login_required
-def add_items(request):
-    data = snippets.get_session_info(request) 
-    account.action_inventory_add_items(data['steamid'])
-    
-    return redirect('/stacks') 
-
+# AJAX API FOR TYPEAHEAD
 @login_required    
 def profile_search(request,query):
     # returns a json encoded list of usernames that start with
@@ -107,25 +94,12 @@ def profile_search(request,query):
         
     return HttpResponse(json.dumps(response), content_type="application/json")
     
+
     
 @login_required 
 def global_rating(request):
     data = snippets.get_session_info(request)
-    
-    players = Player.objects.all()  
-    data['playerslist'] = []
-    
-    for each_player in players:
-        data['playerslist'].append({'nickname':      each_player.nickname,
-                                    'id':            each_player.id,
-                                    'extra_exp_pts': each_player.rating.extra_pts,
-                                    'rating':        each_player.rating.skillrating+each_player.rating.extra_pts,
-                                    'uid':           each_player.uid,
-                                    'exp':           each_player.rating.skillrating,
-                                      })
-          
-    data['playerslist'] = sorted(data['playerslist'], key=lambda pl:pl['exp'], reverse=True)
-  
+    data['playerslist'] = Player.objects.all()  
     return render(request, 'ratings.html', data)
     
     

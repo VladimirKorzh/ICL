@@ -4,11 +4,7 @@
 {% block body %}
 <div class="container">            
     <div class="row"> <!-- ROW 12 START -->
-    <div class="span3">
-    <legend>1v1 Match</legend>    
-        {% include 'matches_sidebar.html' %}
-    </div>
-    <div class="span9">
+    <div class="span12">
         <div id="content">     
             <legend> {% if match %} Match ID: {{ match.id }} {{match.info.result}} {% else %} Create new {% endif %} </legend>                            
             

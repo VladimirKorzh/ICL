@@ -12,10 +12,11 @@ class ValveApi():
   def __init__(self):
     self.apikey    = 'key=' + settings.STEAM_API_KEY
     self.apiurls   = {}
-    self.apiurls['GetMatchHistory'] = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
+    self.apiurls['GetMatchHistory']    = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?'
     self.apiurls['GetPlayerSummaries'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?' 
-    self.apiurls['GetHeroList'] = 'https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?'
+    self.apiurls['GetHeroList']        = 'https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?'
     
+  # Generic function that makes the request
   def query_api(self, api2query, conditions):
     apiurl =  api2query       
     finalurl = apiurl+self.apikey+conditions        
@@ -39,16 +40,20 @@ class ValveApi():
     return response
 
   # returns current player-set in-game nickname
+  # retuns None if userid is wrong
   def get_player_name_from_steamid(self, userid):
       steamid = '&steamids=' + str(userid)      
       response = self.query_api(self.apiurls['GetPlayerSummaries'], steamid)
       personaname = None
       
       if response != None:
+        if len(response['response']['players']):
           personaname = response['response']['players'][0]['personaname']
           
       return personaname
 
+      
+  # used to load Dota 2 heroes into local database
   def get_hero_list(self):
     conditions = '&language=en_us'
     response = self.query_api(self.apiurls['GetHeroList'], conditions)
@@ -65,6 +70,11 @@ class ValveApi():
     amount_of_games[2] = 0
     amount_of_games[3] = 0
     
+    nickname = self.get_player_name_from_steamid(userid)
+    
+    if nickname == 0:
+      return
+        
     past = datetime.datetime.now() - datetime.timedelta(weeks = 4)
     
     timestamp = calendar.timegm(past.utctimetuple())
@@ -106,7 +116,7 @@ class ValveApi():
       pts = extra_games*vh_cent*6 + extra_games*h_cent*3 + extra_games*n_cent*1
 
     playerstats = {'exp':exp,
-		    'nickname':self.get_player_name_from_steamid(userid),
+		    'nickname': nickname,
 		    'exp_n_games':amount_of_games[1],
 		    'exp_h_games':amount_of_games[2],
 		    'exp_vh_games':amount_of_games[3],
